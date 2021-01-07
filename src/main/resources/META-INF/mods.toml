@@ -1,0 +1,21 @@
+modLoader="javafml"
+loaderVersion="[34,)"
+issueTrackerURL="https://github.com/Mrbysco/Spelled"
+license="MIT"
+
+[[mods]]
+modId="spelled"
+version="${file.jarVersion}"
+displayName="Spelled"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/spelled"
+authors="Mrbysco, Kara2810x"
+description='''
+It's spelled "Yu Mo Gui Gwai Fai Di Zao"
+'''
+
+[[dependencies.spelled]]
+modId="curios"
+mandatory=true
+versionRange="[FORGE-1.16.4,)"
+ordering="AFTER"
+side="BOTH"
