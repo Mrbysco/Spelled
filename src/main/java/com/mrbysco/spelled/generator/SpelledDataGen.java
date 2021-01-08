@@ -45,16 +45,18 @@ public class SpelledDataGen {
 
             addItem(SpelledRegistry.KNOWLEDGE_TOME, "Tome Of Knowledge");
 
-            add("spelled.tome.description", "Contains knowledge of '%s'");
+            add("spelled.tome.description", "Contains knowledge about \"%s\"");
             add("spelled.tome.fail", "You already know the knowledge of the tome");
             add("spelled.tome.success", "You've obtained the knowledge the tome");
+
+            add("spelled.spell.cast", "* %s has cast \"%s\"");
 
             add("spelled.commands.level.get.message", "%s is currently level %s");
             add("spelled.commands.level.set.message", "%s's level has been set to %s");
             add("spelled.commands.level.set.invalid", "Couldn't set level. Invalid number supplied: %s");
-            add("spelled.commands.knowledge.unlock.message", "Unlocked word '%s' for %s");
+            add("spelled.commands.knowledge.unlock.message", "Unlocked word \"%s\" for %s");
             add("spelled.commands.knowledge.unlock.invalid", "Couldn't unlock word. Invalid word supplied: %s");
-            add("spelled.commands.knowledge.lock.message", "Locked word '%s' for %s");
+            add("spelled.commands.knowledge.lock.message", "Locked word \"%s\" for %s");
             add("spelled.commands.knowledge.lock.invalid", "Couldn't locked word. Invalid word supplied: %s");
             add("spelled.commands.knowledge.reset.message", "Reset knowledge of %s");
 

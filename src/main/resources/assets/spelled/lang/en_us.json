@@ -4,10 +4,10 @@
   "key.spelled.category": "Spelled",
   "key.spelled.use": "Use Spell",
   "spelled.commands.knowledge.lock.invalid": "Couldn't locked word. Invalid word supplied: %s",
-  "spelled.commands.knowledge.lock.message": "Locked word '%s' for %s",
+  "spelled.commands.knowledge.lock.message": "Locked word \"%s\" for %s",
   "spelled.commands.knowledge.reset.message": "Reset knowledge of %s",
   "spelled.commands.knowledge.unlock.invalid": "Couldn't unlock word. Invalid word supplied: %s",
-  "spelled.commands.knowledge.unlock.message": "Unlocked word '%s' for %s",
+  "spelled.commands.knowledge.unlock.message": "Unlocked word \"%s\" for %s",
   "spelled.commands.level.get.message": "%s is currently level %s",
   "spelled.commands.level.set.invalid": "Couldn't set level. Invalid number supplied: %s",
   "spelled.commands.level.set.message": "%s's level has been set to %s",
@@ -38,7 +38,8 @@
   "spelled.keyword.viridis.description": "Green",
   "spelled.level_up.fail_item": "You lack the required items to level up!",
   "spelled.level_up.fail_xp": "You lack the required xp to level up!",
-  "spelled.tome.description": "Contains knowledge of '%s'",
+  "spelled.spell.cast": "* %s has cast \"%s\"",
+  "spelled.tome.description": "Contains knowledge about \"%s\"",
   "spelled.tome.fail": "You already know the knowledge of the tome",
   "spelled.tome.success": "You've obtained the knowledge the tome"
 }

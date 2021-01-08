@@ -46,62 +46,62 @@ public class SpellCastHandler {
     @SubscribeEvent
     public void onChatEvent(ServerChatEvent event) {
         ServerPlayerEntity player = event.getPlayer();
-        SpelledAPI.getSpellDataCap(player).ifPresent(data -> {
-            if(data.getLevel() > 0) {
-                KeywordRegistry registry = KeywordRegistry.instance();
-                String message = event.getMessage().toLowerCase(Locale.ROOT);
-                String[] words = message.split("\\s+");
+        final String regExp = "/^[a-zA-Z\\s]*$/";
+        if(event.getMessage().matches(regExp)) {
+            SpelledAPI.getSpellDataCap(player).ifPresent(data -> {
+                if(data.getLevel() > 0) {
+                    KeywordRegistry registry = KeywordRegistry.instance();
+                    String message = event.getMessage().toLowerCase(Locale.ROOT);
+                        String[] words = message.split("\\s+");
 
-                if(words.length >= 2 && canCastSpell(player, words)) {
-                    //Do our stuff
-                    IKeyword lastKeyword = registry.getKeywordFromName(words[words.length - 1]);
-                    World world = player.world;
+                        if(words.length >= 2 && canCastSpell(player, words)) {
+                            //Do our stuff
+                            IKeyword lastKeyword = registry.getKeywordFromName(words[words.length - 1]);
+                            World world = player.world;
 
-                    if(lastKeyword instanceof TypeKeyword) {
-                        TypeKeyword typeKeyword = (TypeKeyword) lastKeyword;
-                        SpellEntity spell = constructEntity(player, typeKeyword.getType());
+                            if(lastKeyword instanceof TypeKeyword) {
+                                TypeKeyword typeKeyword = (TypeKeyword) lastKeyword;
+                                SpellEntity spell = constructEntity(player, typeKeyword.getType());
 
-                        StringBuilder castText = new StringBuilder("'");
-                        IFormattableTextComponent descriptionComponent = new StringTextComponent("");
-                        int cooldown = -1;
-                        for(int i = 0; i < (words.length - 1); i++) {
-                            IKeyword keyword = registry.getKeywordFromName(words[i]);
-                            if(keyword != null) {
-                                cooldown += keyword.getSlots();
-                                castText.append(keyword.getKeyword()).append(" ");
-                                descriptionComponent.append(keyword.getDescription()).append(new StringTextComponent(" "));
-                                int previous = i - 1;
-                                if(previous >= 0 && previous < (words.length - 1))
-                                    keyword.cast(world, player, spell, registry.getKeywordFromName(words[previous]));
-                                else
-                                    keyword.cast(world, player, spell, null);
+                                StringBuilder castText = new StringBuilder();
+                                IFormattableTextComponent descriptionComponent = new StringTextComponent("");
+                                int cooldown = -1;
+                                for(int i = 0; i < (words.length - 1); i++) {
+                                    IKeyword keyword = registry.getKeywordFromName(words[i]);
+                                    if(keyword != null) {
+                                        cooldown += keyword.getSlots();
+                                        castText.append(keyword.getKeyword()).append(" ");
+                                        descriptionComponent.append(keyword.getDescription()).append(new StringTextComponent(" "));
+                                        int previous = i - 1;
+                                        if(previous >= 0 && previous < (words.length - 1))
+                                            keyword.cast(world, player, spell, registry.getKeywordFromName(words[previous]));
+                                        else
+                                            keyword.cast(world, player, spell, null);
+                                    }
+                                }
+                                castText.append(lastKeyword.getKeyword());
+                                StringTextComponent castComponent = new StringTextComponent(castText.toString());
+                                descriptionComponent.append(typeKeyword.getDescription());
+                                descriptionComponent.mergeStyle(TextFormatting.GOLD);
+                                castComponent.setStyle(event.getComponent().getStyle().setHoverEvent(
+                                        new HoverEvent(Action.SHOW_TEXT, descriptionComponent))).mergeStyle(TextFormatting.GOLD);
+
+                                IFormattableTextComponent finalMessage = new TranslationTextComponent("spelled.spell.cast", player.getDisplayName(), castComponent);
+                                event.setComponent(finalMessage);
+
+                                if(spell != null) {
+                                    if(!player.abilities.isCreativeMode) {
+                                        SpelledAPI.setCooldown(player, cooldown);
+                                        SpelledAPI.syncCap(player);
+                                    }
+                                    System.out.println(spell);
+                                    world.addEntity(spell);
+                                }
                             }
-                        }
-                        castText.append(lastKeyword.getKeyword()).append("'");
-                        StringTextComponent castComponent = new StringTextComponent(castText.toString());
-                        descriptionComponent.append(typeKeyword.getDescription());
-                        descriptionComponent.mergeStyle(TextFormatting.GOLD);
-                        castComponent.setStyle(event.getComponent().getStyle().setHoverEvent(new HoverEvent(Action.SHOW_TEXT, descriptionComponent)));
-                        castComponent.mergeStyle(TextFormatting.GOLD);
-
-                        StringTextComponent messageComponent = new StringTextComponent("has cast ");
-                        messageComponent.append(castComponent);
-
-                        IFormattableTextComponent finalMessage = new TranslationTextComponent("chat.type.emote", player.getDisplayName(), messageComponent);
-                        event.setComponent(finalMessage);
-
-                        if(spell != null) {
-                            if(!player.abilities.isCreativeMode) {
-                                SpelledAPI.setCooldown(player, cooldown);
-                                SpelledAPI.syncCap(player);
-                            }
-                            System.out.println(spell);
-                            world.addEntity(spell);
                         }
                     }
-                }
-            }
-        });
+            });
+        }
     }
 
     public boolean canCastSpell(ServerPlayerEntity player, String[] words) {
