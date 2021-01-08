@@ -12,10 +12,3 @@ authors="Mrbysco, Kara2810"
 description='''
 It's spelled "Yu Mo Gui Gwai Fai Di Zao"
 '''
-
-[[dependencies.spelled]]
-modId="curios"
-mandatory=true
-versionRange="[FORGE-1.16.4,)"
-ordering="AFTER"
-side="BOTH"

@@ -13,6 +13,8 @@ public interface ISpellData {
 
     void lockKeyword(String keyword);
 
+    void resetUnlocks();
+
     int getLevel();
 
     void setLevel(int level);

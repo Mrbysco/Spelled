@@ -3,6 +3,7 @@ package com.mrbysco.spelled.api;
 import com.mrbysco.spelled.Spelled;
 import com.mrbysco.spelled.capability.ISpellData;
 import com.mrbysco.spelled.packets.SpellDataSyncMessage;
+import com.mrbysco.spelled.registry.KeywordRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.capabilities.Capability;
@@ -11,6 +12,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SpelledAPI {
     @CapabilityInject(ISpellData.class)
@@ -43,6 +46,21 @@ public class SpelledAPI {
             return data.getLevel();
         }
         return -1;
+    }
+
+    public static void resetUnlocks(ServerPlayerEntity player) {
+        SpelledAPI.getSpellDataCap(player).ifPresent(cap -> cap.resetUnlocks());
+    }
+
+    public static List<String> getUnlocks(ServerPlayerEntity player) {
+        LazyOptional<ISpellData> cap = SpelledAPI.getSpellDataCap(player);
+        if(cap.isPresent()) {
+            ISpellData data = cap.orElse(null);
+            List<String> unlocks = new ArrayList<>(data.getUnlocked().keySet());
+            unlocks.removeAll(KeywordRegistry.instance().getTypes());
+            return unlocks;
+        }
+        return new ArrayList<>();
     }
 
     public static void unlockKeyword(ServerPlayerEntity player, String keyword) {

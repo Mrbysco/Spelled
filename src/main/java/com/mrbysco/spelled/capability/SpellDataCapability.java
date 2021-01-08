@@ -61,6 +61,11 @@ public class SpellDataCapability implements ISpellData {
         this.castCooldown = cooldown;
     }
 
+    @Override
+    public void resetUnlocks() {
+        this.unlockedKeywords = getDefaultUnlocks();
+    }
+
     private CompoundNBT getDefaultUnlocks() {
         KeywordRegistry registry = KeywordRegistry.instance();
         CompoundNBT tag = new CompoundNBT();

@@ -118,6 +118,10 @@ public class KeywordRegistry {
         return new ArrayList<>(typeList);
     }
 
+    public ArrayList<String> getAdjectives() {
+        return new ArrayList<>(adjectiveList);
+    }
+
     @Nullable
     public IKeyword getKeywordFromName(String keywordName) {
         String name = keywordName.toLowerCase(Locale.ROOT);

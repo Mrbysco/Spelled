@@ -36,7 +36,7 @@ public class SpellCastHandler {
             ServerPlayerEntity player = (ServerPlayerEntity) event.player;
             int cooldown = SpelledAPI.getCooldown(player);
             if(cooldown > 0) {
-                SpelledAPI.setCooldown(player, cooldown--);
+                SpelledAPI.setCooldown(player, cooldown - 1);
                 SpelledAPI.syncCap(player);
             }
         }
@@ -66,8 +66,8 @@ public class SpellCastHandler {
                         int cooldown = -1;
                         for(int i = 0; i < (words.length - 1); i++) {
                             IKeyword keyword = registry.getKeywordFromName(words[i]);
-                            cooldown += keyword.getSlots();
                             if(keyword != null) {
+                                cooldown += keyword.getSlots();
                                 castText.append(keyword.getKeyword()).append(" ");
                                 descriptionComponent.append(keyword.getDescription()).append(new StringTextComponent(" "));
                                 int previous = i - 1;
