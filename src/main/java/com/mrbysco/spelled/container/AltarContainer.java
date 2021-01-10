@@ -45,9 +45,7 @@ public class AltarContainer extends Container {
     public AltarContainer(int id, PlayerInventory playerInventory, IWorldPosCallable worldPosCallable, int currentLevel) {
         super(SpelledRegistry.ALTAR_CONTAINER.get(), id);
         this.worldPosCallable = worldPosCallable;
-        PlayerEntity playerIn = playerInventory.player;
 
-        System.out.println(playerIn);
         this.currentLevel[0] = currentLevel;
         this.trackInt(IntReferenceHolder.create(this.currentLevel, 0));
 

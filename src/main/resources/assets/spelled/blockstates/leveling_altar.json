@@ -1,0 +1,12 @@
+{
+	"variants": {
+		"facing=east": { "model": "spelled:block/leveling_altar", "y": 90},
+		"facing=north": { "model": "spelled:block/leveling_altar"},
+		"facing=west": { "model": "spelled:block/leveling_altar", "y": 270},
+		"facing=south": { "model": "spelled:block/leveling_altar", "y": 180},
+		"facing=east": { "model": "spelled:block/leveling_altar", "y": 90},
+		"facing=north": { "model": "spelled:block/leveling_altar"},
+		"facing=west": { "model": "spelled:block/leveling_altar", "y": 270},
+		"facing=south": { "model": "spelled:block/leveling_altar", "y": 180}
+	}
+}

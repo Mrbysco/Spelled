@@ -4,6 +4,7 @@ import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.container.AltarContainer;
 import com.mrbysco.spelled.tile.LevelingAltarTile;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.block.IBucketPickupHandler;
@@ -34,8 +35,10 @@ import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
@@ -44,24 +47,74 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class LevelingAltarBlock extends ContainerBlock implements IBucketPickupHandler, ILiquidContainer {
     public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    protected static final VoxelShape SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D);
+    protected static final VoxelShape FALLBACK = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 12.0D, 12.0D, 12.0D);
+    protected static final Optional<VoxelShape> SHAPE = Stream.of(
+            Block.makeCuboidShape(8.08182, 0.75, 7.423660000000002, 15.08182, 12.75, 8.423660000000002),
+            Block.makeCuboidShape(13.33182, 12, 7.173660000000002, 15.33182, 13, 8.673660000000002),
+            Block.makeCuboidShape(14.33182, 1.5, 7.173660000000002, 15.33182, 2.5, 8.673660000000002),
+            Block.makeCuboidShape(14.33182, 11, 7.173660000000002, 15.33182, 12, 8.673660000000002),
+            Block.makeCuboidShape(13.33182, 0.5, 7.173660000000002, 15.33182, 1.5, 8.673660000000002),
+            Block.makeCuboidShape(7, 0.5, 7.500000000000002, 9, 13, 8.500000000000002),
+            Block.makeCuboidShape(0.68804, 0.5, 7.273510000000002, 2.68804, 1.5, 8.773510000000002),
+            Block.makeCuboidShape(0.68804, 1.5, 7.273510000000002, 1.68804, 2.5, 8.773510000000002),
+            Block.makeCuboidShape(0.68804, 11, 7.273510000000002, 1.68804, 12, 8.773510000000002),
+            Block.makeCuboidShape(0.68804, 12, 7.273510000000002, 2.68804, 13, 8.773510000000002),
+            Block.makeCuboidShape(0.93804, 0.75, 7.523510000000002, 7.93804, 12.75, 8.523510000000002),
+            Block.makeCuboidShape(7.75, 1.5, 7.250000000000002, 8.25, 12, 7.500000000000002)
+    ).reduce((v1, v2) -> VoxelShapes.combineAndSimplify(v1, v2, IBooleanFunction.OR));
+    protected static final Optional<VoxelShape> SHAPE_2 = Stream.of(
+            Block.makeCuboidShape(7.492089999999999, 0.75, 0.9899700000000013, 8.49209, 12.75, 7.989970000000001),
+            Block.makeCuboidShape(7.242089999999999, 12, 0.7399700000000013, 8.74209, 13, 2.7399700000000013),
+            Block.makeCuboidShape(7.242089999999999, 1.5, 0.7399700000000013, 8.74209, 2.5, 1.7399700000000013),
+            Block.makeCuboidShape(7.242089999999999, 11, 0.7399700000000013, 8.74209, 12, 1.7399700000000013),
+            Block.makeCuboidShape(7.242089999999999, 0.5, 0.7399700000000013, 8.74209, 1.5, 2.7399700000000013),
+            Block.makeCuboidShape(7.568429999999999, 0.5, 7.071790000000002, 8.56843, 13, 9.071790000000002),
+            Block.makeCuboidShape(7.341939999999999, 0.5, 13.383750000000001, 8.84194, 1.5, 15.383750000000001),
+            Block.makeCuboidShape(7.341939999999999, 1.5, 14.383750000000001, 8.84194, 2.5, 15.383750000000001),
+            Block.makeCuboidShape(7.341939999999999, 11, 14.383750000000001, 8.84194, 12, 15.383750000000001),
+            Block.makeCuboidShape(7.341939999999999, 12, 13.383750000000001, 8.84194, 13, 15.383750000000001),
+            Block.makeCuboidShape(7.591939999999999, 0.75, 8.133750000000001, 8.59194, 12.75, 15.133750000000001),
+            Block.makeCuboidShape(7.318429999999999, 1.5, 7.821790000000002, 7.568429999999999, 12, 8.321790000000002)
+    ).reduce((v1, v2) -> VoxelShapes.combineAndSimplify(v1, v2, IBooleanFunction.OR));
 
     public LevelingAltarBlock(Properties properties) {
         super(properties);
         this.setDefaultState(this.stateContainer.getBaseState().with(HORIZONTAL_FACING, Direction.NORTH).with(WATERLOGGED, Boolean.valueOf(false)));
     }
-    public boolean isTransparent(BlockState state) {
-        return true;
+
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.MODEL;
+    }
+
+    public static VoxelShape rotateShape(Direction from, Direction to, VoxelShape shape) {
+        VoxelShape[] buffer = new VoxelShape[]{ shape, VoxelShapes.empty() };
+
+        int times = (to.getHorizontalIndex() - from.getHorizontalIndex() + 4) % 4;
+        for (int i = 0; i < times; i++) {
+            buffer[0].forEachBox((minX, minY, minZ, maxX, maxY, maxZ) -> buffer[1] = VoxelShapes.or(buffer[1], VoxelShapes.create(1-maxZ, minY, minX, 1-minZ, maxY, maxX)));
+            buffer[0] = buffer[1];
+            buffer[1] = VoxelShapes.empty();
+        }
+
+        return buffer[0];
     }
 
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return SHAPE;
+        Direction direction = state.get(HORIZONTAL_FACING);
+        if(SHAPE.isPresent() && SHAPE_2.isPresent()) {
+            return direction.getAxis() == Direction.Axis.X ? SHAPE_2.get() : SHAPE.get();
+        }
+
+        return FALLBACK;
     }
 
     @OnlyIn(Dist.CLIENT)
