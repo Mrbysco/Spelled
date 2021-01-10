@@ -83,11 +83,10 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    mavenCentral()
     maven {
         url = "https://maven.theillusivec4.top/"
     }
-
+    maven { url 'https://maven.blamejared.com' }
     maven {
         name 'JEI maven'
         url = "https://dvs1.progwml6.com/files/maven"
@@ -106,6 +105,9 @@ dependencies {
 
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+
+//    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
+//    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
 
     runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:3083395")
 }

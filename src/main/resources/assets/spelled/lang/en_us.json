@@ -1,6 +1,7 @@
 {
   "block.spelled.leveling_altar": "Leveling Altar",
-  "item.spelled.knowledge_tome": "Tome Of Knowledge",
+  "item.spelled.knowledge_tome": "Tome Of Ancient Knowledge",
+  "item.spelled.tome_of_knowledge.name": "Tome Of Knowledge",
   "itemGroup.spelled": "Spelled",
   "key.spelled.category": "Spelled",
   "key.spelled.use": "Use Spell",
@@ -46,7 +47,7 @@
   "spelled:container.altar": "Leveling Altar",
   "spelled:container.altar.item": "%s %s",
   "spelled:container.altar.item.requirement": "Item requirement: %s %s",
-  "spelled:container.altar.level.many": "%s Enchantment Levels",
-  "spelled:container.altar.level.one": "1 Enchantment Level",
+  "spelled:container.altar.level.many": "%s Experience Levels",
+  "spelled:container.altar.level.one": "1 Experience Level",
   "spelled:container.altar.level.requirement": "Level requirement: %s"
 }

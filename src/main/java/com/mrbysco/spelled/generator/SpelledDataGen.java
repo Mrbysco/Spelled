@@ -90,8 +90,8 @@ public class SpelledDataGen {
             add("key.spelled.use", "Use Spell");
 
             add("spelled:container.altar", "Leveling Altar");
-            add("spelled:container.altar.level.one", "1 Enchantment Level");
-            add("spelled:container.altar.level.many", "%s Enchantment Levels");
+            add("spelled:container.altar.level.one", "1 Experience Level");
+            add("spelled:container.altar.level.many", "%s Experience Levels");
             add("spelled:container.altar.level.requirement", "Level requirement: %s");
             add("spelled:container.altar.item.requirement", "Item requirement: %s %s");
             add("spelled:container.altar.item", "%s %s");
@@ -100,7 +100,7 @@ public class SpelledDataGen {
             add("spelled.level_up.fail_xp", "You lack the required xp to level up!");
 
             addBlock(SpelledRegistry.LEVELING_ALTAR, "Leveling Altar");
-            addItem(SpelledRegistry.KNOWLEDGE_TOME, "Tome Of Knowledge");
+            addItem(SpelledRegistry.KNOWLEDGE_TOME, "Tome Of Ancient Knowledge");
 
             add("spelled.tome.description", "Contains knowledge about \"%s\"");
             add("spelled.tome.fail", "You already know the knowledge of the tome");
