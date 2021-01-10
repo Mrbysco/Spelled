@@ -2,7 +2,7 @@ package com.mrbysco.spelled.util;
 
 import com.mrbysco.spelled.config.ConfigCache;
 import com.mrbysco.spelled.config.ConfigCache.ItemCost;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -21,11 +21,11 @@ public class LevelHelper {
         return ConfigCache.individualLevels ? individualXPCost : xpCost;
     }
 
-    public void levelUpFailItems(ServerPlayerEntity player) {
+    public static void levelUpFailItems(PlayerEntity player) {
         player.sendStatusMessage(new TranslationTextComponent("spelled.level_up.fail_item").mergeStyle(TextFormatting.GOLD), true);
     }
 
-    public void levelUpFailXP(ServerPlayerEntity player) {
+    public static void levelUpFailXP(PlayerEntity player) {
         player.sendStatusMessage(new TranslationTextComponent("spelled.level_up.fail_xp").mergeStyle(TextFormatting.GOLD), true);
     }
 }

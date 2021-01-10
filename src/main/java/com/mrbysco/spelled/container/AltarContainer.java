@@ -96,12 +96,16 @@ public class AltarContainer extends Container {
         final int XPCost = this.levelCosts[level];
 
         if(level >= ConfigCache.maxLevel || (!hasXP(playerIn, level)  && !playerIn.abilities.isCreativeMode)) {
+            if(!hasXP(playerIn, level)) {
+                LevelHelper.levelUpFailXP(playerIn);
+            }
             return false;
         } else {
             if(ConfigCache.requireItems) {
                 ItemStack stack = this.tableInventory.getStackInSlot(0);
                 ItemCost itemCost = LevelHelper.getItemCost(newLevel);
                 if(stack.isEmpty() || stack.getItem() != itemCost.getItem() && stack.getCount() < itemCost.getCost()) {
+                    LevelHelper.levelUpFailItems(playerIn);
                     return false;
                 } else {
                     this.worldPosCallable.consume((p_217003_6_, p_217003_7_) -> {
