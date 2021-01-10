@@ -8,6 +8,10 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class LevelHelper {
 
+    public static int getAllowedWordCount(int level) {
+        return level > 0 ? level + 1 : 0;
+    }
+
     public static ItemCost getItemCost(int level) {
         return ConfigCache.individualItems ?
                 ConfigCache.individualLevelItemCosts.getOrDefault(level, new ItemCost(ConfigCache.requiredItem, Math.min((10 + (2 * level)), 64))) :

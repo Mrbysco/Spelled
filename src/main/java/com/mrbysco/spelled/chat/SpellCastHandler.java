@@ -9,6 +9,7 @@ import com.mrbysco.spelled.registry.SpelledRegistry;
 import com.mrbysco.spelled.registry.keyword.IKeyword;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword.Type;
+import com.mrbysco.spelled.util.LevelHelper;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -47,7 +48,8 @@ public class SpellCastHandler {
     public void onChatEvent(ServerChatEvent event) {
         ServerPlayerEntity player = event.getPlayer();
         final String regExp = "/^[a-zA-Z\\s]*$/";
-        if(event.getMessage().matches(regExp)) {
+        String actualMessage = event.getMessage();
+        if(actualMessage.isEmpty() && actualMessage.matches(regExp)) {
             SpelledAPI.getSpellDataCap(player).ifPresent(data -> {
                 if(data.getLevel() > 0) {
                     KeywordRegistry registry = KeywordRegistry.instance();
@@ -108,16 +110,19 @@ public class SpellCastHandler {
         ISpellData data = SpelledAPI.getSpellDataCap(player).orElse(new SpellDataCapability());
         final KeywordRegistry registry = KeywordRegistry.instance();
 
+        int currentLevel = data.getLevel();
+
+        if(currentLevel == 0)
+            return false;
+
         //Check if every word matches a keyword
         for (String word : words) {
-            if (!registry.containsKey(word)) {
-                //Unknown word. Probably not a spell
+            //Unknown word. Probably not a spell
+            if (!registry.containsKey(word))
                 return false;
-            }
-            if(!data.knowsKeyword(word)) {
-                //Doesn't know the word
+            //Doesn't know the word
+            if(!data.knowsKeyword(word))
                 return false;
-            }
         }
 
         //If creative just return true if the chat message was a valid spell
@@ -134,7 +139,12 @@ public class SpellCastHandler {
             if(keyword != null && keyword.getLevel() > maxLevelWord)
                 maxLevelWord = keyword.getLevel();
         }
-        return maxLevelWord <= data.getLevel();
+
+        if(maxLevelWord > currentLevel)
+            return false;
+
+        int maxWordCount = LevelHelper.getAllowedWordCount(currentLevel);
+        return maxWordCount > 0 && maxWordCount <= words.length;
     }
 
     public SpellEntity constructEntity(ServerPlayerEntity player, @Nonnull Type type) {
