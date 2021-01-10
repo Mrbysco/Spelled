@@ -1,8 +1,8 @@
 package com.mrbysco.spelled.chat;
 
 import com.mrbysco.spelled.api.SpelledAPI;
-import com.mrbysco.spelled.capability.ISpellData;
-import com.mrbysco.spelled.capability.SpellDataCapability;
+import com.mrbysco.spelled.api.capability.ISpellData;
+import com.mrbysco.spelled.api.capability.SpellDataCapability;
 import com.mrbysco.spelled.entity.SpellEntity;
 import com.mrbysco.spelled.registry.KeywordRegistry;
 import com.mrbysco.spelled.registry.SpelledRegistry;

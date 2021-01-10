@@ -1,30 +1,79 @@
 package com.mrbysco.spelled.generator;
 
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.registry.SpelledRegistry;
+import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.LootTableProvider;
+import net.minecraft.data.loot.BlockLootTables;
+import net.minecraft.loot.LootParameterSet;
+import net.minecraft.loot.LootParameterSets;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.LootTable.Builder;
+import net.minecraft.loot.LootTableManager;
+import net.minecraft.loot.ValidationTracker;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SpelledDataGen {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
-        /*ExistingFileHelper helper = event.getExistingFileHelper();
+        ExistingFileHelper helper = event.getExistingFileHelper();
 
         if (event.includeServer()) {
             generator.addProvider(new Loots(generator));
         }
-        */
         if (event.includeClient()) {
             generator.addProvider(new Language(generator));
             /*
             generator.addProvider(new BlockStates(generator, helper));
             generator.addProvider(new ItemModels(generator, helper));
             */
+        }
+    }
+
+    private static class Loots extends LootTableProvider {
+        public Loots(DataGenerator gen) {
+            super(gen);
+        }
+
+        @Override
+        protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, Builder>>>, LootParameterSet>> getTables() {
+            return ImmutableList.of(
+                    Pair.of(Blocks::new, LootParameterSets.BLOCK)
+            );
+        }
+
+        @Override
+        protected void validate(Map<ResourceLocation, LootTable> map, ValidationTracker validationtracker) {
+            map.forEach((name, table) -> LootTableManager.validateLootTable(validationtracker, name, table));
+        }
+
+        private class Blocks extends BlockLootTables {
+            @Override
+            protected void addTables() {
+                this.registerDropSelfLootTable(SpelledRegistry.LEVELING_ALTAR.get());
+            }
+
+            @Override
+            protected Iterable<Block> getKnownBlocks() {
+                return (Iterable<Block>)SpelledRegistry.BLOCKS.getEntries().stream().map(RegistryObject::get)::iterator;
+            }
         }
     }
 
@@ -40,9 +89,17 @@ public class SpelledDataGen {
             add("key.spelled.category", "Spelled");
             add("key.spelled.use", "Use Spell");
 
+            add("spelled:container.altar", "Leveling Altar");
+            add("spelled:container.altar.level.one", "1 Enchantment Level");
+            add("spelled:container.altar.level.many", "%s Enchantment Levels");
+            add("spelled:container.altar.level.requirement", "Level requirement: %s");
+            add("spelled:container.altar.item.requirement", "Item requirement: %s %s");
+            add("spelled:container.altar.item", "%s %s");
+
             add("spelled.level_up.fail_item", "You lack the required items to level up!");
             add("spelled.level_up.fail_xp", "You lack the required xp to level up!");
 
+            addBlock(SpelledRegistry.LEVELING_ALTAR, "Leveling Altar");
             addItem(SpelledRegistry.KNOWLEDGE_TOME, "Tome Of Knowledge");
 
             add("spelled.tome.description", "Contains knowledge about \"%s\"");

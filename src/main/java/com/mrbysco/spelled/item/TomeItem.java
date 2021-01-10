@@ -2,7 +2,7 @@ package com.mrbysco.spelled.item;
 
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.api.SpelledAPI;
-import com.mrbysco.spelled.capability.ISpellData;
+import com.mrbysco.spelled.api.capability.ISpellData;
 import com.mrbysco.spelled.config.ConfigCache;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;

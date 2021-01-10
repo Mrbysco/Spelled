@@ -1,19 +1,17 @@
 package com.mrbysco.spelled;
 
-import com.mrbysco.spelled.capability.CapabilityHandler;
-import com.mrbysco.spelled.capability.ISpellData;
-import com.mrbysco.spelled.capability.SpellDataCapability;
-import com.mrbysco.spelled.capability.SpellDataStorage;
+import com.mrbysco.spelled.api.capability.ISpellData;
+import com.mrbysco.spelled.api.capability.SpellDataCapability;
+import com.mrbysco.spelled.api.capability.SpellDataStorage;
 import com.mrbysco.spelled.chat.SpellCastHandler;
 import com.mrbysco.spelled.client.ClientHandler;
 import com.mrbysco.spelled.commands.SpelledCommands;
 import com.mrbysco.spelled.config.SpelledConfig;
+import com.mrbysco.spelled.handler.CapabilityHandler;
 import com.mrbysco.spelled.packets.PacketHandler;
 import com.mrbysco.spelled.registry.KeyboardSync;
 import com.mrbysco.spelled.registry.ReloadManager;
 import com.mrbysco.spelled.registry.SpelledRegistry;
-import com.mrbysco.spelled.util.SpelledSerializer;
-import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -50,6 +48,8 @@ public class Spelled {
         eventBus.register(SpelledConfig.class);
 
         SpelledRegistry.BLOCKS.register(eventBus);
+        SpelledRegistry.TILES.register(eventBus);
+        SpelledRegistry.CONTAINERS.register(eventBus);
         SpelledRegistry.ITEMS.register(eventBus);
         SpelledRegistry.ENTITIES.register(eventBus);
 
@@ -72,8 +72,6 @@ public class Spelled {
         SpelledRegistry.entityAttributes();
 
         CapabilityManager.INSTANCE.register(ISpellData.class, new SpellDataStorage(), SpellDataCapability::new);
-
-        DataSerializers.registerSerializer(SpelledSerializer.OPTIONAL_GAME_PROFILE);
     }
 
     public void onCommandRegister(RegisterCommandsEvent event) {

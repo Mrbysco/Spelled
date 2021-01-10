@@ -136,6 +136,10 @@ public class SpelledConfig {
     @SubscribeEvent
     public static void onFileChange(final ModConfig.Reloading configEvent) {
         Spelled.LOGGER.debug("Spelled's config just got changed on the file system!");
+    }
+
+    @SubscribeEvent
+    public static void onReload(final ModConfig.ModConfigEvent configEvent) {
         ConfigCache.refreshCache();
     }
 }

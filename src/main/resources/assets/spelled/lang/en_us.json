@@ -1,4 +1,5 @@
 {
+  "block.spelled.leveling_altar": "Leveling Altar",
   "item.spelled.knowledge_tome": "Tome Of Knowledge",
   "itemGroup.spelled": "Spelled",
   "key.spelled.category": "Spelled",
@@ -41,5 +42,11 @@
   "spelled.spell.cast": "* %s has cast \"%s\"",
   "spelled.tome.description": "Contains knowledge about \"%s\"",
   "spelled.tome.fail": "You already know the knowledge of the tome",
-  "spelled.tome.success": "You've obtained the knowledge the tome"
+  "spelled.tome.success": "You've obtained the knowledge the tome",
+  "spelled:container.altar": "Leveling Altar",
+  "spelled:container.altar.item": "%s %s",
+  "spelled:container.altar.item.requirement": "Item requirement: %s %s",
+  "spelled:container.altar.level.many": "%s Enchantment Levels",
+  "spelled:container.altar.level.one": "1 Enchantment Level",
+  "spelled:container.altar.level.requirement": "Level requirement: %s"
 }

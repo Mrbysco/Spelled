@@ -1,4 +1,4 @@
-package com.mrbysco.spelled.capability;
+package com.mrbysco.spelled.api.capability;
 
 import net.minecraft.nbt.CompoundNBT;
 

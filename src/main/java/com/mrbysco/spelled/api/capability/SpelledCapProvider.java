@@ -1,4 +1,4 @@
-package com.mrbysco.spelled.capability;
+package com.mrbysco.spelled.api.capability;
 
 import com.mrbysco.spelled.api.SpelledAPI;
 import net.minecraft.nbt.INBT;

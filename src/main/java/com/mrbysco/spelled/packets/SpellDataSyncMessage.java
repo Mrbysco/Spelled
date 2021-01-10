@@ -1,7 +1,7 @@
 package com.mrbysco.spelled.packets;
 
 import com.mrbysco.spelled.api.SpelledAPI;
-import com.mrbysco.spelled.capability.ISpellData;
+import com.mrbysco.spelled.api.capability.ISpellData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
