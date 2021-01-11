@@ -1,0 +1,28 @@
+{
+  "parent": "spelled:adjective_nix",
+  "display": {
+    "icon": {
+      "item": "spelled:knowledge_tome"
+    },
+    "title": {
+      "translate": "advancement.spelled.frigus"
+    },
+    "description": {
+      "translate": "advancement.spelled.frigus.desc"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ]
+}

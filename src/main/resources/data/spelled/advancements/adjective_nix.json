@@ -1,0 +1,28 @@
+{
+  "parent": "spelled:adjective_liquidus",
+  "display": {
+    "icon": {
+      "item": "spelled:knowledge_tome"
+    },
+    "title": {
+      "translate": "advancement.spelled.nix"
+    },
+    "description": {
+      "translate": "advancement.spelled.nix.desc"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ]
+}

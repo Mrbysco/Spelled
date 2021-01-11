@@ -110,8 +110,11 @@ public class KeywordRegistry {
     }
 
     public String getRandomAdjective() {
-        ArrayList<String> list = new ArrayList<>(adjectiveList);
-        return list.get(random.nextInt(list.size()));
+        if(!adjectiveList.isEmpty()) {
+            ArrayList<String> list = new ArrayList<>(adjectiveList);
+            return list.get(random.nextInt(list.size()));
+        }
+        return "";
     }
 
     public ArrayList<String> getTypes() {

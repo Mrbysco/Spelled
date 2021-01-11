@@ -4,6 +4,7 @@ import com.mrbysco.spelled.Spelled;
 import com.mrbysco.spelled.api.capability.ISpellData;
 import com.mrbysco.spelled.packets.SpellDataSyncMessage;
 import com.mrbysco.spelled.registry.KeywordRegistry;
+import com.mrbysco.spelled.util.AdvancementHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.capabilities.Capability;
@@ -50,6 +51,9 @@ public class SpelledAPI {
 
     public static void resetUnlocks(PlayerEntity player) {
         SpelledAPI.getSpellDataCap(player).ifPresent(cap -> cap.resetUnlocks());
+        if(!player.world.isRemote) {
+            AdvancementHelper.removeAllAdjectiveAdvancements((ServerPlayerEntity) player);
+        }
     }
 
     public static List<String> getUnlocks(PlayerEntity player) {
@@ -65,10 +69,16 @@ public class SpelledAPI {
 
     public static void unlockKeyword(PlayerEntity player, String keyword) {
         SpelledAPI.getSpellDataCap(player).ifPresent(cap -> cap.unlockKeyword(keyword));
+        if(!player.world.isRemote) {
+            AdvancementHelper.unlockAdjectiveAdvancement((ServerPlayerEntity) player, keyword);
+        }
     }
 
     public static void lockKeyword(PlayerEntity player, String keyword) {
         SpelledAPI.getSpellDataCap(player).ifPresent(cap -> cap.lockKeyword(keyword));
+        if(!player.world.isRemote) {
+            AdvancementHelper.lockAdjectiveAdvancement((ServerPlayerEntity) player, keyword);
+        }
     }
 
     public static int getCooldown(PlayerEntity player) {

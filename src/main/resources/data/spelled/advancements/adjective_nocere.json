@@ -1,0 +1,28 @@
+{
+  "parent": "spelled:adjective_sanitatem",
+  "display": {
+    "icon": {
+      "item": "spelled:knowledge_tome"
+    },
+    "title": {
+      "translate": "advancement.spelled.nocere"
+    },
+    "description": {
+      "translate": "advancement.spelled.nocere.desc"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ]
+}

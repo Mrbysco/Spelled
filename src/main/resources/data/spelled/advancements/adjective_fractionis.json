@@ -1,0 +1,28 @@
+{
+  "parent": "spelled:adjective_praesidium",
+  "display": {
+    "icon": {
+      "item": "spelled:knowledge_tome"
+    },
+    "title": {
+      "translate": "advancement.spelled.fractionis"
+    },
+    "description": {
+      "translate": "advancement.spelled.fractionis.desc"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ]
+}

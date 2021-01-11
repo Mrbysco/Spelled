@@ -29,7 +29,11 @@ public class CapabilityHandler {
             ItemStack stack = event.getObject();
             CompoundNBT tag = stack.hasTag() && stack.getTag() != null ? stack.getTag() : new CompoundNBT();
             if(!tag.contains(Reference.tomeUnlock)) {
-                tag.putString(Reference.tomeUnlock, KeywordRegistry.instance().getRandomAdjective());
+                if(KeywordRegistry.instance().getAdjectives().isEmpty()) {
+                    KeywordRegistry.instance().initializeKeywords();
+                }
+                String unlock = KeywordRegistry.instance().getRandomAdjective();
+                tag.putString(Reference.tomeUnlock, unlock);
                 stack.setTag(tag);
             }
         }

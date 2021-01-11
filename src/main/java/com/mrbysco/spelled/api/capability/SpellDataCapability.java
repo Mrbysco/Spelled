@@ -48,7 +48,10 @@ public class SpellDataCapability implements ISpellData {
 
     @Override
     public void lockKeyword(String keyword) {
-        this.unlockedKeywords.remove(keyword.toLowerCase(Locale.ROOT));
+        KeywordRegistry registry = KeywordRegistry.instance();
+        if(!registry.getTypes().contains(keyword)) {
+            this.unlockedKeywords.remove(keyword.toLowerCase(Locale.ROOT));
+        }
     }
 
     @Override
