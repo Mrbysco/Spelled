@@ -1,0 +1,13 @@
+{
+  "name": "info.spelled.book.size.magnum.name",
+  "category": "size",
+  "icon": "spelled:ancient_knowledge_tome",
+  "pages": [
+    {
+      "type": "text",
+      "text": "info.spelled.book.size.magnum.text"
+    }
+  ],
+  "advancement": "spelled:adjective_magnum",
+  "secret": true
+}

@@ -2,7 +2,7 @@
   "parent": "spelled:adjective_flavus",
   "display": {
     "icon": {
-      "item": "spelled:knowledge_tome"
+      "item": "spelled:ancient_knowledge_tome"
     },
     "title": {
       "translate": "advancement.spelled.albus"

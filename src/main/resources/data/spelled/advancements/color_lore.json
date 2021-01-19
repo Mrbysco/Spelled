@@ -1,0 +1,28 @@
+{
+  "parent": "spelled:root",
+  "display": {
+    "icon": {
+      "item": "spelled:ancient_knowledge_tome"
+    },
+    "title": {
+      "translate": "advancement.spelled.color_lore"
+    },
+    "description": {
+      "translate": "advancement.spelled.color_lore.desc"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ]
+}

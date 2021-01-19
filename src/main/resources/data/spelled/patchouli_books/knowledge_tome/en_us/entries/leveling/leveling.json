@@ -1,0 +1,16 @@
+{
+  "name": "info.spelled.book.leveling.entry.name",
+  "category": "leveling",
+  "icon": "spelled:leveling_altar",
+  "pages": [
+    {
+      "type": "text",
+      "text": "info.spelled.book.leveling_info.text"
+    },
+    {
+      "type": "crafting",
+      "recipe": "spelled:leveling_altar",
+      "text": "info.spelled.book.leveling_recipe.text"
+    }
+  ]
+}

@@ -19,11 +19,16 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class SpelledCommands {
     public static void initializeCommands (CommandDispatcher<CommandSource> dispatcher) {
         final LiteralArgumentBuilder<CommandSource> root = Commands.literal("spelled");
+        ArrayList<String> adjectives = KeywordRegistry.instance().getAdjectives();
+        adjectives.add("all");
+
         root.requires((source) -> source.hasPermissionLevel(2))
                 .then(Commands.literal("level")
                         .then(Commands.argument("player", EntityArgument.players())
@@ -34,15 +39,21 @@ public class SpelledCommands {
                         .then(Commands.argument("player", EntityArgument.players())
                                 .then(Commands.literal("unlock")
                                         .then(Commands.argument("word", StringArgumentType.string())
-                                                .suggests((cs, builder) -> ISuggestionProvider.suggest(KeywordRegistry.instance().getAdjectives(), builder))
+                                                .suggests((cs, builder) -> ISuggestionProvider.suggest(SpelledCommands.getAdjectivesPlusAll(), builder))
                                                         .executes(SpelledCommands::unlockWord)))
                                 .then(Commands.literal("lock")
                                         .then(Commands.argument("word", StringArgumentType.string())
-                                                .suggests((cs, builder) -> ISuggestionProvider.suggest(KeywordRegistry.instance().getAdjectives(), builder))
+                                                .suggests((cs, builder) -> ISuggestionProvider.suggest(SpelledCommands.getAdjectivesPlusAll(), builder))
                                                 .executes(SpelledCommands::lockWord)))
                                 .then(Commands.literal("reset").executes(SpelledCommands::resetWords))));
 
                                         dispatcher.register(root);
+    }
+
+    protected static ArrayList<String> getAdjectivesPlusAll() {
+        ArrayList<String> adjectives = new ArrayList<>(KeywordRegistry.instance().getAdjectives());
+        adjectives.add("all");
+        return adjectives;
     }
 
     private static int getLevel(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
@@ -80,13 +91,25 @@ public class SpelledCommands {
 
     private static int unlockWord(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
         String word = StringArgumentType.getString(ctx, "word").toLowerCase(Locale.ROOT);
-        if(!word.isEmpty() && KeywordRegistry.instance().containsKey(word)) {
-            for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
-                SpelledAPI.unlockKeyword(player, word);
+        if(!word.isEmpty()) {
+            if(word.equals("all")) {
+                for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
+                    List<String> adjectives = KeywordRegistry.instance().getAdjectives();
+                    for(String adjective : adjectives) {
+                        SpelledAPI.unlockKeyword(player, adjective);
+                    }
 
-                ITextComponent wordComponent = new StringTextComponent(word).mergeStyle(TextFormatting.GOLD);
-                ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.unlock.message", wordComponent);
-                ctx.getSource().sendFeedback(text, true);
+                    ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.unlock.all", player.getDisplayName());
+                    ctx.getSource().sendFeedback(text, true);
+                }
+            } else if(KeywordRegistry.instance().containsKey(word)) {
+                for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
+                    SpelledAPI.unlockKeyword(player, word);
+
+                    ITextComponent wordComponent = new StringTextComponent(word).mergeStyle(TextFormatting.GOLD);
+                    ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.unlock.message", wordComponent, player.getDisplayName());
+                    ctx.getSource().sendFeedback(text, true);
+                }
             }
         } else {
             ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.unlock.invalid", word)
@@ -99,13 +122,22 @@ public class SpelledCommands {
 
     private static int lockWord(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
         String word = StringArgumentType.getString(ctx, "word").toLowerCase(Locale.ROOT);
-        if(!word.isEmpty() && KeywordRegistry.instance().containsKey(word)) {
-            for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
-                SpelledAPI.lockKeyword(player, word);
+        if(!word.isEmpty()) {
+            if(word.equals("all")) {
+                for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
+                    SpelledAPI.resetUnlocks(player);
 
-                ITextComponent wordComponent = new StringTextComponent(word).mergeStyle(TextFormatting.GOLD);
-                ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.lock.message", wordComponent);
-                ctx.getSource().sendFeedback(text, true);
+                    ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.reset.message", player.getDisplayName());
+                    ctx.getSource().sendFeedback(text, true);
+                }
+            } else if(KeywordRegistry.instance().containsKey(word)) {
+                for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
+                    SpelledAPI.lockKeyword(player, word);
+
+                    ITextComponent wordComponent = new StringTextComponent(word).mergeStyle(TextFormatting.GOLD);
+                    ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.lock.message", wordComponent, player.getDisplayName());
+                    ctx.getSource().sendFeedback(text, true);
+                }
             }
         } else {
             ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.lock.invalid", word)

@@ -1,0 +1,13 @@
+{
+  "name": "info.spelled.book.colors.rubrum.name",
+  "category": "colors",
+  "icon": "spelled:ancient_knowledge_tome",
+  "pages": [
+    {
+      "type": "text",
+      "text": "info.spelled.book.colors.rubrum.text"
+    }
+  ],
+  "advancement": "spelled:adjective_rubrum",
+  "secret": true
+}

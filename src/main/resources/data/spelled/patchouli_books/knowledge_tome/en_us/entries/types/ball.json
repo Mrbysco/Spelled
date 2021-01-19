@@ -1,0 +1,11 @@
+{
+  "name": "info.spelled.book.types.ball.name",
+  "category": "types",
+  "icon": "spelled:ancient_knowledge_tome",
+  "pages": [
+    {
+      "type": "text",
+      "text": "info.spelled.book.types.ball.text"
+    }
+  ]
+}

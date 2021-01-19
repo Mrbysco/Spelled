@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "spelled:knowledge_tome"
+      "item": "spelled:ancient_knowledge_tome"
     },
     "title": {
       "translate": "advancement.spelled.root"
@@ -14,6 +14,11 @@
     "announce_to_chat": false,
     "hidden": false,
     "background": "minecraft:textures/block/bookshelf.png"
+  },
+  "rewards": {
+    "loot": [
+      "spelled:advancements/manual"
+    ]
   },
   "criteria": {
     "air": {

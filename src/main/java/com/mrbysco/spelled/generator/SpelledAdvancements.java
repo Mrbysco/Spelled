@@ -2,8 +2,11 @@ package com.mrbysco.spelled.generator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementRewards;
+import net.minecraft.advancements.AdvancementRewards.Builder;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.criterion.EnterBlockTrigger;
 import net.minecraft.advancements.criterion.ImpossibleTrigger;
@@ -26,6 +29,7 @@ public class SpelledAdvancements extends AdvancementProvider {
     public Advancement root;
 
     //Colors
+    public Advancement color_lore;
     public Advancement ater;
     public Advancement aureus;
     public Advancement caeruleus;
@@ -84,9 +88,19 @@ public class SpelledAdvancements extends AdvancementProvider {
                         new TranslationTextComponent("advancement.spelled.root.desc"),
                         new ResourceLocation("minecraft:textures/block/bookshelf.png"), FrameType.TASK, true, false, false)
                 .withCriterion("air", EnterBlockTrigger.Instance.forBlock(Blocks.AIR))
+                .withRewards(withLoot(new ResourceLocation(Reference.MOD_ID, "advancements/manual")))
                 .register(consumer, "spelled:root");
 
-        ater = generateAdjectiveAdvancement("ater", root, consumer);
+        color_lore = Advancement.Builder.builder()
+                .withDisplay(SpelledRegistry.KNOWLEDGE_TOME.get(),
+                        new TranslationTextComponent("advancement.spelled.color_lore"),
+                        new TranslationTextComponent("advancement.spelled.color_lore.desc"),
+                        null, FrameType.TASK, false, false, false)
+                .withParent(root)
+                .withCriterion("impossible", new ImpossibleTrigger.Instance())
+                .register(consumer, "spelled:color_lore");
+
+        ater = generateAdjectiveAdvancement("ater", color_lore, consumer);
         aureus = generateAdjectiveAdvancement("aureus", ater, consumer);
         caeruleus = generateAdjectiveAdvancement("caeruleus", aureus, consumer);
         viridis = generateAdjectiveAdvancement("viridis", caeruleus, consumer);
@@ -111,6 +125,12 @@ public class SpelledAdvancements extends AdvancementProvider {
         fractionis = generateAdjectiveAdvancement("fractionis", praesidium, consumer);
         propellentibus = generateAdjectiveAdvancement("propellentibus", fractionis, consumer);
         ignis = generateAdjectiveAdvancement("ignis", propellentibus, consumer);
+    }
+
+    private AdvancementRewards.Builder withLoot(ResourceLocation loot) {
+        Builder builder = (new AdvancementRewards.Builder());
+        builder.loot.add(loot);
+        return builder;
     }
 
     private Advancement generateAdjectiveAdvancement(String adjective, Advancement parent, Consumer<Advancement> consumer) {

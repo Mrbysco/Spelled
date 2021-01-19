@@ -13,10 +13,19 @@ public class AdvancementHelper {
         for(String adjective : registry.getAdjectives()) {
             lockAdjectiveAdvancement(player, adjective);
         }
+        lockAdvancement(player, "color_lore");
     }
 
     public static void unlockAdjectiveAdvancement(ServerPlayerEntity player, String adjective) {
-        Advancement advancementIn = player.getServer().getAdvancementManager().getAdvancement(new ResourceLocation("spelled:adjective_" + adjective));
+        unlockAdvancement(player, "adjective_" + adjective);
+
+        if(KeywordRegistry.instance().isColor(adjective) && hasAllColors(player)) {
+            unlockAdvancement(player, "color_lore");
+        }
+    }
+
+    public static void unlockAdvancement(ServerPlayerEntity player, String name) {
+        Advancement advancementIn = player.getServer().getAdvancementManager().getAdvancement(new ResourceLocation("spelled:" + name));
         if(advancementIn != null) {
             AdvancementProgress advancementprogress = player.getAdvancements().getProgress(advancementIn);
             if (!advancementprogress.isDone()) {
@@ -28,7 +37,11 @@ public class AdvancementHelper {
     }
 
     public static void lockAdjectiveAdvancement(ServerPlayerEntity player, String adjective) {
-        Advancement advancementIn = player.getServer().getAdvancementManager().getAdvancement(new ResourceLocation("spelled:adjective_" + adjective));
+        lockAdvancement(player, "adjective_" + adjective);
+    }
+
+    public static void lockAdvancement(ServerPlayerEntity player, String name) {
+        Advancement advancementIn = player.getServer().getAdvancementManager().getAdvancement(new ResourceLocation("spelled:" + name));
         if(advancementIn != null) {
             AdvancementProgress advancementprogress = player.getAdvancements().getProgress(advancementIn);
             if (advancementprogress.hasProgress()) {
@@ -37,5 +50,19 @@ public class AdvancementHelper {
                 }
             }
         }
+    }
+
+    public static boolean hasAllColors(ServerPlayerEntity player) {
+        KeywordRegistry registry = KeywordRegistry.instance();
+        boolean flag = true;
+        for(String color : registry.getColors()) {
+            Advancement advancementIn = player.getServer().getAdvancementManager().getAdvancement(new ResourceLocation("spelled:adjective_" + color));
+            AdvancementProgress advancementprogress = player.getAdvancements().getProgress(advancementIn);
+            if (!advancementprogress.isDone()) {
+                flag = false;
+                break;
+            }
+        }
+        return flag;
     }
 }

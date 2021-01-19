@@ -1,0 +1,17 @@
+{
+  "name": "info.spelled.book.descriptive.frigus.name",
+  "category": "descriptions",
+  "icon": "spelled:ancient_knowledge_tome",
+  "pages": [
+    {
+      "type": "text",
+      "text": "info.spelled.book.descriptive.frigus.text"
+    },
+    {
+      "type": "text",
+      "text": "info.spelled.book.descriptive.frigus.text2"
+    }
+  ],
+  "advancement": "spelled:adjective_frigus",
+  "secret": true
+}

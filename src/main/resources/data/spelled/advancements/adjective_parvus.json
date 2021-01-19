@@ -2,7 +2,7 @@
   "parent": "spelled:root",
   "display": {
     "icon": {
-      "item": "spelled:knowledge_tome"
+      "item": "spelled:ancient_knowledge_tome"
     },
     "title": {
       "translate": "advancement.spelled.parvus"

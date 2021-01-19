@@ -1,0 +1,17 @@
+{
+  "name": "info.spelled.book.colors.lore.name",
+  "category": "colors",
+  "icon": "spelled:ancient_knowledge_tome",
+  "pages": [
+    {
+      "type": "text",
+      "text": "info.spelled.book.colors.lore.text"
+    },
+    {
+      "type": "text",
+      "text": "info.spelled.book.colors.lore.text2"
+    }
+  ],
+  "advancement": "spelled:color_lore",
+  "secret": true
+}

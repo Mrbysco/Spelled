@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[34,)"
+loaderVersion="[35,)"
 issueTrackerURL="https://github.com/Mrbysco/Spelled"
 license="MIT"
 
@@ -12,3 +12,10 @@ authors="Mrbysco, Kara2810"
 description='''
 It's spelled "Yu Mo Gui Gwai Fai Di Zao"
 '''
+
+[[dependencies.spelled]]
+modId="patchouli"
+mandatory=true
+versionRange="[1.16.4-48,)"
+ordering="NONE"
+side="BOTH"

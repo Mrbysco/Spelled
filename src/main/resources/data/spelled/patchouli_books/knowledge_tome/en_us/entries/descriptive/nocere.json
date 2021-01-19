@@ -1,0 +1,17 @@
+{
+  "name": "info.spelled.book.descriptive.nocere.name",
+  "category": "descriptions",
+  "icon": "spelled:ancient_knowledge_tome",
+  "pages": [
+    {
+      "type": "text",
+      "text": "info.spelled.book.descriptive.nocere.text"
+    },
+    {
+      "type": "text",
+      "text": "info.spelled.book.descriptive.nocere.text2"
+    }
+  ],
+  "advancement": "spelled:adjective_nocere",
+  "secret": true
+}

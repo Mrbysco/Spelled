@@ -1,0 +1,17 @@
+{
+  "name": "info.spelled.book.descriptive.ignis.name",
+  "category": "descriptions",
+  "icon": "spelled:ancient_knowledge_tome",
+  "pages": [
+    {
+      "type": "text",
+      "text": "info.spelled.book.descriptive.ignis.text"
+    },
+    {
+      "type": "text",
+      "text": "info.spelled.book.descriptive.ignis.text2"
+    }
+  ],
+  "advancement": "spelled:adjective_ignis",
+  "secret": true
+}

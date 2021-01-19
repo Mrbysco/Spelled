@@ -21,6 +21,7 @@ import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -123,6 +124,25 @@ public class KeywordRegistry {
 
     public ArrayList<String> getAdjectives() {
         return new ArrayList<>(adjectiveList);
+    }
+
+    public List<String> getColors() {
+        final String[] colors = new String[] {
+                "ater",
+                "aureus",
+                "caeruleus",
+                "viridis",
+                "aqua",
+                "rubrum",
+                "roseus",
+                "flavus",
+                "albus"
+        };
+        return Arrays.asList(colors);
+    }
+
+    public boolean isColor(String adjective) {
+        return getColors().contains(adjective);
     }
 
     @Nullable

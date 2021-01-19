@@ -1,0 +1,13 @@
+{
+  "name": "info.spelled.book.size.immanis.name",
+  "category": "size",
+  "icon": "spelled:ancient_knowledge_tome",
+  "pages": [
+    {
+      "type": "text",
+      "text": "info.spelled.book.size.immanis.text"
+    }
+  ],
+  "advancement": "spelled:adjective_immanis",
+  "secret": true
+}

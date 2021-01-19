@@ -1,0 +1,13 @@
+{
+  "name": "info.spelled.book.size.grandis.name",
+  "category": "size",
+  "icon": "spelled:ancient_knowledge_tome",
+  "pages": [
+    {
+      "type": "text",
+      "text": "info.spelled.book.size.grandis.text"
+    }
+  ],
+  "advancement": "spelled:adjective_grandis",
+  "secret": true
+}

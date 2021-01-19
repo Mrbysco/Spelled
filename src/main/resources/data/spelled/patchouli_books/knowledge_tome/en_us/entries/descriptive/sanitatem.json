@@ -1,0 +1,17 @@
+{
+  "name": "info.spelled.book.descriptive.sanitatem.name",
+  "category": "descriptions",
+  "icon": "spelled:ancient_knowledge_tome",
+  "pages": [
+    {
+      "type": "text",
+      "text": "info.spelled.book.descriptive.sanitatem.text"
+    },
+    {
+      "type": "text",
+      "text": "info.spelled.book.descriptive.sanitatem.text2"
+    }
+  ],
+  "advancement": "spelled:adjective_sanitatem",
+  "secret": true
+}

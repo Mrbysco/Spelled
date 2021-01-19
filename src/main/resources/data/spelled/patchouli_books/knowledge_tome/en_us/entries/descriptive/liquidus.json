@@ -1,0 +1,17 @@
+{
+  "name": "info.spelled.book.descriptive.liquidus.name",
+  "category": "descriptions",
+  "icon": "spelled:ancient_knowledge_tome",
+  "pages": [
+    {
+      "type": "text",
+      "text": "info.spelled.book.descriptive.liquidus.text"
+    },
+    {
+      "type": "text",
+      "text": "info.spelled.book.descriptive.liquidus.text2"
+    }
+  ],
+  "advancement": "spelled:adjective_liquidus",
+  "secret": true
+}
