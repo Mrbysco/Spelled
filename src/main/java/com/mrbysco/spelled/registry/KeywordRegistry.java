@@ -92,9 +92,11 @@ public class KeywordRegistry {
         if(!containsKey(keyword)) {
             keywordMap.put(keyword, behavior);
             if(behavior instanceof TypeKeyword) {
-                typeList.add(keyword);
+                if(!typeList.contains(keyword))
+                    typeList.add(keyword);
             } else {
-                adjectiveList.add(keyword);
+                if(!adjectiveList.contains(keyword))
+                    adjectiveList.add(keyword);
             }
         }
     }

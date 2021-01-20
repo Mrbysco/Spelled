@@ -107,6 +107,7 @@ public class SpelledDataGen {
 
             //Tome
             add("spelled.tome.description", "Contains knowledge about \"%s\"");
+            add("spelled.tome.description.invalid", "Tome invalid! Right click to fix");
             add("spelled.tome.fail", "You already know the knowledge of the tome");
             add("spelled.tome.success", "You've obtained the knowledge the tome");
 

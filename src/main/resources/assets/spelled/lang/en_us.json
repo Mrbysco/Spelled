@@ -176,6 +176,7 @@
   "spelled.level_up.fail_xp": "You lack the required xp to level up!",
   "spelled.spell.cast": "* %s has cast \"%s\"",
   "spelled.tome.description": "Contains knowledge about \"%s\"",
+  "spelled.tome.description.invalid": "Tome invalid! Right click to fix",
   "spelled.tome.fail": "You already know the knowledge of the tome",
   "spelled.tome.success": "You've obtained the knowledge the tome",
   "spelled:container.altar": "Leveling Altar",

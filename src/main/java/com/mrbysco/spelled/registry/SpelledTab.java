@@ -22,6 +22,7 @@ public class SpelledTab {
                 CompoundNBT nbt = new CompoundNBT();
                 nbt.putString(Reference.tomeUnlock, adjective);
                 ItemStack stack = new ItemStack(SpelledRegistry.KNOWLEDGE_TOME.get(), 1, nbt);
+                stack.setTag(nbt);
                 items.add(stack);
             }
         }

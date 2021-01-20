@@ -8,8 +8,8 @@ import com.mrbysco.spelled.client.ClientHandler;
 import com.mrbysco.spelled.commands.SpelledCommands;
 import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.handler.CapabilityHandler;
+import com.mrbysco.spelled.handler.LootHandler;
 import com.mrbysco.spelled.packets.PacketHandler;
-import com.mrbysco.spelled.registry.KeyboardSync;
 import com.mrbysco.spelled.registry.ReloadManager;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.util.ResourceLocation;
@@ -55,10 +55,10 @@ public class Spelled {
 
         eventBus.addListener(this::setup);
 
-        MinecraftForge.EVENT_BUS.register(new KeyboardSync());
         MinecraftForge.EVENT_BUS.register(new ReloadManager());
         MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
         MinecraftForge.EVENT_BUS.register(new SpellCastHandler());
+        MinecraftForge.EVENT_BUS.register(new LootHandler());
 
         MinecraftForge.EVENT_BUS.addListener(this::onCommandRegister);
 
