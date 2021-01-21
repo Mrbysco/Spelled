@@ -15,7 +15,8 @@ public class LiquidKeyword extends BaseKeyword {
     public void cast(World worldIn, ServerPlayerEntity caster, SpellEntity spell, @Nullable IKeyword adjective) {
         if(spell != null) {
             if(adjective instanceof FireKeyword) {
-                //TODO: Steam;
+                spell.setSmoky(true);
+                spell.setFiery(false);
             }
             //TODO: Liquid
         }

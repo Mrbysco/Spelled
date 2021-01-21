@@ -6,6 +6,10 @@
     {
       "type": "text",
       "text": "info.spelled.book.types.ball.text"
+    },
+    {
+      "type": "text",
+      "text": "info.spelled.book.types.ball.text2"
     }
   ]
 }

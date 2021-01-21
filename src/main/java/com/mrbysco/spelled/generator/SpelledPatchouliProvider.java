@@ -6,6 +6,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 import xyz.brassgoggledcoders.patchouliprovider.BookBuilder;
 import xyz.brassgoggledcoders.patchouliprovider.CategoryBuilder;
+import xyz.brassgoggledcoders.patchouliprovider.EntryBuilder;
 import xyz.brassgoggledcoders.patchouliprovider.PatchouliBookProvider;
 
 import java.util.function.Consumer;
@@ -41,16 +42,15 @@ public class SpelledPatchouliProvider extends PatchouliBookProvider {
                 //Types
                 .addCategory("types", "info.spelled.book.types.name", "info.spelled.book.types.desc", "spelled:ancient_knowledge_tome")
                     .addEntry("types/self", "info.spelled.book.types.self.name", "spelled:ancient_knowledge_tome")
-                        .addTextPage("info.spelled.book.types.self.text").build().build()
+                        .addTextPage("info.spelled.book.types.self.text").build()
+                        .addTextPage("info.spelled.book.types.self.text2").build().build()
                     .addEntry("types/ball", "info.spelled.book.types.ball.name", "spelled:ancient_knowledge_tome")
-                        .addTextPage("info.spelled.book.types.ball.text").build().build()
+                        .addTextPage("info.spelled.book.types.ball.text").build()
+                        .addTextPage("info.spelled.book.types.ball.text2").build().build()
                     .addEntry("types/projectilis", "info.spelled.book.types.projectilis.name", "spelled:ancient_knowledge_tome")
                         .addTextPage("info.spelled.book.types.projectilis.text").build()
-                        .addTextPage("info.spelled.book.types.projectilis.text2").build().build()
-//                    .addEntry("types/types2", "info.spelled.book.types2.entry.desc", "spelled:ancient_knowledge_tome")
-//                        .addTextPage("info.spelled.book.types2.text").build().build()
-                .build(); //Back to the bookbuilder
-
+                        .addTextPage("info.spelled.book.types.projectilis.text2").build()
+                .build().build(); //Back to the bookbuilder
 
                 //Colors
                 bookBuilder = addColors(bookBuilder);
@@ -100,10 +100,16 @@ public class SpelledPatchouliProvider extends PatchouliBookProvider {
                 "immanis"
         };
         for(String size : sizes) {
-            sizeCategory.addEntry("size/" + size, String.format("info.spelled.book.size.%s.name", size), "spelled:ancient_knowledge_tome")
+            EntryBuilder sizeEntry = sizeCategory.addEntry("size/" + size, String.format("info.spelled.book.size.%s.name", size), "spelled:ancient_knowledge_tome")
                     .setSecret(true)
                     .setAdvancement("spelled:adjective_" + size)
-                    .addTextPage(String.format("info.spelled.book.size.%s.text", size)).build().build();
+                    .addTextPage(String.format("info.spelled.book.size.%s.text", size)).build();
+
+                    if(!size.equals("magnum")) {
+                        sizeEntry.addTextPage(String.format("info.spelled.book.size.%s.text2", size)).build().build();
+                    }
+
+            sizeCategory = sizeEntry.build();
         }
         builder = sizeCategory.build();
         return builder;
@@ -126,11 +132,15 @@ public class SpelledPatchouliProvider extends PatchouliBookProvider {
                 "ignis"
         };
         for(String descriptive : descriptions) {
-            descriptionCategory.addEntry("descriptive/" + descriptive, String.format("info.spelled.book.descriptive.%s.name", descriptive), "spelled:ancient_knowledge_tome")
+            EntryBuilder descriptiveEntry = descriptionCategory.addEntry("descriptive/" + descriptive, String.format("info.spelled.book.descriptive.%s.name", descriptive), "spelled:ancient_knowledge_tome")
                     .setSecret(true)
                     .setAdvancement("spelled:adjective_" + descriptive)
-                    .addTextPage(String.format("info.spelled.book.descriptive.%s.text", descriptive)).build()
-                    .addTextPage(String.format("info.spelled.book.descriptive.%s.text2", descriptive)).build().build();
+                    .addTextPage(String.format("info.spelled.book.descriptive.%s.text", descriptive)).build();
+
+                    if(!descriptive.equals("frigus")) {
+                        descriptiveEntry.addTextPage(String.format("info.spelled.book.descriptive.%s.text2", descriptive)).build();
+                    }
+            descriptionCategory = descriptiveEntry.build();
         }
         builder = descriptionCategory.build();
         return builder;

@@ -6,6 +6,10 @@
     {
       "type": "text",
       "text": "info.spelled.book.types.self.text"
+    },
+    {
+      "type": "text",
+      "text": "info.spelled.book.types.self.text2"
     }
   ]
 }

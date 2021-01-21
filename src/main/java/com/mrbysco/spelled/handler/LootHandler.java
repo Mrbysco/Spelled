@@ -84,14 +84,12 @@ public class LootHandler {
         if(registry.getAdjectives().isEmpty()) {
             registry.initializeKeywords();
         }
+        ItemStack stack = new ItemStack(SpelledRegistry.KNOWLEDGE_TOME.get());
         for(String adjective : registry.getAdjectives()) {
             IKeyword keyword = registry.getKeywordFromName(adjective);
             if(keyword != null) {
-                ItemStack stack = new ItemStack(SpelledRegistry.KNOWLEDGE_TOME.get());
                 CompoundNBT tag = new CompoundNBT();
                 tag.putString(Reference.tomeUnlock, adjective);
-                System.out.println("Add trade of " + adjective + " to the rare Wanderer list");
-
                 event.getRareTrades().add(new ItemsForEmeraldsTrade(stack, keyword.getLevel() + 2, 1, tag, 1, keyword.getLevel()));
             }
         }

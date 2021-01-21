@@ -2,13 +2,11 @@ package com.mrbysco.spelled.registry.keyword;
 
 import com.mrbysco.spelled.entity.SpellEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
 public class TypeKeyword extends BaseKeyword {
-    private final String TYPE_KEY = "SpellType";
     private final Type type;
 
     public TypeKeyword(String keyword, Type type, int level, int slots) {
@@ -19,11 +17,7 @@ public class TypeKeyword extends BaseKeyword {
     @Override
     public void cast(World worldIn, ServerPlayerEntity caster, SpellEntity spell, @Nullable IKeyword adjective) {
         if(spell != null) {
-            CompoundNBT nbt = spell.getPersistentData();
-            if(!nbt.contains(TYPE_KEY)) {
-                nbt.putString(TYPE_KEY, type.getName());
-                spell.read(nbt);
-            }
+            spell.setSpellType(type.getId());
         }
     }
 
@@ -32,18 +26,24 @@ public class TypeKeyword extends BaseKeyword {
     }
 
     public enum Type {
-        BALL("ball"),
-        PROJECTILE("projectile"),
-        SELF("self");
+        BALL(0, "ball"),
+        PROJECTILE(1, "projectile"),
+        SELF(2, "self");
 
         private final String name;
+        private final int id;
 
-        private Type(String name) {
+        private Type(int id, String name) {
+            this.id = id;
             this.name = name;
         }
 
         public String getName() {
             return name;
+        }
+
+        public int getId() {
+            return id;
         }
     }
 }

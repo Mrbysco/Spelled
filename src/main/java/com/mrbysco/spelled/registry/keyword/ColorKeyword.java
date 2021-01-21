@@ -18,7 +18,10 @@ public class ColorKeyword extends BaseKeyword {
     @Override
     public void cast(World worldIn, ServerPlayerEntity caster, SpellEntity spell, @Nullable IKeyword adjective) {
         if(spell != null) {
-            if(color == TextFormatting.AQUA && adjective != null && adjective instanceof LiquidKeyword) {
+            if(adjective instanceof LiquidKeyword && color == TextFormatting.BLACK) {
+                spell.setInky(true);
+            }
+            if(color == TextFormatting.AQUA && adjective instanceof LiquidKeyword) {
                 spell.setWater(true);
             } else {
                 Integer colorID = color.getColor();

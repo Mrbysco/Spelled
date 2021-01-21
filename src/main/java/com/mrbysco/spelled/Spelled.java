@@ -9,6 +9,7 @@ import com.mrbysco.spelled.commands.SpelledCommands;
 import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.handler.CapabilityHandler;
 import com.mrbysco.spelled.handler.LootHandler;
+import com.mrbysco.spelled.handler.SpellHandler;
 import com.mrbysco.spelled.packets.PacketHandler;
 import com.mrbysco.spelled.registry.ReloadManager;
 import com.mrbysco.spelled.registry.SpelledRegistry;
@@ -43,7 +44,6 @@ public class Spelled {
 
     public Spelled() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-//        ModLoadingContext.get().registerConfig(Type.CLIENT, SpelledConfig.clientSpec);
         ModLoadingContext.get().registerConfig(Type.COMMON, SpelledConfig.commonSpec);
         eventBus.register(SpelledConfig.class);
 
@@ -59,6 +59,7 @@ public class Spelled {
         MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
         MinecraftForge.EVENT_BUS.register(new SpellCastHandler());
         MinecraftForge.EVENT_BUS.register(new LootHandler());
+        MinecraftForge.EVENT_BUS.register(new SpellHandler());
 
         MinecraftForge.EVENT_BUS.addListener(this::onCommandRegister);
 

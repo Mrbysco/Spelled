@@ -6,6 +6,10 @@
     {
       "type": "text",
       "text": "info.spelled.book.size.parvus.text"
+    },
+    {
+      "type": "text",
+      "text": "info.spelled.book.size.parvus.text2"
     }
   ],
   "advancement": "spelled:adjective_parvus",

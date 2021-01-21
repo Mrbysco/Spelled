@@ -6,6 +6,10 @@
     {
       "type": "text",
       "text": "info.spelled.book.size.grandis.text"
+    },
+    {
+      "type": "text",
+      "text": "info.spelled.book.size.grandis.text2"
     }
   ],
   "advancement": "spelled:adjective_grandis",

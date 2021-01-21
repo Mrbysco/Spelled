@@ -5,7 +5,10 @@ import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.ILiquidContainer;
+import net.minecraft.block.IceBlock;
+import net.minecraft.block.SnowBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -26,6 +29,8 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
@@ -35,6 +40,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import java.util.OptionalInt;
 
 public class SpellEntity extends DamagingProjectileEntity {
+    private static final DataParameter<Integer> SPELL_TYPE = EntityDataManager.createKey(SpellEntity.class, DataSerializers.VARINT);
     private static final DataParameter<OptionalInt> COLOR = EntityDataManager.createKey(SpellEntity.class, DataSerializers.OPTIONAL_VARINT);
     private static final DataParameter<Boolean> FIERY = EntityDataManager.createKey(SpellEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> LAVA = EntityDataManager.createKey(SpellEntity.class, DataSerializers.BOOLEAN);
@@ -44,6 +50,7 @@ public class SpellEntity extends DamagingProjectileEntity {
     private static final DataParameter<Boolean> EXPLODING = EntityDataManager.createKey(SpellEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> HARVEST = EntityDataManager.createKey(SpellEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> SMOKY = EntityDataManager.createKey(SpellEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> INKY = EntityDataManager.createKey(SpellEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<OptionalInt> HEALING = EntityDataManager.createKey(SpellEntity.class, DataSerializers.OPTIONAL_VARINT);
     private static final DataParameter<OptionalInt> DAMAGE = EntityDataManager.createKey(SpellEntity.class, DataSerializers.OPTIONAL_VARINT);
     private static final DataParameter<OptionalInt> KNOCKBACK = EntityDataManager.createKey(SpellEntity.class, DataSerializers.OPTIONAL_VARINT);
@@ -56,6 +63,7 @@ public class SpellEntity extends DamagingProjectileEntity {
     @Override
     protected void registerData() {
         super.registerData();
+        this.dataManager.register(SPELL_TYPE, 0);
         this.dataManager.register(COLOR, OptionalInt.empty());
         this.dataManager.register(FIERY, false);
         this.dataManager.register(LAVA, false);
@@ -65,9 +73,18 @@ public class SpellEntity extends DamagingProjectileEntity {
         this.dataManager.register(EXPLODING, false);
         this.dataManager.register(HARVEST, false);
         this.dataManager.register(SMOKY, false);
+        this.dataManager.register(INKY, false);
         this.dataManager.register(HEALING, OptionalInt.empty());
         this.dataManager.register(DAMAGE, OptionalInt.empty());
+        this.dataManager.register(KNOCKBACK, OptionalInt.empty());
         this.dataManager.register(SIZE_MULTIPLIER, 1.0F);
+    }
+
+    public void setSpellType(int type) {
+        this.getDataManager().set(SPELL_TYPE, 0);
+    }
+    public int getSpellType() {
+        return this.getDataManager().get(SPELL_TYPE);
     }
 
     public void setColor(int color) {
@@ -134,6 +151,13 @@ public class SpellEntity extends DamagingProjectileEntity {
         return this.getDataManager().get(SMOKY);
     }
 
+    public void setInky(boolean inky) {
+        this.getDataManager().set(INKY, inky);
+    }
+    public boolean isInky() {
+        return this.getDataManager().get(INKY);
+    }
+
     public void setKnockback(int knockback) {
         this.getDataManager().set(KNOCKBACK, OptionalInt.of(knockback));
     }
@@ -195,6 +219,7 @@ public class SpellEntity extends DamagingProjectileEntity {
         setExploding(compound.getBoolean("Exploding"));
         setHarvests(compound.getBoolean("Harvest"));
         setSmoky(compound.getBoolean("Smoky"));
+        setInky(compound.getBoolean("Inky"));
 
         if(compound.contains("healingPresent"))
             setHealing(compound.getInt("HealingFactor"));
@@ -224,6 +249,7 @@ public class SpellEntity extends DamagingProjectileEntity {
         compound.putBoolean("Exploding", doesExplode());
         compound.putBoolean("Harvest", doesHarvest());
         compound.putBoolean("Smoky", isSmoky());
+        compound.putBoolean("Inky", isInky());
 
         compound.putBoolean("healingPresent", isHealing());
         if (isHealing())
@@ -280,19 +306,41 @@ public class SpellEntity extends DamagingProjectileEntity {
         if (ticksExisted > 200) {
             this.remove();
         }
+
+        if(isCold()) {
+            Entity entity = this.func_234616_v_();
+            if (this.world.isRemote || (entity == null || !entity.removed) && this.world.isBlockLoaded(this.getPosition())) {
+
+                RayTraceResult raytraceresult = rayTraceWater();
+                if (raytraceresult.getType() != RayTraceResult.Type.MISS) {
+                    this.onImpact(raytraceresult);
+                }
+            }
+        }
+    }
+
+    public RayTraceResult rayTraceWater() {
+        Vector3d vector3d = this.getMotion();
+        World world = this.world;
+        Vector3d vector3d1 = this.getPositionVec();
+        Vector3d vector3d2 = vector3d1.add(vector3d);
+        RayTraceResult raytraceresult = world.rayTraceBlocks(new RayTraceContext(vector3d1, vector3d2, RayTraceContext.BlockMode.COLLIDER, FluidMode.SOURCE_ONLY, this));
+
+        return raytraceresult;
     }
 
     public void explode() {
         if(doesExplode()) {
-            boolean flag = isSnow();
-            this.world.createExplosion((Entity)null, this.getPosX(), this.getPosY(), this.getPosZ(), (float)1, !flag, !flag ? Explosion.Mode.DESTROY : Explosion.Mode.NONE);
+            boolean flag = isSnow() || isWater();
+            int size = (int)Math.ceil(1 * getSizeMultiplier());
+            this.world.createExplosion((Entity)null, this.getPosX(), this.getPosY(), this.getPosZ(), (float)size, !flag, !flag ? Explosion.Mode.DESTROY : Explosion.Mode.NONE);
         }
     }
 
     @Override
     protected void onImpact(RayTraceResult result) {
-        super.onImpact(result);
         if (!this.world.isRemote) {
+            super.onImpact(result);
             explode();
             this.remove();
         }
@@ -324,9 +372,17 @@ public class SpellEntity extends DamagingProjectileEntity {
             ((LivingEntity)hitEntity).heal(healAmount);
         }
 
-        if(isSmoky()) {
+        if(isSmoky() || isInky()) {
             //Smoke em out!
             ((LivingEntity)hitEntity).addPotionEffect(new EffectInstance(Effects.BLINDNESS, 5*20));
+        }
+
+        if(isCold()) {
+            ((LivingEntity)hitEntity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 4*20));
+        }
+
+        if(isSnow()) {
+            ((LivingEntity)hitEntity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 1*20));
         }
     }
 
@@ -336,37 +392,44 @@ public class SpellEntity extends DamagingProjectileEntity {
         super.func_230299_a_(blockResult);
         BlockState hitState = this.world.getBlockState(blockResult.getPos());
         BlockPos pos = blockResult.getPos();
+        BlockPos offPos = pos.offset(blockResult.getFace());
 
         if(isFiery() && !isLava()) {
-            BlockPos blockpos = pos.offset(blockResult.getFace());
-            if (this.world.isAirBlock(blockpos)) {
-                this.world.setBlockState(blockpos, AbstractFireBlock.getFireForPlacement(this.world, blockpos));
+            if (this.world.isAirBlock(offPos)) {
+                this.world.setBlockState(offPos, AbstractFireBlock.getFireForPlacement(this.world, offPos));
             }
         }
 
         if(isLava()) {
-            BlockPos blockpos = pos.offset(blockResult.getFace());
-            if (this.world.isAirBlock(blockpos)) {
-                this.world.setBlockState(blockpos, Blocks.LAVA.getDefaultState());
+            if (this.world.isAirBlock(offPos)) {
+                this.world.setBlockState(offPos, Blocks.LAVA.getDefaultState());
             }
         }
 
-        if(isWater()) {
-            BlockPos blockpos = pos.offset(blockResult.getFace());
+        if(isWater() && !this.world.getDimensionType().isUltrawarm()) {
             Block block = hitState.getBlock();
             if (block instanceof ILiquidContainer && ((ILiquidContainer)block).canContainFluid(world, pos, hitState, Fluids.WATER)) {
                 ((ILiquidContainer) block).receiveFluid(world, pos, hitState, Fluids.WATER.getStillFluidState(false));
             } else {
-                if (this.world.isAirBlock(blockpos)) {
-                    this.world.setBlockState(blockpos, Blocks.WATER.getDefaultState());
+                if (this.world.isAirBlock(offPos)) {
+                    this.world.setBlockState(offPos, Blocks.WATER.getDefaultState());
                 }
             }
         }
 
         if(isSnow()) {
-            BlockPos blockpos = pos.offset(blockResult.getFace());
-            if (this.world.isAirBlock(blockpos)) {
-                this.world.setBlockState(blockpos, Blocks.SNOW.getDefaultState());
+            BlockState offsetState = world.getBlockState(offPos);
+            if(offsetState.getBlock() instanceof SnowBlock && offsetState.get(SnowBlock.LAYERS) < 8) {
+                int layers = offsetState.get(SnowBlock.LAYERS);
+                this.world.setBlockState(offPos, offsetState.getBlock().getDefaultState().with(SnowBlock.LAYERS, layers + 1));
+            } else if(hitState.getBlock() instanceof SnowBlock && hitState.get(SnowBlock.LAYERS) < 8) {
+                int layers = hitState.get(SnowBlock.LAYERS);
+                this.world.setBlockState(pos, hitState.getBlock().getDefaultState().with(SnowBlock.LAYERS, layers + 1));
+            } else {
+                BlockState snowState = Blocks.SNOW.getDefaultState();
+                if (this.world.isAirBlock(offPos) && snowState.isValidPosition(world, offPos)) {
+                    this.world.setBlockState(offPos, snowState);
+                }
             }
         }
 
@@ -375,12 +438,29 @@ public class SpellEntity extends DamagingProjectileEntity {
                 world.destroyBlock(pos, true);
             }
         }
+
+        if(isCold()) {
+            if(hitState.getBlock() instanceof FlowingFluidBlock && ((FlowingFluidBlock)hitState.getBlock()).getFluid() == Fluids.WATER) {
+                this.world.setBlockState(pos, Blocks.ICE.getDefaultState());
+            }
+
+            if(hitState.getBlock() instanceof IceBlock) {
+                this.world.setBlockState(pos, Blocks.PACKED_ICE.getDefaultState());
+            }
+        }
     }
 
     public void shootSpell(Vector3d lookVec) {
-        this.setMotion(lookVec);
-        this.accelerationX = lookVec.x * 0.1D;
-        this.accelerationY = lookVec.y * 0.1D;
-        this.accelerationZ = lookVec.z * 0.1D;
+        if(getSpellType() == 2) {
+            this.setMotion(lookVec.inverse());
+            this.accelerationX = -(lookVec.x * 0.1D);
+            this.accelerationY = -(lookVec.y * 0.1D);
+            this.accelerationZ = -(lookVec.z * 0.1D);
+        } else {
+            this.setMotion(lookVec);
+            this.accelerationX = lookVec.x * 0.1D;
+            this.accelerationY = lookVec.y * 0.1D;
+            this.accelerationZ = lookVec.z * 0.1D;
+        }
     }
 }

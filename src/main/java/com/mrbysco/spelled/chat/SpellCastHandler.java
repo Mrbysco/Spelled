@@ -47,9 +47,9 @@ public class SpellCastHandler {
     @SubscribeEvent
     public void onChatEvent(ServerChatEvent event) {
         ServerPlayerEntity player = event.getPlayer();
-        final String regExp = "/^[a-zA-Z\\s]*$/";
+        final String regExp = "^[a-zA-Z\\s]*$";
         String actualMessage = event.getMessage();
-        if(actualMessage.isEmpty() && actualMessage.matches(regExp)) {
+        if(!actualMessage.isEmpty() && actualMessage.matches(regExp)) {
             SpelledAPI.getSpellDataCap(player).ifPresent(data -> {
                 if(data.getLevel() > 0) {
                     KeywordRegistry registry = KeywordRegistry.instance();
