@@ -50,7 +50,7 @@ public class SpelledAPI {
     }
 
     public static void resetUnlocks(PlayerEntity player) {
-        SpelledAPI.getSpellDataCap(player).ifPresent(cap -> cap.resetUnlocks());
+        SpelledAPI.getSpellDataCap(player).ifPresent(ISpellData::resetUnlocks);
         if(!player.world.isRemote) {
             AdvancementHelper.removeAllAdjectiveAdvancements((ServerPlayerEntity) player);
         }

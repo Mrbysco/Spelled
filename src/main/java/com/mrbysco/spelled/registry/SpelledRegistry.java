@@ -40,7 +40,7 @@ public class SpelledRegistry {
 
     public static final RegistryObject<EntityType<SpellEntity>> BALL_SPELL = ENTITIES.register("ball_spell", () ->
             register("transform_spell", EntityType.Builder.<SpellEntity>create(SpellEntity::new, EntityClassification.MISC)
-                    .size(0.25F, 0.25F).trackingRange(4).func_233608_b_(10)));
+                    .size(0.25F, 0.25F).trackingRange(4).func_233608_b_(20)));
 
     public static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
         return builder.build(id);

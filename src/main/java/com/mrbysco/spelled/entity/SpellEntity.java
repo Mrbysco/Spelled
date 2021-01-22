@@ -15,6 +15,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.projectile.DamagingProjectileEntity;
+import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -38,6 +39,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import java.util.OptionalInt;
+import java.util.function.Predicate;
 
 public class SpellEntity extends DamagingProjectileEntity {
     private static final DataParameter<Integer> SPELL_TYPE = EntityDataManager.createKey(SpellEntity.class, DataSerializers.VARINT);
@@ -199,6 +201,14 @@ public class SpellEntity extends DamagingProjectileEntity {
         this.setPosition(d0, d1, d2);
     }
 
+    public void notifyDataManagerChange(DataParameter<?> key) {
+        if (SIZE_MULTIPLIER.equals(key)) {
+            this.recalculateSize();
+        }
+
+        super.notifyDataManagerChange(key);
+    }
+
     @Override
     public EntitySize getSize(Pose poseIn) {
         return super.getSize(poseIn).scale(this.getSizeMultiplier());
@@ -285,12 +295,14 @@ public class SpellEntity extends DamagingProjectileEntity {
                 return ParticleTypes.DRIPPING_WATER;
             if(isSmoky())
                 return ParticleTypes.SMOKE;
+            if(isInky())
+                return ParticleTypes.SQUID_INK;
             if(isFiery())
                 return ParticleTypes.FLAME;
             if(isSnow())
                 return ParticleTypes.ITEM_SNOWBALL;
 
-            return ParticleTypes.AMBIENT_ENTITY_EFFECT;
+            return ParticleTypes.WITCH;
         }
     }
 
@@ -311,7 +323,7 @@ public class SpellEntity extends DamagingProjectileEntity {
             Entity entity = this.func_234616_v_();
             if (this.world.isRemote || (entity == null || !entity.removed) && this.world.isBlockLoaded(this.getPosition())) {
 
-                RayTraceResult raytraceresult = rayTraceWater();
+                RayTraceResult raytraceresult = rayTraceWater(this::func_230298_a_);
                 if (raytraceresult.getType() != RayTraceResult.Type.MISS) {
                     this.onImpact(raytraceresult);
                 }
@@ -319,12 +331,20 @@ public class SpellEntity extends DamagingProjectileEntity {
         }
     }
 
-    public RayTraceResult rayTraceWater() {
+    public RayTraceResult rayTraceWater(Predicate<Entity> entityPredicate) {
         Vector3d vector3d = this.getMotion();
         World world = this.world;
         Vector3d vector3d1 = this.getPositionVec();
         Vector3d vector3d2 = vector3d1.add(vector3d);
         RayTraceResult raytraceresult = world.rayTraceBlocks(new RayTraceContext(vector3d1, vector3d2, RayTraceContext.BlockMode.COLLIDER, FluidMode.SOURCE_ONLY, this));
+        if (raytraceresult.getType() != RayTraceResult.Type.MISS) {
+            vector3d2 = raytraceresult.getHitVec();
+        }
+
+        RayTraceResult raytraceresult1 = ProjectileHelper.rayTraceEntities(world, this, vector3d1, vector3d2, this.getBoundingBox().expand(this.getMotion()).grow(1.0D), entityPredicate);
+        if (raytraceresult1 != null) {
+            raytraceresult = raytraceresult1;
+        }
 
         return raytraceresult;
     }
@@ -342,6 +362,7 @@ public class SpellEntity extends DamagingProjectileEntity {
         if (!this.world.isRemote) {
             super.onImpact(result);
             explode();
+            this.world.addParticle(getParticle(), this.getPosX(), this.getPosY(), this.getPosZ(), 1.0D, 0.0D, 0.0D);
             this.remove();
         }
     }
@@ -390,63 +411,152 @@ public class SpellEntity extends DamagingProjectileEntity {
     @Override
     protected void func_230299_a_(BlockRayTraceResult blockResult) {
         super.func_230299_a_(blockResult);
-        BlockState hitState = this.world.getBlockState(blockResult.getPos());
         BlockPos pos = blockResult.getPos();
+        BlockState hitState = this.world.getBlockState(pos);
         BlockPos offPos = pos.offset(blockResult.getFace());
 
+        if(doesHarvest()) {
+            if(getSizeMultiplier() > 1) {
+                Iterable<BlockPos> multiplePos = getSizedPos(pos);
+                for(BlockPos boxPos : multiplePos) {
+                    executeBreakBehavior(boxPos);
+                }
+            } else {
+                executeBreakBehavior(pos);
+            }
+        }
+
         if(isFiery() && !isLava()) {
-            if (this.world.isAirBlock(offPos)) {
-                this.world.setBlockState(offPos, AbstractFireBlock.getFireForPlacement(this.world, offPos));
+            if(getSizeMultiplier() > 1) {
+                Iterable<BlockPos> multiplePos = getSizedPos(pos);
+                for(BlockPos boxPos : multiplePos) {
+                    executeFireBehavior(boxPos.offset(blockResult.getFace()));
+                }
+            } else {
+                executeFireBehavior(offPos);
             }
         }
 
         if(isLava()) {
-            if (this.world.isAirBlock(offPos)) {
-                this.world.setBlockState(offPos, Blocks.LAVA.getDefaultState());
+            if(getSizeMultiplier() > 1) {
+                Iterable<BlockPos> multiplePos = getSizedPos(pos);
+                for(BlockPos boxPos : multiplePos) {
+                    executeLavaBehavior(boxPos.offset(blockResult.getFace()));
+                }
+            } else {
+                executeLavaBehavior(offPos);
             }
         }
 
         if(isWater() && !this.world.getDimensionType().isUltrawarm()) {
-            Block block = hitState.getBlock();
-            if (block instanceof ILiquidContainer && ((ILiquidContainer)block).canContainFluid(world, pos, hitState, Fluids.WATER)) {
-                ((ILiquidContainer) block).receiveFluid(world, pos, hitState, Fluids.WATER.getStillFluidState(false));
-            } else {
-                if (this.world.isAirBlock(offPos)) {
-                    this.world.setBlockState(offPos, Blocks.WATER.getDefaultState());
+            if(getSizeMultiplier() > 1) {
+                Iterable<BlockPos> multiplePos = getSizedPos(pos);
+                for(BlockPos boxPos : multiplePos) {
+                    executeWaterBehavior(boxPos, boxPos.offset(blockResult.getFace()));
                 }
+            } else {
+                executeWaterBehavior(pos, offPos);
             }
         }
 
         if(isSnow()) {
-            BlockState offsetState = world.getBlockState(offPos);
-            if(offsetState.getBlock() instanceof SnowBlock && offsetState.get(SnowBlock.LAYERS) < 8) {
-                int layers = offsetState.get(SnowBlock.LAYERS);
-                this.world.setBlockState(offPos, offsetState.getBlock().getDefaultState().with(SnowBlock.LAYERS, layers + 1));
-            } else if(hitState.getBlock() instanceof SnowBlock && hitState.get(SnowBlock.LAYERS) < 8) {
-                int layers = hitState.get(SnowBlock.LAYERS);
-                this.world.setBlockState(pos, hitState.getBlock().getDefaultState().with(SnowBlock.LAYERS, layers + 1));
-            } else {
-                BlockState snowState = Blocks.SNOW.getDefaultState();
-                if (this.world.isAirBlock(offPos) && snowState.isValidPosition(world, offPos)) {
-                    this.world.setBlockState(offPos, snowState);
+            if(hitState.getHarvestLevel() <= 2) {
+                if(getSizeMultiplier() > 1) {
+                    Iterable<BlockPos> multiplePos = getSizedPos(pos);
+                    for(BlockPos boxPos : multiplePos) {
+                        executeSnowBehavior(boxPos, boxPos.offset(blockResult.getFace()));
+                    }
+                } else {
+                    executeSnowBehavior(pos, offPos);
                 }
             }
         }
 
-        if(doesHarvest()) {
-            if(hitState.getHarvestLevel() <= 2 && !world.isRemote) {
+        if(isCold()) {
+            if(getSizeMultiplier() > 1) {
+                Iterable<BlockPos> multiplePos = getSizedPos(pos);
+                for(BlockPos boxPos : multiplePos) {
+                    executeColdBehavior(boxPos);
+                }
+            } else {
+                executeColdBehavior(pos);
+            }
+        }
+    }
+
+    public Iterable<BlockPos> getSizedPos(BlockPos pos) {
+        double offset = getSizeMultiplier() * 0.5f;
+        return BlockPos.getAllInBoxMutable(pos.add(-offset, -offset, -offset), pos.add(offset, offset, offset));
+    }
+
+    public void executeBreakBehavior(BlockPos pos) {
+        BlockState hitState = this.world.getBlockState(pos);
+
+        if(hitState.getHarvestLevel() <= 2) {
+            if(getSizeMultiplier() > 1) {
+                Iterable<BlockPos> multiplePos = getSizedPos(pos);
+                for(BlockPos boxPos : multiplePos) {
+                    world.destroyBlock(boxPos, true);
+                }
+            } else {
                 world.destroyBlock(pos, true);
             }
         }
+    }
 
-        if(isCold()) {
-            if(hitState.getBlock() instanceof FlowingFluidBlock && ((FlowingFluidBlock)hitState.getBlock()).getFluid() == Fluids.WATER) {
-                this.world.setBlockState(pos, Blocks.ICE.getDefaultState());
-            }
+    public void executeFireBehavior(BlockPos offPos) {
+        BlockState offState = this.world.getBlockState(offPos);
 
-            if(hitState.getBlock() instanceof IceBlock) {
-                this.world.setBlockState(pos, Blocks.PACKED_ICE.getDefaultState());
+        if (offState.getMaterial().isReplaceable()) {
+            this.world.setBlockState(offPos, AbstractFireBlock.getFireForPlacement(this.world, offPos));
+        }
+    }
+
+    public void executeLavaBehavior(BlockPos offPos) {
+        BlockState offState = this.world.getBlockState(offPos);
+
+        if (offState.isReplaceable(Fluids.LAVA)) {
+            this.world.setBlockState(offPos, Blocks.LAVA.getDefaultState());
+        }
+    }
+
+
+    public void executeWaterBehavior(BlockPos pos, BlockPos offPos) {
+        BlockState hitState = this.world.getBlockState(pos);
+        BlockState offState = this.world.getBlockState(offPos);
+
+        Block block = hitState.getBlock();
+        if (block instanceof ILiquidContainer && ((ILiquidContainer)block).canContainFluid(world, pos, hitState, Fluids.WATER)) {
+            ((ILiquidContainer) block).receiveFluid(world, pos, hitState, Fluids.WATER.getStillFluidState(false));
+        } else {
+            if (offState.isReplaceable(Fluids.WATER) ) {
+                this.world.setBlockState(offPos, Blocks.WATER.getDefaultState());
             }
+        }
+    }
+
+    public void executeColdBehavior(BlockPos pos) {
+        BlockState hitState = this.world.getBlockState(pos);
+        if(hitState.getBlock() instanceof FlowingFluidBlock && ((FlowingFluidBlock)hitState.getBlock()).getFluid() == Fluids.WATER)
+            this.world.setBlockState(pos, Blocks.ICE.getDefaultState());
+        if(hitState.getBlock() instanceof IceBlock)
+            this.world.setBlockState(pos, Blocks.PACKED_ICE.getDefaultState());
+    }
+
+    public void executeSnowBehavior(BlockPos pos, BlockPos offPos) {
+        BlockState hitState = this.world.getBlockState(pos);
+        BlockState offState = this.world.getBlockState(offPos);
+
+        if(offState.getBlock() instanceof SnowBlock && offState.get(SnowBlock.LAYERS) < 8) {
+            int layers = offState.get(SnowBlock.LAYERS);
+            this.world.setBlockState(offPos, offState.getBlock().getDefaultState().with(SnowBlock.LAYERS, layers + 1));
+        } else if(hitState.getBlock() instanceof SnowBlock && hitState.get(SnowBlock.LAYERS) < 8) {
+            int layers = hitState.get(SnowBlock.LAYERS);
+            this.world.setBlockState(pos, hitState.getBlock().getDefaultState().with(SnowBlock.LAYERS, layers + 1));
+        } else {
+            BlockState snowState = Blocks.SNOW.getDefaultState();
+            if (offState.getMaterial().isReplaceable() && snowState.isValidPosition(world, offPos))
+                this.world.setBlockState(offPos, snowState);
         }
     }
 
