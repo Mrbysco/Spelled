@@ -414,10 +414,10 @@ public class SpellEntity extends DamagingProjectileEntity {
         BlockPos pos = blockResult.getPos();
         BlockState hitState = this.world.getBlockState(pos);
         BlockPos offPos = pos.offset(blockResult.getFace());
+        Iterable<BlockPos> multiplePos = getSizedPos(pos.offset(blockResult.getFace().getOpposite()));
 
         if(doesHarvest()) {
             if(getSizeMultiplier() > 1) {
-                Iterable<BlockPos> multiplePos = getSizedPos(pos);
                 for(BlockPos boxPos : multiplePos) {
                     executeBreakBehavior(boxPos);
                 }
@@ -428,7 +428,6 @@ public class SpellEntity extends DamagingProjectileEntity {
 
         if(isFiery() && !isLava()) {
             if(getSizeMultiplier() > 1) {
-                Iterable<BlockPos> multiplePos = getSizedPos(pos);
                 for(BlockPos boxPos : multiplePos) {
                     executeFireBehavior(boxPos.offset(blockResult.getFace()));
                 }
@@ -439,7 +438,6 @@ public class SpellEntity extends DamagingProjectileEntity {
 
         if(isLava()) {
             if(getSizeMultiplier() > 1) {
-                Iterable<BlockPos> multiplePos = getSizedPos(pos);
                 for(BlockPos boxPos : multiplePos) {
                     executeLavaBehavior(boxPos.offset(blockResult.getFace()));
                 }
@@ -450,7 +448,6 @@ public class SpellEntity extends DamagingProjectileEntity {
 
         if(isWater() && !this.world.getDimensionType().isUltrawarm()) {
             if(getSizeMultiplier() > 1) {
-                Iterable<BlockPos> multiplePos = getSizedPos(pos);
                 for(BlockPos boxPos : multiplePos) {
                     executeWaterBehavior(boxPos, boxPos.offset(blockResult.getFace()));
                 }
@@ -462,7 +459,6 @@ public class SpellEntity extends DamagingProjectileEntity {
         if(isSnow()) {
             if(hitState.getHarvestLevel() <= 2) {
                 if(getSizeMultiplier() > 1) {
-                    Iterable<BlockPos> multiplePos = getSizedPos(pos);
                     for(BlockPos boxPos : multiplePos) {
                         executeSnowBehavior(boxPos, boxPos.offset(blockResult.getFace()));
                     }
@@ -474,7 +470,6 @@ public class SpellEntity extends DamagingProjectileEntity {
 
         if(isCold()) {
             if(getSizeMultiplier() > 1) {
-                Iterable<BlockPos> multiplePos = getSizedPos(pos);
                 for(BlockPos boxPos : multiplePos) {
                     executeColdBehavior(boxPos);
                 }
@@ -491,16 +486,8 @@ public class SpellEntity extends DamagingProjectileEntity {
 
     public void executeBreakBehavior(BlockPos pos) {
         BlockState hitState = this.world.getBlockState(pos);
-
         if(hitState.getHarvestLevel() <= 2) {
-            if(getSizeMultiplier() > 1) {
-                Iterable<BlockPos> multiplePos = getSizedPos(pos);
-                for(BlockPos boxPos : multiplePos) {
-                    world.destroyBlock(boxPos, true);
-                }
-            } else {
-                world.destroyBlock(pos, true);
-            }
+            world.destroyBlock(pos, true);
         }
     }
 
@@ -520,7 +507,6 @@ public class SpellEntity extends DamagingProjectileEntity {
         }
     }
 
-
     public void executeWaterBehavior(BlockPos pos, BlockPos offPos) {
         BlockState hitState = this.world.getBlockState(pos);
         BlockState offState = this.world.getBlockState(offPos);
@@ -529,7 +515,9 @@ public class SpellEntity extends DamagingProjectileEntity {
         if (block instanceof ILiquidContainer && ((ILiquidContainer)block).canContainFluid(world, pos, hitState, Fluids.WATER)) {
             ((ILiquidContainer) block).receiveFluid(world, pos, hitState, Fluids.WATER.getStillFluidState(false));
         } else {
-            if (offState.isReplaceable(Fluids.WATER) ) {
+            if(hitState.isReplaceable(Fluids.WATER)) {
+                this.world.setBlockState(pos, Blocks.WATER.getDefaultState());
+            } else if (offState.isReplaceable(Fluids.WATER) ) {
                 this.world.setBlockState(offPos, Blocks.WATER.getDefaultState());
             }
         }
