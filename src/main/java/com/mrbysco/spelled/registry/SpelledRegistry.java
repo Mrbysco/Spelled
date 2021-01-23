@@ -38,9 +38,9 @@ public class SpelledRegistry {
     public static final RegistryObject<TileEntityType<LevelingAltarTile>> LEVELING_ALTAR_TILE = TILES.register("leveling_altar_tile", () -> TileEntityType.Builder.create(() -> new LevelingAltarTile(), LEVELING_ALTAR.get()).build(null));
     public static final RegistryObject<ContainerType<AltarContainer>> ALTAR_CONTAINER = CONTAINERS.register("leveling_altar", () -> IForgeContainerType.create((windowId, inv, data) -> new AltarContainer(windowId, inv)));
 
-    public static final RegistryObject<EntityType<SpellEntity>> BALL_SPELL = ENTITIES.register("ball_spell", () ->
-            register("transform_spell", EntityType.Builder.<SpellEntity>create(SpellEntity::new, EntityClassification.MISC)
-                    .size(0.25F, 0.25F).trackingRange(4).func_233608_b_(20)));
+    public static final RegistryObject<EntityType<SpellEntity>> SPELL = ENTITIES.register("spell", () ->
+            register("spell", EntityType.Builder.<SpellEntity>create(SpellEntity::new, EntityClassification.MISC)
+                    .size(0.25F, 0.25F).trackingRange(4).func_233608_b_(20).setCustomClientFactory(SpellEntity::new)));
 
     public static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
         return builder.build(id);

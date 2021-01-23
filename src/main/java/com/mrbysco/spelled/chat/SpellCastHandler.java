@@ -148,20 +148,14 @@ public class SpellCastHandler {
     }
 
     public SpellEntity constructEntity(ServerPlayerEntity player, @Nonnull Type type) {
-        switch(type) {
-            default:
-                SpellEntity spell = SpelledRegistry.BALL_SPELL.get().create(player.world);
-                if(spell != null) {
-                    spell.shootSpell(player.getLookVec());
-                    spell.rotationYaw = player.rotationYaw % 360.0F;
-                    spell.rotationPitch = player.rotationPitch % 360.0F;
-                    spell.setLocationAndAngles(player.getPosX(), player.getPosYEye() - (double) 0.2F, player.getPosZ(), player.rotationYaw, player.rotationPitch);
-                    spell.setShooter(player);
-                }
-                return spell;
-            case PROJECTILE:
-            case SELF:
-                return null;
-        }
+        SpellEntity spell = SpelledRegistry.SPELL.get().create(player.world);
+        spell.setSpellType(type.getId());
+        spell.shootSpell(player.getLookVec());
+        spell.rotationYaw = player.rotationYaw % 360.0F;
+        spell.rotationPitch = player.rotationPitch % 360.0F;
+        spell.setLocationAndAngles(player.getPosX(), player.getPosYEye() - (double) 0.2F, player.getPosZ(), player.rotationYaw, player.rotationPitch);
+        spell.setShooter(player);
+
+        return spell;
     }
 }

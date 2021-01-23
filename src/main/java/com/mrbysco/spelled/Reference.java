@@ -1,5 +1,6 @@
 package com.mrbysco.spelled;
 
+import com.mrbysco.spelled.entity.AbstractSpellEntity;
 import com.mrbysco.spelled.entity.SpellEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
@@ -17,7 +18,7 @@ public class Reference {
 
     public static final String Phrase = "Yu Mo Gui Gwai Fai Di Zao";
 
-    public static DamageSource causeMagicDamage(SpellEntity spell) {
+    public static DamageSource causeMagicDamage(AbstractSpellEntity spell) {
         return new EntityDamageSource(MOD_PREFIX + "magic", spell);
     }
 }

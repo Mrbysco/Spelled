@@ -11,7 +11,7 @@ public class SpellHandler {
     public void projectileImpact(ProjectileImpactEvent.Fireball event) {
         if(event.getFireball() instanceof SpellEntity) {
             SpellEntity spell = (SpellEntity)event.getFireball();
-            if(spell.isCold()) {
+            if(spell.isCold() || spell.isWater()) {
                 event.setCanceled(true);
             }
         }

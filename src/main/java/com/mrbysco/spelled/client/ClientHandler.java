@@ -15,6 +15,6 @@ public class ClientHandler {
         RenderTypeLookup.setRenderLayer(SpelledRegistry.LEVELING_ALTAR.get(), RenderType.getCutout());
         ScreenManager.registerFactory(SpelledRegistry.ALTAR_CONTAINER.get(), AltarScreen::new);
 
-        RenderingRegistry.registerEntityRenderingHandler(SpelledRegistry.BALL_SPELL.get(), renderManager -> new SpellRenderer(renderManager));
+        RenderingRegistry.registerEntityRenderingHandler(SpelledRegistry.SPELL.get(), renderManager -> new SpellRenderer(renderManager));
     }
 }
