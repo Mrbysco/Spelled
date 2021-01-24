@@ -14,12 +14,7 @@ public class HealingKeyword extends BaseKeyword {
     @Override
     public void cast(World worldIn, ServerPlayerEntity caster, SpellEntity spell, @Nullable IKeyword adjective) {
         if(spell != null) {
-            if(spell.isHealing()) {
-                int currentFactor = spell.getHealingFactor().getAsInt();
-                spell.setHealing(currentFactor + 1);
-            } else {
-                spell.setHealing(1);
-            }
+            spell.insertAction("healing");
         }
     }
 }

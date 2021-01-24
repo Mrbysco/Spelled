@@ -1,7 +1,6 @@
 package com.mrbysco.spelled;
 
 import com.mrbysco.spelled.entity.AbstractSpellEntity;
-import com.mrbysco.spelled.entity.SpellEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.ResourceLocation;

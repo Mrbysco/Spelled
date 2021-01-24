@@ -16,8 +16,10 @@ public class FireKeyword extends BaseKeyword {
         if(spell != null) {
             if(adjective != null && adjective instanceof LiquidKeyword) {
                 spell.setLava(true);
+                spell.insertAction("lava");
             } else {
                 spell.setFiery(true);
+                spell.insertAction("fire");
             }
         }
     }

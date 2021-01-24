@@ -1,5 +1,6 @@
 package com.mrbysco.spelled.entity;
 
+import com.google.common.collect.Lists;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -23,6 +24,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
@@ -32,24 +34,23 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.OptionalInt;
 import java.util.function.Predicate;
 
 public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
+    private static final DataParameter<CompoundNBT> SPELL_ORDER = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.COMPOUND_NBT);
     private static final DataParameter<Integer> SPELL_TYPE = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.VARINT);
     private static final DataParameter<OptionalInt> COLOR = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.OPTIONAL_VARINT);
+    private static final DataParameter<Boolean> EXPLODING = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> FIERY = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> LAVA = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> WATER = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> COLD = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> SNOW = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> EXPLODING = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> HARVEST = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> SMOKY = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> INKY = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<OptionalInt> HEALING = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.OPTIONAL_VARINT);
-    private static final DataParameter<OptionalInt> DAMAGE = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.OPTIONAL_VARINT);
-    private static final DataParameter<OptionalInt> KNOCKBACK = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.OPTIONAL_VARINT);
     private static final DataParameter<Float> SIZE_MULTIPLIER = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.FLOAT);
 
     public AbstractSpellEntity(EntityType<? extends DamagingProjectileEntity> entityType, World world) {
@@ -59,6 +60,7 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     @Override
     protected void registerData() {
         super.registerData();
+        this.dataManager.register(SPELL_ORDER, new CompoundNBT());
         this.dataManager.register(SPELL_TYPE, 0);
         this.dataManager.register(COLOR, OptionalInt.empty());
         this.dataManager.register(FIERY, false);
@@ -67,13 +69,21 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         this.dataManager.register(COLD, false);
         this.dataManager.register(SNOW, false);
         this.dataManager.register(EXPLODING, false);
-        this.dataManager.register(HARVEST, false);
         this.dataManager.register(SMOKY, false);
         this.dataManager.register(INKY, false);
-        this.dataManager.register(HEALING, OptionalInt.empty());
-        this.dataManager.register(DAMAGE, OptionalInt.empty());
-        this.dataManager.register(KNOCKBACK, OptionalInt.empty());
         this.dataManager.register(SIZE_MULTIPLIER, 1.0F);
+    }
+
+    public void setSpellOrder(CompoundNBT order) {
+        this.getDataManager().set(SPELL_ORDER, order);
+    }
+    public void insertAction(String action) {
+        CompoundNBT order = this.getSpellOrder();
+        order.putString(order.isEmpty() ? String.valueOf(0) : String.valueOf(order.size()), action);
+        this.setSpellOrder(order);
+    }
+    public CompoundNBT getSpellOrder() {
+        return this.getDataManager().get(SPELL_ORDER);
     }
 
     public void setSpellType(int type) {
@@ -133,13 +143,6 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         return this.getDataManager().get(EXPLODING);
     }
 
-    public void setHarvests(boolean harvest) {
-        this.getDataManager().set(HARVEST, harvest);
-    }
-    public boolean doesHarvest() {
-        return this.getDataManager().get(HARVEST);
-    }
-
     public void setSmoky(boolean smoky) {
         this.getDataManager().set(SMOKY, smoky);
     }
@@ -153,30 +156,6 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     public boolean isInky() {
         return this.getDataManager().get(INKY);
     }
-
-    public void setKnockback(int knockback) {
-        this.getDataManager().set(KNOCKBACK, OptionalInt.of(knockback));
-    }
-    public OptionalInt getKnockback() {
-        return this.getDataManager().get(KNOCKBACK);
-    }
-    public boolean hasKnockback() { return this.getDataManager().get(KNOCKBACK).isPresent(); }
-
-    public void setHealing(int healFactor) {
-        this.getDataManager().set(HEALING, OptionalInt.of(healFactor));
-    }
-    public OptionalInt getHealingFactor() {
-        return this.getDataManager().get(HEALING);
-    }
-    public boolean isHealing() { return this.getDataManager().get(HEALING).isPresent(); }
-
-    public void setDamage(int damage) {
-        this.getDataManager().set(DAMAGE, OptionalInt.of(damage));
-    }
-    public OptionalInt getDamage() {
-        return this.getDataManager().get(DAMAGE);
-    }
-    public boolean doesHurt() { return this.getDataManager().get(DAMAGE).isPresent(); }
 
     public void setSizeMultiplier(float sizeMultiplier) {
         this.getDataManager().set(SIZE_MULTIPLIER, sizeMultiplier);
@@ -212,6 +191,9 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
 
+        if (compound.contains("SpellOrder", 10))
+            this.setSpellOrder(compound.getCompound("SpellOrder"));
+
         if(compound.contains("colorPresent"))
             setColor(compound.getInt("Color"));
 
@@ -221,18 +203,8 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         setCold(compound.getBoolean("Cold"));
         setSnow(compound.getBoolean("Snow"));
         setExploding(compound.getBoolean("Exploding"));
-        setHarvests(compound.getBoolean("Harvest"));
         setSmoky(compound.getBoolean("Smoky"));
         setInky(compound.getBoolean("Inky"));
-
-        if(compound.contains("healingPresent"))
-            setHealing(compound.getInt("HealingFactor"));
-
-        if(compound.contains("damagePresent"))
-            setDamage(compound.getInt("DamageAmount"));
-
-        if(compound.contains("knockbackPresent"))
-            setKnockback(compound.getInt("KnockbackAmount"));
 
         setSizeMultiplier(compound.getFloat("SizeMultiplier"));
     }
@@ -240,6 +212,9 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     @Override
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
+
+        if (!this.getSpellOrder().isEmpty())
+            compound.put("SpellOrder", this.getSpellOrder());
 
         compound.putBoolean("colorPresent", hasColor());
         if (hasColor())
@@ -251,21 +226,8 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         compound.putBoolean("Cold", isCold());
         compound.putBoolean("Snow", isSnow());
         compound.putBoolean("Exploding", doesExplode());
-        compound.putBoolean("Harvest", doesHarvest());
         compound.putBoolean("Smoky", isSmoky());
         compound.putBoolean("Inky", isInky());
-
-        compound.putBoolean("healingPresent", isHealing());
-        if (isHealing())
-            compound.putInt("HealingFactor", getHealingFactor().getAsInt());
-
-        compound.putBoolean("damagePresent", doesHurt());
-        if (doesHurt())
-            compound.putInt("DamageAmount", getDamage().getAsInt());
-
-        compound.putBoolean("knockbackPresent", hasKnockback());
-        if (hasKnockback())
-            compound.putInt("KnockbackAmount", getKnockback().getAsInt());
 
         compound.putFloat("SizeMultiplier", getSizeMultiplier());
     }
@@ -315,8 +277,7 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
 
         if(isCold() || isWater()) {
             Entity entity = this.func_234616_v_();
-            if (this.world.isRemote || (entity == null || !entity.removed) && this.world.isBlockLoaded(this.getPosition())) {
-
+            if (this.world.isRemote || (entity == null || entity.isAlive()) && this.world.isBlockLoaded(this.getPosition())) {
                 RayTraceResult raytraceresult = rayTraceWater(this::func_230298_a_);
                 if (raytraceresult.getType() != RayTraceResult.Type.MISS) {
                     this.onImpact(raytraceresult);
@@ -351,9 +312,23 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         }
     }
 
-    public Iterable<BlockPos> getSizedPos(BlockPos pos) {
-        double offset = getSizeMultiplier() * 0.5f;
-        return BlockPos.getAllInBoxMutable(pos.add(-offset, -offset, -offset), pos.add(offset, offset, offset));
+    public List<BlockPos> getSizedPos(BlockPos pos) {
+        if(getSizeMultiplier() > 1) {
+            double offset = getSizeMultiplier() * 0.5f;
+            return Lists.newArrayList(BlockPos.getAllInBoxMutable(pos.add(-offset, -offset, -offset), pos.add(offset, offset, offset)));
+        }
+        return Collections.singletonList(pos);
+    }
+
+    public List<Entity> getRangedEntities(Entity hitEntity) {
+        if(getSizeMultiplier() > 1) {
+            double offset = getSizeMultiplier();
+            AxisAlignedBB hitbox = new AxisAlignedBB(hitEntity.getPosX() - 0.5f, hitEntity.getPosY() - 0.5f, hitEntity.getPosZ() - 0.5f, hitEntity.getPosX() + 0.5f, hitEntity.getPosY() + 0.5f, hitEntity.getPosZ() + 0.5f)
+                    .expand(-offset, -offset, -offset).expand(offset, offset, offset);
+
+            return world.getEntitiesInAABBexcluding(this, hitbox, Entity::isAlive);
+        }
+        return Collections.singletonList(hitEntity);
     }
 
     public void executeBreakBehavior(BlockPos pos) {

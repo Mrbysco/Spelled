@@ -20,9 +20,11 @@ public class ColorKeyword extends BaseKeyword {
         if(spell != null) {
             if(adjective instanceof LiquidKeyword && color == TextFormatting.BLACK) {
                 spell.setInky(true);
+                spell.insertAction("ink");
             }
             if(color == TextFormatting.AQUA && adjective instanceof LiquidKeyword) {
                 spell.setWater(true);
+                spell.insertAction("water");
             } else {
                 Integer colorID = color.getColor();
                 if(colorID != null) {

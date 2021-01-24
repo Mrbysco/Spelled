@@ -15,6 +15,7 @@ public class ColdKeyword extends BaseKeyword {
     public void cast(World worldIn, ServerPlayerEntity caster, SpellEntity spell, @Nullable IKeyword adjective) {
         if(spell != null) {
             spell.setCold(true);
+            spell.insertAction("cold");
         }
     }
 }

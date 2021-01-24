@@ -14,7 +14,7 @@ public class BreakingKeyword extends BaseKeyword {
     @Override
     public void cast(World worldIn, ServerPlayerEntity caster, SpellEntity spell, @Nullable IKeyword adjective) {
         if(spell != null) {
-            spell.setHarvests(true);
+            spell.insertAction("harvest");
         }
     }
 }

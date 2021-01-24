@@ -15,6 +15,7 @@ public class ExplodingKeyword extends BaseKeyword {
     public void cast(World worldIn, ServerPlayerEntity caster, SpellEntity spell, @Nullable IKeyword adjective) {
         if(spell != null) {
             spell.setExploding(true);
+            spell.insertAction("explode");
         }
     }
 }

@@ -14,12 +14,7 @@ public class HurtingKeyword extends BaseKeyword {
     @Override
     public void cast(World worldIn, ServerPlayerEntity caster, SpellEntity spell, @Nullable IKeyword adjective) {
         if(spell != null) {
-            if(spell.doesHurt()) {
-                int currentDamage = spell.getDamage().getAsInt();
-                spell.setDamage(currentDamage + 1);
-            } else {
-                spell.setDamage(1);
-            }
+            spell.insertAction("hurt");
         }
     }
 }

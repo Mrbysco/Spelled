@@ -14,12 +14,7 @@ public class PushingKeyword extends BaseKeyword {
     @Override
     public void cast(World worldIn, ServerPlayerEntity caster, SpellEntity spell, @Nullable IKeyword adjective) {
         if(spell != null) {
-            if(spell.hasKnockback()) {
-                int currentKnockback = spell.getKnockback().getAsInt();
-                spell.setKnockback(currentKnockback + 1);
-            } else {
-                spell.setKnockback(1);
-            }
+            spell.insertAction("knockback");
         }
     }
 }
