@@ -41,6 +41,10 @@ public class SpellEntity extends AbstractSpellEntity {
     protected void onEntityHit(EntityRayTraceResult entityResult) {
         super.onEntityHit(entityResult);
         Entity hitEntity = entityResult.getEntity();
+        this.handleEntityHit(hitEntity);
+    }
+
+    public void handleEntityHit(Entity hitEntity) {
         List<Entity> rangedEntities = getRangedEntities(hitEntity);
 
         for(int i = 0; i < getSpellOrder().size(); i++) {

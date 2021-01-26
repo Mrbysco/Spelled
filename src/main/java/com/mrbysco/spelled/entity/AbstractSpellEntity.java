@@ -1,6 +1,5 @@
 package com.mrbysco.spelled.entity;
 
-import com.google.common.collect.Lists;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -34,6 +33,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.OptionalInt;
@@ -247,7 +247,7 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         if(isLava() && (isCold() || isSnow() || isWater())) {
             return new BlockParticleData(ParticleTypes.BLOCK, Blocks.STONE.getDefaultState());
         } else {
-            if(isFiery() && isSnow())
+            if(isWater() || (isFiery() && isSnow()))
                 return ParticleTypes.DRIPPING_WATER;
             if(isSmoky())
                 return ParticleTypes.SMOKE;
@@ -315,7 +315,14 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     public List<BlockPos> getSizedPos(BlockPos pos) {
         if(getSizeMultiplier() > 1) {
             double offset = getSizeMultiplier() * 0.5f;
-            return Lists.newArrayList(BlockPos.getAllInBoxMutable(pos.add(-offset, -offset, -offset), pos.add(offset, offset, offset)));
+            List<BlockPos> positionList = new ArrayList<>();
+            Iterable<BlockPos> positions = BlockPos.getAllInBoxMutable(pos.add(-offset, -offset, -offset), pos.add(offset, offset, offset));
+            for(BlockPos position : positions) {
+                if(!positionList.contains(position)) {
+                    positionList.add(new BlockPos(position));
+                }
+            }
+            return positionList;
         }
         return Collections.singletonList(pos);
     }
@@ -401,16 +408,9 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     }
 
     public void shootSpell(Vector3d lookVec) {
-        if(getSpellType() == 2) {
-            this.setMotion(lookVec.inverse());
-            this.accelerationX = -(lookVec.x * 0.1D);
-            this.accelerationY = -(lookVec.y * 0.1D);
-            this.accelerationZ = -(lookVec.z * 0.1D);
-        } else {
-            this.setMotion(lookVec);
-            this.accelerationX = lookVec.x * 0.1D;
-            this.accelerationY = lookVec.y * 0.1D;
-            this.accelerationZ = lookVec.z * 0.1D;
-        }
+        this.setMotion(lookVec);
+        this.accelerationX = lookVec.x * 0.1D;
+        this.accelerationY = lookVec.y * 0.1D;
+        this.accelerationZ = lookVec.z * 0.1D;
     }
 }

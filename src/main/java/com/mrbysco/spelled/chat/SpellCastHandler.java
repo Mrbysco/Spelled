@@ -96,8 +96,13 @@ public class SpellCastHandler {
                                         SpelledAPI.setCooldown(player, cooldown);
                                         SpelledAPI.syncCap(player);
                                     }
-                                    System.out.println(spell);
-                                    world.addEntity(spell);
+                                    if(typeKeyword.getType() != Type.SELF) {
+                                        shootSpell(player, spell);
+                                        world.addEntity(spell);
+                                    } else {
+                                        spell.handleEntityHit(player);
+                                        spell.remove(false);
+                                    }
                                 }
                             }
                         }
@@ -150,6 +155,11 @@ public class SpellCastHandler {
     public SpellEntity constructEntity(ServerPlayerEntity player, @Nonnull Type type) {
         SpellEntity spell = SpelledRegistry.SPELL.get().create(player.world);
         spell.setSpellType(type.getId());
+
+        return spell;
+    }
+
+    public SpellEntity shootSpell(ServerPlayerEntity player, SpellEntity spell) {
         spell.shootSpell(player.getLookVec());
         spell.rotationYaw = player.rotationYaw % 360.0F;
         spell.rotationPitch = player.rotationPitch % 360.0F;
