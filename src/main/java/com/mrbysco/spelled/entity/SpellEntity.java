@@ -1,21 +1,19 @@
 package com.mrbysco.spelled.entity;
 
-import com.mrbysco.spelled.Reference;
+import com.mrbysco.spelled.api.behavior.BehaviorRegistry;
+import com.mrbysco.spelled.api.behavior.ISpellBehavior;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.DamagingProjectileEntity;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class SpellEntity extends AbstractSpellEntity {
@@ -46,57 +44,15 @@ public class SpellEntity extends AbstractSpellEntity {
 
     public void handleEntityHit(Entity hitEntity) {
         List<Entity> rangedEntities = getRangedEntities(hitEntity);
+        HashMap<String, ISpellBehavior> behaviors = BehaviorRegistry.instance().getBehaviors();
 
         for(int i = 0; i < getSpellOrder().size(); i++) {
             String action = getSpellOrder().getString(String.valueOf(i));
-            switch (action) {
-                case "fire":
-                case "lava":
-                    for(Entity entity : rangedEntities) {
-                        entity.setFire(5);
-                    }
-                    break;
-                case "hurt":
-                    for(Entity entity : rangedEntities) {
-                        entity.attackEntityFrom(Reference.causeMagicDamage(this), 1);
-                    }
-                    break;
-                case "knockback":
-                    Vector3d vector3d = this.getMotion().mul(1.0D, 0.0D, 1.0D).normalize().scale((double)1 * 0.6D);
-                    for(Entity entity : rangedEntities) {
-                        if (vector3d.lengthSquared() > 0.0D)
-                            entity.addVelocity(vector3d.x, 0.1D, vector3d.z);
-                    }
-                    break;
-                case "heal":
-                    for(Entity entity : rangedEntities) {
-                        if(entity instanceof LivingEntity) {
-                            ((LivingEntity)entity).heal(1.0F);
-                        }
-                    }
-                    break;
-                case "smoke":
-                case "ink":
-                    for(Entity entity : rangedEntities) {
-                        if(entity instanceof LivingEntity) {
-                            ((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.BLINDNESS, 5*20));
-                        }
-                    }
-                    break;
-                case "cold":
-                    for(Entity entity : rangedEntities) {
-                        if(entity instanceof LivingEntity) {
-                            ((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 4*20));
-                        }
-                    }
-                    break;
-                case "snow":
-                    for(Entity entity : rangedEntities) {
-                        if(entity instanceof LivingEntity) {
-                            ((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 1*20));
-                        }
-                    }
-                    break;
+            ISpellBehavior behavior = behaviors.get(action);
+            if(behavior != null) {
+                for(Entity entity : rangedEntities) {
+                    behavior.onEntityHit(this, entity);
+                }
             }
         }
     }
@@ -107,42 +63,15 @@ public class SpellEntity extends AbstractSpellEntity {
         super.func_230299_a_(blockResult);
         BlockPos pos = blockResult.getPos();
         List<BlockPos> multiplePos = getSizedPos(pos);
+        HashMap<String, ISpellBehavior> behaviors = BehaviorRegistry.instance().getBehaviors();
 
         for(int i = 0; i < getSpellOrder().size(); i++) {
             String action = getSpellOrder().getString(String.valueOf(i));
-            switch (action) {
-                case "cold":
-                    for(BlockPos boxPos : multiplePos) {
-                        executeColdBehavior(boxPos);
-                    }
-                    break;
-                case "harvest":
-                    for(BlockPos boxPos : multiplePos) {
-                        executeBreakBehavior(boxPos);
-                    }
-                    break;
-                case "fire":
-                    for(BlockPos boxPos : multiplePos) {
-                        executeFireBehavior(boxPos.offset(blockResult.getFace()));
-                    }
-                    break;
-                case "lava":
-                    for(BlockPos boxPos : multiplePos) {
-                        executeLavaBehavior(boxPos.offset(blockResult.getFace()));
-                    }
-                    break;
-                case "water":
-                    if(!this.world.getDimensionType().isUltrawarm()) {
-                        for(BlockPos boxPos : multiplePos) {
-                            executeWaterBehavior(boxPos, boxPos.offset(blockResult.getFace()));
-                        }
-                    }
-                    break;
-                case "snow":
-                    for(BlockPos boxPos : multiplePos) {
-                        executeSnowBehavior(boxPos, boxPos.offset(blockResult.getFace()));
-                    }
-                    break;
+            ISpellBehavior behavior = behaviors.get(action);
+            if(behavior != null) {
+                for(BlockPos boxPos : multiplePos) {
+                    behavior.onBlockHit(this, boxPos, boxPos.offset(blockResult.getFace()));
+                }
             }
         }
     }

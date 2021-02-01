@@ -1,4 +1,4 @@
-package com.mrbysco.spelled.registry.keyword;
+package com.mrbysco.spelled.api.keywords;
 
 import com.mrbysco.spelled.entity.SpellEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;

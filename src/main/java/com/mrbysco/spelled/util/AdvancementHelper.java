@@ -1,6 +1,6 @@
 package com.mrbysco.spelled.util;
 
-import com.mrbysco.spelled.registry.KeywordRegistry;
+import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.entity.player.ServerPlayerEntity;

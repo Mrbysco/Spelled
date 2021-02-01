@@ -2,8 +2,8 @@ package com.mrbysco.spelled.api;
 
 import com.mrbysco.spelled.Spelled;
 import com.mrbysco.spelled.api.capability.ISpellData;
+import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.packets.SpellDataSyncMessage;
-import com.mrbysco.spelled.registry.KeywordRegistry;
 import com.mrbysco.spelled.util.AdvancementHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;

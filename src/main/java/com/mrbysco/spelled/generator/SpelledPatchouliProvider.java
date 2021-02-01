@@ -1,7 +1,7 @@
 package com.mrbysco.spelled.generator;
 
 import com.mrbysco.spelled.Reference;
-import com.mrbysco.spelled.registry.KeywordRegistry;
+import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 import xyz.brassgoggledcoders.patchouliprovider.BookBuilder;

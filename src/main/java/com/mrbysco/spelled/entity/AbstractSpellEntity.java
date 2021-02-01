@@ -1,20 +1,12 @@
 package com.mrbysco.spelled.entity;
 
-import net.minecraft.block.AbstractFireBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.block.ILiquidContainer;
-import net.minecraft.block.IceBlock;
-import net.minecraft.block.SnowBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.projectile.DamagingProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
@@ -336,75 +328,6 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
             return world.getEntitiesInAABBexcluding(this, hitbox, Entity::isAlive);
         }
         return Collections.singletonList(hitEntity);
-    }
-
-    public void executeBreakBehavior(BlockPos pos) {
-        BlockState hitState = this.world.getBlockState(pos);
-        if(hitState.getHarvestLevel() <= 2) {
-            world.destroyBlock(pos, true);
-        }
-    }
-
-    public void executeFireBehavior(BlockPos offPos) {
-        BlockState offState = this.world.getBlockState(offPos);
-
-        if (offState.getMaterial().isReplaceable()) {
-            this.world.setBlockState(offPos, AbstractFireBlock.getFireForPlacement(this.world, offPos));
-        }
-    }
-
-    public void executeLavaBehavior(BlockPos offPos) {
-        BlockState offState = this.world.getBlockState(offPos);
-
-        if (offState.isReplaceable(Fluids.LAVA)) {
-            this.world.setBlockState(offPos, Blocks.LAVA.getDefaultState());
-        }
-    }
-
-    public void executeWaterBehavior(BlockPos pos, BlockPos offPos) {
-        BlockState hitState = this.world.getBlockState(pos);
-        BlockState offState = this.world.getBlockState(offPos);
-
-        Block block = hitState.getBlock();
-        if (block instanceof ILiquidContainer && ((ILiquidContainer)block).canContainFluid(world, pos, hitState, Fluids.WATER)) {
-            ((ILiquidContainer) block).receiveFluid(world, pos, hitState, Fluids.WATER.getStillFluidState(false));
-        } else {
-            if(hitState.getBlock() instanceof FlowingFluidBlock && ((FlowingFluidBlock)hitState.getBlock()).getFluid() == Fluids.LAVA) {
-                Block fluidBlock = world.getFluidState(pos).isSource() ? Blocks.OBSIDIAN : Blocks.COBBLESTONE;
-                world.setBlockState(pos, net.minecraftforge.event.ForgeEventFactory.fireFluidPlaceBlockEvent(world, pos, pos, fluidBlock.getDefaultState()));
-            } else {
-                if(hitState.isReplaceable(Fluids.WATER)) {
-                    this.world.setBlockState(pos, Blocks.WATER.getDefaultState());
-                } else if (offState.isReplaceable(Fluids.WATER) ) {
-                    this.world.setBlockState(offPos, Blocks.WATER.getDefaultState());
-                }
-            }
-        }
-    }
-
-    public void executeColdBehavior(BlockPos pos) {
-        BlockState hitState = this.world.getBlockState(pos);
-        if(hitState.getBlock() instanceof FlowingFluidBlock && ((FlowingFluidBlock)hitState.getBlock()).getFluid() == Fluids.WATER)
-            this.world.setBlockState(pos, Blocks.ICE.getDefaultState());
-        if(hitState.getBlock() instanceof IceBlock)
-            this.world.setBlockState(pos, Blocks.PACKED_ICE.getDefaultState());
-    }
-
-    public void executeSnowBehavior(BlockPos pos, BlockPos offPos) {
-        BlockState hitState = this.world.getBlockState(pos);
-        BlockState offState = this.world.getBlockState(offPos);
-
-        if(offState.getBlock() instanceof SnowBlock && offState.get(SnowBlock.LAYERS) < 8) {
-            int layers = offState.get(SnowBlock.LAYERS);
-            this.world.setBlockState(offPos, offState.getBlock().getDefaultState().with(SnowBlock.LAYERS, layers + 1));
-        } else if(hitState.getBlock() instanceof SnowBlock && hitState.get(SnowBlock.LAYERS) < 8) {
-            int layers = hitState.get(SnowBlock.LAYERS);
-            this.world.setBlockState(pos, hitState.getBlock().getDefaultState().with(SnowBlock.LAYERS, layers + 1));
-        } else {
-            BlockState snowState = Blocks.SNOW.getDefaultState();
-            if (offState.getMaterial().isReplaceable() && snowState.isValidPosition(world, offPos))
-                this.world.setBlockState(offPos, snowState);
-        }
     }
 
     public void shootSpell(Vector3d lookVec) {

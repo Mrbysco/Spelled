@@ -1,4 +1,4 @@
-package com.mrbysco.spelled.registry;
+package com.mrbysco.spelled.api.keywords;
 
 import com.google.common.collect.Maps;
 import com.mrbysco.spelled.Spelled;
@@ -9,7 +9,6 @@ import com.mrbysco.spelled.registry.keyword.ExplodingKeyword;
 import com.mrbysco.spelled.registry.keyword.FireKeyword;
 import com.mrbysco.spelled.registry.keyword.HealingKeyword;
 import com.mrbysco.spelled.registry.keyword.HurtingKeyword;
-import com.mrbysco.spelled.registry.keyword.IKeyword;
 import com.mrbysco.spelled.registry.keyword.LiquidKeyword;
 import com.mrbysco.spelled.registry.keyword.ProtectKeyword;
 import com.mrbysco.spelled.registry.keyword.PushingKeyword;

@@ -1,6 +1,7 @@
 package com.mrbysco.spelled.registry;
 
 import com.mrbysco.spelled.Reference;
+import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;

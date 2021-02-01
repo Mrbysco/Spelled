@@ -1,5 +1,7 @@
 package com.mrbysco.spelled.registry.keyword;
 
+import com.mrbysco.spelled.api.keywords.BaseKeyword;
+import com.mrbysco.spelled.api.keywords.IKeyword;
 import com.mrbysco.spelled.entity.SpellEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;

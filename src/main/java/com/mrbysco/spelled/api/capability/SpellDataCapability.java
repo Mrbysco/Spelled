@@ -1,6 +1,6 @@
 package com.mrbysco.spelled.api.capability;
 
-import com.mrbysco.spelled.registry.KeywordRegistry;
+import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import net.minecraft.nbt.CompoundNBT;
 
 import java.util.Locale;

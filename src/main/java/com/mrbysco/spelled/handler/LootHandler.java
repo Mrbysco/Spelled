@@ -1,9 +1,9 @@
 package com.mrbysco.spelled.handler;
 
 import com.mrbysco.spelled.Reference;
-import com.mrbysco.spelled.registry.KeywordRegistry;
+import com.mrbysco.spelled.api.keywords.IKeyword;
+import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.registry.SpelledRegistry;
-import com.mrbysco.spelled.registry.keyword.IKeyword;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.merchant.villager.VillagerTrades.ITrade;
 import net.minecraft.item.ItemStack;
