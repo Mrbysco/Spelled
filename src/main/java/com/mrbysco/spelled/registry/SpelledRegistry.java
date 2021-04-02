@@ -40,14 +40,10 @@ public class SpelledRegistry {
 
     public static final RegistryObject<EntityType<SpellEntity>> SPELL = ENTITIES.register("spell", () ->
             register("spell", EntityType.Builder.<SpellEntity>create(SpellEntity::new, EntityClassification.MISC)
-                    .size(0.25F, 0.25F).trackingRange(4).func_233608_b_(20).setCustomClientFactory(SpellEntity::new)));
+                    .size(0.25F, 0.25F).trackingRange(4).updateInterval(20).setCustomClientFactory(SpellEntity::new)));
 
     public static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
         return builder.build(id);
-    }
-
-    public static void entityAttributes() {
-//        GlobalEntityTypeAttributes.put(LIVING_BLOCK.get(), LivingBlockEntity.registerAttributes().create());
     }
 
     private static Item.Properties itemBuilder() {
