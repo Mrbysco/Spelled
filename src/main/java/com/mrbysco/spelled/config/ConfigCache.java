@@ -12,28 +12,15 @@ import java.util.List;
 import java.util.Map;
 
 public class ConfigCache {
-    public static boolean individualLevels;
-    public static boolean individualItems;
-    public static boolean requireItems;
     public static Item requiredItem;
-    public static int maxLevel;
     public static Map<Integer, Integer> individualLevelXPCosts;
     public static Map<Integer, ItemCost> individualLevelItemCosts;
-    public static int xpMultiplier;
-    public static boolean hideKnowledgeTomeInfo;
 
     public static void refreshCache() {
-        individualLevels = SpelledConfig.COMMON.individualLevels.get();
-        individualItems = SpelledConfig.COMMON.individualItems.get();
-        requireItems = SpelledConfig.COMMON.requireItems.get();
-
         setRequiredItem(SpelledConfig.COMMON.requiredItem.get());
 
-        maxLevel = SpelledConfig.COMMON.maxLevel.get();
         generateLevelCostMap(SpelledConfig.COMMON.individualLevelCosts.get());
         generateItemCostMap(SpelledConfig.COMMON.individualItemCosts.get());
-        xpMultiplier = SpelledConfig.COMMON.xpMultiplier.get();
-        hideKnowledgeTomeInfo = SpelledConfig.COMMON.hideKnowledgeTomeInfo.get();
     }
 
     public static void setRequiredItem(String value) {
@@ -97,8 +84,9 @@ public class ConfigCache {
             }
         }
 
-        if(individualItems && itemCostMap.size() < maxLevel) {
-            Spelled.LOGGER.error(String.format("Individual items is enabled but there aren't enough items supplied in 'individualItemCosts'."));
+        int maxLevel = SpelledConfig.COMMON.maxLevel.get();
+        if(SpelledConfig.COMMON.individualItems.get() && itemCostMap.size() < maxLevel) {
+            Spelled.LOGGER.error("Individual items is enabled but there aren't enough items supplied in 'individualItemCosts'.");
             Spelled.LOGGER.error(String.format("Currently 'individualItemCosts' only has %s out of %s items supplied.", itemCostMap.size(), maxLevel));
 
             int currentAmount = itemCostMap.size();
@@ -148,8 +136,9 @@ public class ConfigCache {
             }
         }
 
-        if(individualLevels && xpCostMap.size() < maxLevel) {
-            Spelled.LOGGER.error(String.format("Individual levels is enabled but there aren't enough costs supplied in 'individualLevelCosts'."));
+        int maxLevel = SpelledConfig.COMMON.maxLevel.get();
+        if(SpelledConfig.COMMON.individualLevels.get() && xpCostMap.size() < maxLevel) {
+            Spelled.LOGGER.error("Individual levels is enabled but there aren't enough costs supplied in 'individualLevelCosts'.");
             Spelled.LOGGER.error(String.format("Currently 'individualLevelCosts' only has %s out of %s levels supplied.", xpCostMap.size(), maxLevel));
 
             int currentAmount = xpCostMap.size();

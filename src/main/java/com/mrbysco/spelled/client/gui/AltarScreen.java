@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.config.ConfigCache;
+import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.container.AltarContainer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -72,7 +73,7 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
     protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
         RenderHelper.setupGuiFlatDiffuseLighting();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindTexture(ConfigCache.requireItems ? ALTAR_GUI_TEXTURE : ALTAR_GUI_SLOTLESS_TEXTURE);
+        this.minecraft.getTextureManager().bindTexture(SpelledConfig.COMMON.requireItems.get() ? ALTAR_GUI_TEXTURE : ALTAR_GUI_SLOTLESS_TEXTURE);
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
         this.blit(matrixStack, i, j, 0, 0, this.xSize, this.ySize);
@@ -122,7 +123,7 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
         int l1 = (this.container).levelCosts[currentLevel];
 
         int itemAmountCost = (this.container).itemAmountCosts[currentLevel];
-        boolean itemFlag = ConfigCache.requireItems ? this.container.getCostStackCount() < itemAmountCost : false;
+        boolean itemFlag = SpelledConfig.COMMON.requireItems.get() ? this.container.getCostStackCount() < itemAmountCost : false;
         boolean flag = ((itemFlag || this.minecraft.player.experienceLevel < l1) && !this.minecraft.player.abilities.isCreativeMode);
         boolean bookHovered = bookHovered(x, y);
 
@@ -205,7 +206,7 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
                 }
             }
 
-            if(ConfigCache.requireItems) {
+            if(SpelledConfig.COMMON.requireItems.get()) {
                 int stackCount = this.container.getCostStackCount();
                 final Item itemCost = (this.container).itemCosts[currentLevel];
                 final int itemAmountCost = (this.container).itemAmountCosts[currentLevel];
@@ -228,7 +229,7 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
     }
 
     public void tickBook() {
-        if(ConfigCache.requireItems) {
+        if(SpelledConfig.COMMON.requireItems.get()) {
             ItemStack itemstack = this.container.getSlot(0).getStack();
 
             if (!ItemStack.areItemStacksEqual(itemstack, this.last)) {

@@ -1,8 +1,10 @@
 package com.mrbysco.spelled;
 
+import com.mrbysco.spelled.api.behavior.BehaviorRegistry;
 import com.mrbysco.spelled.api.capability.ISpellData;
 import com.mrbysco.spelled.api.capability.SpellDataCapability;
 import com.mrbysco.spelled.api.capability.SpellDataStorage;
+import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.chat.SpellCastHandler;
 import com.mrbysco.spelled.client.ClientHandler;
 import com.mrbysco.spelled.commands.SpelledCommands;
@@ -19,11 +21,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -60,22 +64,26 @@ public class Spelled {
         MinecraftForge.EVENT_BUS.register(new SpellCastHandler());
         MinecraftForge.EVENT_BUS.register(new LootHandler());
         MinecraftForge.EVENT_BUS.register(new SpellHandler());
+        MinecraftForge.EVENT_BUS.register(this);
 
         MinecraftForge.EVENT_BUS.addListener(this::onCommandRegister);
 
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            eventBus.addListener(ClientHandler::onClientSetupEvent);
-        });
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(ClientHandler::onClientSetupEvent));
     }
 
     private void setup(final FMLCommonSetupEvent event) {
         PacketHandler.registerPackets();
-        SpelledRegistry.entityAttributes();
 
         CapabilityManager.INSTANCE.register(ISpellData.class, new SpellDataStorage(), SpellDataCapability::new);
     }
 
     public void onCommandRegister(RegisterCommandsEvent event) {
         SpelledCommands.initializeCommands(event.getDispatcher());
+    }
+
+    @SubscribeEvent
+    public void serverStart(FMLServerStartingEvent event) {
+        KeywordRegistry.instance().initializeKeywords();
+        BehaviorRegistry.instance().initializeBehaviors();
     }
 }

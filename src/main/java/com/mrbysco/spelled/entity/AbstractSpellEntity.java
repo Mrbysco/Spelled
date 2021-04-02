@@ -268,7 +268,7 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         }
 
         if(isCold() || isWater()) {
-            Entity entity = this.func_234616_v_();
+            Entity entity = this.getShooter();
             if (this.world.isRemote || (entity == null || entity.isAlive()) && this.world.isBlockLoaded(this.getPosition())) {
                 RayTraceResult raytraceresult = rayTraceWater(this::func_230298_a_);
                 if (raytraceresult.getType() != RayTraceResult.Type.MISS) {

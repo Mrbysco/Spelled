@@ -1,8 +1,8 @@
 package com.mrbysco.spelled.container;
 
 import com.mrbysco.spelled.api.SpelledAPI;
-import com.mrbysco.spelled.config.ConfigCache;
 import com.mrbysco.spelled.config.ConfigCache.ItemCost;
+import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import com.mrbysco.spelled.util.LevelHelper;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,9 +34,9 @@ public class AltarContainer extends Container {
     private final IWorldPosCallable worldPosCallable;
 
     public final int[] currentLevel = new int[1];
-    public final int[] levelCosts = new int[ConfigCache.maxLevel];
-    public final int[] itemAmountCosts = new int[ConfigCache.maxLevel];
-    public final Item[] itemCosts = new Item[ConfigCache.maxLevel];
+    public final int[] levelCosts = new int[SpelledConfig.COMMON.maxLevel.get()];
+    public final int[] itemAmountCosts = new int[SpelledConfig.COMMON.maxLevel.get()];
+    public final Item[] itemCosts = new Item[SpelledConfig.COMMON.maxLevel.get()];
 
     public AltarContainer(int id, PlayerInventory playerInventory) {
         this(id, playerInventory, IWorldPosCallable.DUMMY, 0);
@@ -49,7 +49,7 @@ public class AltarContainer extends Container {
         this.currentLevel[0] = currentLevel;
         this.trackInt(IntReferenceHolder.create(this.currentLevel, 0));
 
-        for(int level = 0; level < ConfigCache.maxLevel; level++) {
+        for(int level = 0; level < SpelledConfig.COMMON.maxLevel.get(); level++) {
             levelCosts[level] = LevelHelper.getXPCost(level + 1);
             ItemCost cost = LevelHelper.getItemCost(level + 1);
             itemAmountCosts[level] = cost.getCost();
@@ -58,7 +58,7 @@ public class AltarContainer extends Container {
             this.trackInt(IntReferenceHolder.create(this.itemAmountCosts, level));
         }
 
-        if(ConfigCache.requireItems) {
+        if(SpelledConfig.COMMON.requireItems.get()) {
             this.addSlot(new AltarSlot(playerInventory.player, this.tableInventory, 0, 80, 56));
         }
 
@@ -80,9 +80,8 @@ public class AltarContainer extends Container {
     }
 
     private boolean hasXP(PlayerEntity playerIn, int level) {
-        boolean flag = ConfigCache.individualLevels;
         int XPCost = this.levelCosts[level];
-        return ConfigCache.individualLevels ? playerIn.experienceLevel >= XPCost : playerIn.experienceTotal >= XPCost;
+        return SpelledConfig.COMMON.individualLevels.get() ? playerIn.experienceLevel >= XPCost : playerIn.experienceTotal >= XPCost;
     }
 
     /**
@@ -93,13 +92,13 @@ public class AltarContainer extends Container {
         final int newLevel = level + 1;
         final int XPCost = this.levelCosts[level];
 
-        if(level >= ConfigCache.maxLevel || (!hasXP(playerIn, level)  && !playerIn.abilities.isCreativeMode)) {
+        if(level >= SpelledConfig.COMMON.maxLevel.get() || (!hasXP(playerIn, level)  && !playerIn.abilities.isCreativeMode)) {
             if(!hasXP(playerIn, level)) {
                 LevelHelper.levelUpFailXP(playerIn);
             }
             return false;
         } else {
-            if(ConfigCache.requireItems) {
+            if(SpelledConfig.COMMON.requireItems.get()) {
                 ItemStack stack = this.tableInventory.getStackInSlot(0);
                 ItemCost itemCost = LevelHelper.getItemCost(newLevel);
                 if(stack.isEmpty() || stack.getItem() != itemCost.getItem() && stack.getCount() < itemCost.getCost()) {
@@ -137,7 +136,7 @@ public class AltarContainer extends Container {
     }
 
     public void useLevels(PlayerEntity playerIn, int XPCost) {
-        if (ConfigCache.individualLevels)
+        if (SpelledConfig.COMMON.individualLevels.get())
             playerIn.addExperienceLevel(-XPCost);
         else
             playerIn.giveExperiencePoints(-XPCost);

@@ -29,9 +29,12 @@ public class BehaviorRegistry {
         return INSTANCE;
     }
 
-    public void initializeBehaviors() {
+    public void reloadBehaviors() {
         behaviorMap.clear();
+        initializeBehaviors();
+    }
 
+    public void initializeBehaviors() {
         Spelled.LOGGER.info("Initializing spell behavior");
 
         registerBehavior(new ColdBehavior());

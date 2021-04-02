@@ -73,7 +73,7 @@ public class SpellCastHandler {
                                     if(keyword != null) {
                                         cooldown += keyword.getSlots();
                                         castText.append(keyword.getKeyword()).append(" ");
-                                        descriptionComponent.append(keyword.getDescription()).append(new StringTextComponent(" "));
+                                        descriptionComponent.appendSibling(keyword.getDescription()).appendSibling(new StringTextComponent(" "));
                                         int previous = i - 1;
                                         if(previous >= 0 && previous < (words.length - 1))
                                             keyword.cast(world, player, spell, registry.getKeywordFromName(words[previous]));
@@ -83,7 +83,7 @@ public class SpellCastHandler {
                                 }
                                 castText.append(lastKeyword.getKeyword());
                                 StringTextComponent castComponent = new StringTextComponent(castText.toString());
-                                descriptionComponent.append(typeKeyword.getDescription());
+                                descriptionComponent.appendSibling(typeKeyword.getDescription());
                                 descriptionComponent.mergeStyle(TextFormatting.GOLD);
                                 castComponent.setStyle(event.getComponent().getStyle().setHoverEvent(
                                         new HoverEvent(Action.SHOW_TEXT, descriptionComponent))).mergeStyle(TextFormatting.GOLD);

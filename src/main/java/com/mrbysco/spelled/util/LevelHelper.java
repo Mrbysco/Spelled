@@ -2,6 +2,7 @@ package com.mrbysco.spelled.util;
 
 import com.mrbysco.spelled.config.ConfigCache;
 import com.mrbysco.spelled.config.ConfigCache.ItemCost;
+import com.mrbysco.spelled.config.SpelledConfig;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -13,16 +14,16 @@ public class LevelHelper {
     }
 
     public static ItemCost getItemCost(int level) {
-        return ConfigCache.individualItems ?
+        return SpelledConfig.COMMON.individualItems.get() ?
                 ConfigCache.individualLevelItemCosts.getOrDefault(level, new ItemCost(ConfigCache.requiredItem, Math.min((10 + (2 * level)), 64))) :
                 new ItemCost(ConfigCache.requiredItem, Math.min((10 + (2 * level)), 64));
     }
 
     public static int getXPCost(int level) {
         final int individualXPCost = ConfigCache.individualLevelXPCosts.getOrDefault(level, 5);
-        final int xpCost = ConfigCache.xpMultiplier * level;
+        final int xpCost = SpelledConfig.COMMON.xpMultiplier.get() * level;
 
-        return ConfigCache.individualLevels ? individualXPCost : xpCost;
+        return SpelledConfig.COMMON.individualLevels.get() ? individualXPCost : xpCost;
     }
 
     public static void levelUpFailItems(PlayerEntity player) {

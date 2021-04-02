@@ -41,11 +41,14 @@ public class KeywordRegistry {
         return INSTANCE;
     }
 
-    public void initializeKeywords() {
+    public void reloadKeywords() {
         keywordMap.clear();
         typeList.clear();
         adjectiveList.clear();
+        initializeKeywords();
+    }
 
+    public void initializeKeywords() {
         Spelled.LOGGER.info("Initializing keywords");
 
         //Colors

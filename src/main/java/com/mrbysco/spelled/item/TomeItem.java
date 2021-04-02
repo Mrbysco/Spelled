@@ -5,6 +5,7 @@ import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.api.capability.ISpellData;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.config.ConfigCache;
+import com.mrbysco.spelled.config.SpelledConfig;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -61,7 +62,7 @@ public class TomeItem extends Item {
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        if(!ConfigCache.hideKnowledgeTomeInfo && stack.hasTag() && stack.getTag().contains(Reference.tomeUnlock)) {
+        if(!SpelledConfig.COMMON.hideKnowledgeTomeInfo.get() && stack.hasTag() && stack.getTag().contains(Reference.tomeUnlock)) {
             CompoundNBT tag = stack.getTag();
             tooltip.add(new TranslationTextComponent("spelled.tome.description", new StringTextComponent(tag.getString(Reference.tomeUnlock)).mergeStyle(TextFormatting.GOLD)).mergeStyle(TextFormatting.YELLOW));
         } else {

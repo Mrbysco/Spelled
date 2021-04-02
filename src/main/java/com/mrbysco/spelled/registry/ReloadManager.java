@@ -11,8 +11,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class ReloadManager implements IResourceManagerReloadListener {
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
-        KeywordRegistry.instance().initializeKeywords();
-        BehaviorRegistry.instance().initializeBehaviors();
+        KeywordRegistry.instance().reloadKeywords();
+        BehaviorRegistry.instance().reloadBehaviors();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)

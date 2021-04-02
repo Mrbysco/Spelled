@@ -9,6 +9,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.config.ConfigCache;
+import com.mrbysco.spelled.config.SpelledConfig;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
@@ -72,7 +73,7 @@ public class SpelledCommands {
 
     private static int setLevel(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
         int level = IntegerArgumentType.getInteger(ctx, "level");
-        if(level >= 0 && level <= ConfigCache.maxLevel) {
+        if(level >= 0 && level <= SpelledConfig.COMMON.maxLevel.get()) {
             for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
                 SpelledAPI.forceSetLevel(player, level);
                 ITextComponent levelText = new StringTextComponent(String.valueOf(level)).mergeStyle(TextFormatting.GOLD);
