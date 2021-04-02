@@ -108,11 +108,11 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.4-${curios_version}:api")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.4-${curios_version}")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-${curios_version}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-${curios_version}")
 
-    compileOnly fg.deobf("mezz.jei:jei-1.16.4:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.16.4:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-1.16.5:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:${jei_version}")
 
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
@@ -120,7 +120,7 @@ dependencies {
     compileOnly fg.deobf("xyz.brassgoggledcoders:PatchouliProvider:1.16.4-${patchouli_provider_version}")
     runtimeOnly fg.deobf("xyz.brassgoggledcoders:PatchouliProvider:1.16.4-${patchouli_provider_version}")
 
-    runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:3083395")
+    runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:3245050")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

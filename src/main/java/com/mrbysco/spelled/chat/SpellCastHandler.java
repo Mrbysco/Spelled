@@ -5,11 +5,12 @@ import com.mrbysco.spelled.api.capability.ISpellData;
 import com.mrbysco.spelled.api.capability.SpellDataCapability;
 import com.mrbysco.spelled.api.keywords.IKeyword;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
+import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.entity.SpellEntity;
-import com.mrbysco.spelled.registry.SpelledRegistry;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword.Type;
 import com.mrbysco.spelled.util.LevelHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -24,6 +25,7 @@ import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.Locale;
 
 public class SpellCastHandler {
@@ -57,6 +59,11 @@ public class SpellCastHandler {
                         String[] words = message.split("\\s+");
 
                         if(words.length >= 2 && canCastSpell(player, words)) {
+                            if(isOnCooldown(player)) {
+                                event.setCanceled(true);
+                                return;
+                            }
+
                             //Do our stuff
                             IKeyword lastKeyword = registry.getKeywordFromName(words[words.length - 1]);
                             World world = player.world;
@@ -89,8 +96,6 @@ public class SpellCastHandler {
                                         new HoverEvent(Action.SHOW_TEXT, descriptionComponent))).mergeStyle(TextFormatting.GOLD);
 
                                 IFormattableTextComponent finalMessage = new TranslationTextComponent("spelled.spell.cast", player.getDisplayName(), castComponent);
-                                event.setComponent(finalMessage);
-
                                 if(spell != null) {
                                     if(!player.abilities.isCreativeMode) {
                                         SpelledAPI.setCooldown(player, cooldown);
@@ -103,6 +108,19 @@ public class SpellCastHandler {
                                         spell.handleEntityHit(player);
                                         spell.remove(false);
                                     }
+                                }
+
+                                if(SpelledConfig.COMMON.proximity.get() > 0) {
+                                    event.setCanceled(true);
+                                    List<? extends PlayerEntity> playerEntities = world.getPlayers();
+                                    for(PlayerEntity nearbyPlayer : playerEntities) {
+                                        if(nearbyPlayer.getUniqueID().equals(player.getUniqueID()) ||
+                                                (nearbyPlayer.world.getDimensionKey() == world.getDimensionKey() && player.getDistanceSq(nearbyPlayer) <= SpelledConfig.COMMON.proximity.get())) {
+                                            player.sendMessage(finalMessage, player.getUniqueID());
+                                        }
+                                    }
+                                } else {
+                                    event.setComponent(finalMessage);
                                 }
                             }
                         }
@@ -134,10 +152,6 @@ public class SpellCastHandler {
         if(player.abilities.isCreativeMode)
             return true;
 
-        //Check if player is on cooldown
-        if(data.getCastCooldown() > 0)
-            return false;
-
         int maxLevelWord = 0;
         for (String word : words) {
             IKeyword keyword = registry.getKeywordFromName(word);
@@ -152,19 +166,35 @@ public class SpellCastHandler {
         return maxWordCount > 0 && maxWordCount <= words.length;
     }
 
+    public boolean isOnCooldown(ServerPlayerEntity player) {
+        ISpellData data = SpelledAPI.getSpellDataCap(player).orElse(new SpellDataCapability());
+        //Check if player is on cooldown
+        int cooldown = data.getCastCooldown();
+        if(cooldown > 0) {
+            IFormattableTextComponent finalMessage = new TranslationTextComponent("spelled.spell.cooldown", player.getDisplayName(), cooldown);
+            return true;
+        }
+        return false;
+    }
+
     public SpellEntity constructEntity(ServerPlayerEntity player, @Nonnull Type type) {
-        SpellEntity spell = SpelledRegistry.SPELL.get().create(player.world);
+        SpellEntity spell = new SpellEntity(player, player.world);
         spell.setSpellType(type.getId());
 
         return spell;
     }
 
     public SpellEntity shootSpell(ServerPlayerEntity player, SpellEntity spell) {
-        spell.shootSpell(player.getLookVec());
-        spell.rotationYaw = player.rotationYaw % 360.0F;
-        spell.rotationPitch = player.rotationPitch % 360.0F;
-        spell.setLocationAndAngles(player.getPosX(), player.getPosYEye() - (double) 0.2F, player.getPosZ(), player.rotationYaw, player.rotationPitch);
         spell.setShooter(player);
+        spell.setPosition(player.getPosX(), player.getPosYEye() - (double)0.1F, player.getPosZ());
+        switch(spell.getSpellType()) {
+            default: //Ball (Self is handled elsewhere)
+                spell.setDirectionAndMovement(player, player.rotationPitch, player.rotationYaw, 0.0F, 2.0F, 0.0F);
+                break;
+            case 1: //Projectile
+                spell.setDirectionAndMovement(player, player.rotationPitch, player.rotationYaw, 0.0F, 4.0F, 0.0F);
+                break;
+        }
 
         return spell;
     }

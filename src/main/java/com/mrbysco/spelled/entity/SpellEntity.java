@@ -5,6 +5,7 @@ import com.mrbysco.spelled.api.behavior.ISpellBehavior;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.DamagingProjectileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -19,6 +20,10 @@ import java.util.List;
 public class SpellEntity extends AbstractSpellEntity {
     public SpellEntity(EntityType<? extends DamagingProjectileEntity> entityType, World world) {
         super(entityType, world);
+    }
+
+    public SpellEntity(LivingEntity shooter, World worldIn) {
+        super(SpelledRegistry.SPELL.get(), shooter, worldIn);
     }
 
     public SpellEntity(FMLPlayMessages.SpawnEntity spawnEntity, World worldIn) {

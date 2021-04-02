@@ -82,7 +82,7 @@ public class SpelledCommands {
                 ctx.getSource().sendFeedback(text, true);
             }
         } else {
-            ITextComponent text = new TranslationTextComponent("spelled.commands.level.set.invalid", level)
+            ITextComponent text = new TranslationTextComponent("spelled.commands.level.set.invalid", level, SpelledConfig.COMMON.maxLevel)
                     .mergeStyle(TextFormatting.RED);
             ctx.getSource().sendFeedback(text, true);
         }

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class SpelledConfig {
     public static class Common {
-
+        public final IntValue proximity;
         public final BooleanValue individualLevels;
         public final BooleanValue individualItems;
         public final ConfigValue<? extends String> requiredItem;
@@ -28,6 +28,10 @@ public class SpelledConfig {
         Common(ForgeConfigSpec.Builder builder) {
             builder.comment("General settings")
                     .push("general");
+
+            proximity = builder
+                    .comment("Decides the range in which players around you can hear the spells cast (-1 for server spam) [Default: 16]")
+                    .defineInRange("proximity", 16, -1, Integer.MAX_VALUE);
 
             individualLevels = builder
                     .comment("Decides whether you use the individual level cost (Cost to level up can be different per level) or use a scaling level cost")

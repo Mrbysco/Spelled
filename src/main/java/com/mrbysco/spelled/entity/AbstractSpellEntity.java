@@ -1,9 +1,11 @@
 package com.mrbysco.spelled.entity;
 
+import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.projectile.DamagingProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
@@ -45,8 +47,14 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     private static final DataParameter<Boolean> INKY = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Float> SIZE_MULTIPLIER = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.FLOAT);
 
-    public AbstractSpellEntity(EntityType<? extends DamagingProjectileEntity> entityType, World world) {
-        super(entityType, world);
+    public AbstractSpellEntity(EntityType<? extends DamagingProjectileEntity> entityType, World worldIn) {
+        super(entityType, worldIn);
+    }
+
+    public AbstractSpellEntity(EntityType<? extends DamagingProjectileEntity> entityType, LivingEntity shooter, World worldIn) {
+        super(SpelledRegistry.SPELL.get(), worldIn);
+        this.setPosition(shooter.getPosX(), shooter.getPosYEye() - (double)0.1F, shooter.getPosZ());
+        this.setShooter(shooter);
     }
 
     @Override
@@ -79,7 +87,7 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     }
 
     public void setSpellType(int type) {
-        this.getDataManager().set(SPELL_TYPE, 0);
+        this.getDataManager().set(SPELL_TYPE, type);
     }
     public int getSpellType() {
         return this.getDataManager().get(SPELL_TYPE);
@@ -261,8 +269,6 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
 
     @Override
     public void tick() {
-        super.tick();
-
         if (ticksExisted > 200) {
             this.remove();
         }
@@ -276,6 +282,15 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
                 }
             }
         }
+        Vector3d vector3d = this.getMotion();
+        this.updatePitchAndYaw();
+        this.setMotion(vector3d.scale((double)0.99F));
+        if (!this.hasNoGravity()) {
+            Vector3d vector3d1 = this.getMotion();
+            this.setMotion(vector3d1.x, vector3d1.y - (double)0.02F, vector3d1.z);
+        }
+
+        super.tick();
     }
 
     public RayTraceResult rayTraceWater(Predicate<Entity> entityPredicate) {

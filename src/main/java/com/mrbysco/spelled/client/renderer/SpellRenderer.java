@@ -2,6 +2,7 @@ package com.mrbysco.spelled.client.renderer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.entity.SpellEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -17,8 +18,10 @@ import net.minecraft.util.math.vector.Vector3f;
 import java.awt.*;
 
 public class SpellRenderer extends EntityRenderer<SpellEntity> {
-    private static final ResourceLocation FIREBALL_TEXTURE = new ResourceLocation("textures/item/fire_charge.png");
-    private static final RenderType renderType = RenderType.getEntityCutoutNoCull(FIREBALL_TEXTURE);
+    private static final ResourceLocation BALL_TEXTURE = new ResourceLocation(Reference.MOD_ID,"textures/item/ball.png");
+    private static final ResourceLocation LAVA_TEXTURE = new ResourceLocation(Reference.MOD_ID,"textures/item/lava_ball.png");
+    private static final ResourceLocation WATER_TEXTURE = new ResourceLocation(Reference.MOD_ID,"textures/item/water_ball.png");
+    private static final RenderType renderType = RenderType.getEntityCutoutNoCull(BALL_TEXTURE);
     private static Color color = null;
 
     public SpellRenderer(EntityRendererManager renderManagerIn) {
@@ -55,7 +58,6 @@ public class SpellRenderer extends EntityRenderer<SpellEntity> {
             if (color != new Color(entityIn.getColor().getAsInt()))
                 color = new Color(entityIn.getColor().getAsInt());
         } else {
-            System.out.println("hey");
             if (color == null)
                 color = new Color(255, 255, 255, 255);
         }
@@ -71,6 +73,12 @@ public class SpellRenderer extends EntityRenderer<SpellEntity> {
      * Returns the location of an entity's texture.
      */
     public ResourceLocation getEntityTexture(SpellEntity entity) {
-        return FIREBALL_TEXTURE;
+        if(entity.isWater()) {
+            return WATER_TEXTURE;
+        }
+        if(entity.isLava()) {
+            return LAVA_TEXTURE;
+        }
+        return BALL_TEXTURE;
     }
 }
