@@ -111,7 +111,7 @@ public class AltarContainer extends Container {
                         if (!playerIn.abilities.isCreativeMode) {
                             stack.shrink(itemCost.getCost());
                             if (stack.isEmpty()) {
-                                this.tableInventory.setInventorySlotContents(1, ItemStack.EMPTY);
+                                this.tableInventory.setInventorySlotContents(0, ItemStack.EMPTY);
                             }
                         }
 
