@@ -247,7 +247,7 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
         boolean flag = false;
 
         int currentLevel = (this.container).currentLevel[0];
-        if ((this.container).levelCosts[currentLevel] != 0) {
+        if ((this.container).levelCosts.length > currentLevel && (this.container).levelCosts[currentLevel] != 0) {
             flag = true;
         }
 

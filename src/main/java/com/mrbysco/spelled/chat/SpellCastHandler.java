@@ -163,7 +163,7 @@ public class SpellCastHandler {
             return false;
 
         int maxWordCount = LevelHelper.getAllowedWordCount(currentLevel);
-        return maxWordCount > 0 && maxWordCount <= words.length;
+        return maxWordCount > 0 && words.length <= maxWordCount;
     }
 
     public boolean isOnCooldown(ServerPlayerEntity player) {
