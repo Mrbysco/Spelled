@@ -8,7 +8,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
-import com.mrbysco.spelled.config.ConfigCache;
 import com.mrbysco.spelled.config.SpelledConfig;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;

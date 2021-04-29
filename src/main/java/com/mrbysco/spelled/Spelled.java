@@ -21,7 +21,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -64,11 +63,11 @@ public class Spelled {
         MinecraftForge.EVENT_BUS.register(new SpellCastHandler());
         MinecraftForge.EVENT_BUS.register(new LootHandler());
         MinecraftForge.EVENT_BUS.register(new SpellHandler());
-        MinecraftForge.EVENT_BUS.register(this);
 
         MinecraftForge.EVENT_BUS.addListener(this::onCommandRegister);
+        MinecraftForge.EVENT_BUS.addListener(this::serverStart);
 
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(ClientHandler::onClientSetupEvent));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(ClientHandler::onClientSetupEvent));
     }
 
     private void setup(final FMLCommonSetupEvent event) {
@@ -81,7 +80,6 @@ public class Spelled {
         SpelledCommands.initializeCommands(event.getDispatcher());
     }
 
-    @SubscribeEvent
     public void serverStart(FMLServerStartingEvent event) {
         KeywordRegistry.instance().initializeKeywords();
         BehaviorRegistry.instance().initializeBehaviors();

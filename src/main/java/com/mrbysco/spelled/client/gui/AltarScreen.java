@@ -5,7 +5,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrbysco.spelled.Reference;
-import com.mrbysco.spelled.config.ConfigCache;
 import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.container.AltarContainer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
