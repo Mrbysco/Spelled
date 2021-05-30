@@ -7,7 +7,7 @@ Text based magic mod
 
 ## License ##
 * Spelled is licensed under the MIT License
-  - (c) 2020 Mrbysco, Kara2810
+  - (c) 2021 Mrbysco, Kara2810
   - [![License](https://img.shields.io/badge/License-MIT-red.svg?style=flat)](http://opensource.org/licenses/MIT)
 
 ## Downloads ##
