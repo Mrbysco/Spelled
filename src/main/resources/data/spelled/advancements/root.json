@@ -15,11 +15,6 @@
     "hidden": false,
     "background": "minecraft:textures/block/bookshelf.png"
   },
-  "rewards": {
-    "loot": [
-      "spelled:advancements/manual"
-    ]
-  },
   "criteria": {
     "air": {
       "trigger": "minecraft:enter_block",

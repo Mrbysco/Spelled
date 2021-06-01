@@ -3,9 +3,12 @@ package com.mrbysco.spelled.handler;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.api.keywords.IKeyword;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
+import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.merchant.villager.VillagerTrades.ITrade;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MerchantOffer;
@@ -16,13 +19,39 @@ import net.minecraft.loot.LootPool;
 import net.minecraft.loot.conditions.RandomChance;
 import net.minecraft.loot.functions.SetNBT;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.village.WandererTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Random;
 
 public class LootHandler {
+
+    private static final String hasBookTag = Reference.MOD_PREFIX + ":hasBook";
+
+    @SubscribeEvent
+    public void firstJoin(PlayerLoggedInEvent event) {
+        PlayerEntity player = event.getPlayer();
+
+        if(!player.world.isRemote && SpelledConfig.COMMON.startWithBook.get()) {
+            CompoundNBT playerData = player.getPersistentData();
+
+            if(!playerData.getBoolean(hasBookTag)) {
+                Item guideBook = ForgeRegistries.ITEMS.getValue(new ResourceLocation("patchouli", "guide_book"));
+                if(guideBook != null) {
+                    ItemStack guideStack = new ItemStack(guideBook);
+                    CompoundNBT tag = new CompoundNBT();
+                    tag.putString("patchouli:book", "spelled:knowledge_tome");
+                    guideStack.setTag(tag);
+                    player.inventory.addItemStackToInventory(guideStack);
+                    playerData.putBoolean(hasBookTag, true);
+                }
+            }
+        }
+    }
 
     @SubscribeEvent
     public void onLootTableLoad(LootTableLoadEvent event) {

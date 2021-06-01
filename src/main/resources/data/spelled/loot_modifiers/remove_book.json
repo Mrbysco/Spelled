@@ -1,8 +1,0 @@
-{
-  "type": "spelled:remove_book",
-  "conditions": [
-    {
-      "condition": "spelled:book_disabled"
-    }
-  ]
-}
