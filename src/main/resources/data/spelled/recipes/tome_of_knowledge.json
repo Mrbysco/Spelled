@@ -1,0 +1,16 @@
+{
+  "result": {
+    "type": "forge:nbt",
+    "item": "patchouli:guide_book",
+    "nbt": "{\"patchouli:book\": \"spelled:knowledge_tome\"}"
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:storage_blocks/lapis"
+    },
+    {
+      "item": "minecraft:book"
+    }
+  ]
+}

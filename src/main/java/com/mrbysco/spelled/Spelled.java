@@ -14,6 +14,7 @@ import com.mrbysco.spelled.handler.LootHandler;
 import com.mrbysco.spelled.handler.SpellHandler;
 import com.mrbysco.spelled.packets.PacketHandler;
 import com.mrbysco.spelled.registry.ReloadManager;
+import com.mrbysco.spelled.registry.SpelledConditions;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -72,6 +73,7 @@ public class Spelled {
 
     private void setup(final FMLCommonSetupEvent event) {
         PacketHandler.registerPackets();
+        SpelledConditions.registerLootConditions();
 
         CapabilityManager.INSTANCE.register(ISpellData.class, new SpellDataStorage(), SpellDataCapability::new);
     }

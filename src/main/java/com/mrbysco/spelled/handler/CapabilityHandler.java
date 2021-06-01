@@ -14,7 +14,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-
 public class CapabilityHandler {
     @SubscribeEvent
     public void attachCapabilityEntity(AttachCapabilitiesEvent<Entity> event) {
@@ -30,7 +29,6 @@ public class CapabilityHandler {
             SpelledAPI.syncCap((ServerPlayerEntity) player);
         }
     }
-
 
     @SubscribeEvent
     public void onDeath(PlayerEvent.Clone event) {

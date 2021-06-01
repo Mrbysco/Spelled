@@ -2,6 +2,7 @@
   "type": "minecraft:advancement_reward",
   "pools": [
     {
+      "name": "book",
       "rolls": 1,
       "entries": [
         {
