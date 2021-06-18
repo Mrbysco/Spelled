@@ -7,12 +7,14 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.container.AltarContainer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.model.BookModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -56,7 +58,10 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (bookHovered(mouseX, mouseY)) {
-            this.minecraft.playerController.sendEnchantPacket((this.container).windowId, 0);
+            Minecraft mc = this.minecraft;
+            if(mc != null && mc.playerController != null) {
+                mc.playerController.sendEnchantPacket((this.container).windowId, 0);
+            }
             return true;
         }
 
@@ -70,6 +75,7 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
     }
 
     protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
+        PlayerEntity player = this.minecraft != null ? this.minecraft.player : null;
         RenderHelper.setupGuiFlatDiffuseLighting();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(SpelledConfig.COMMON.requireItems.get() ? ALTAR_GUI_TEXTURE : ALTAR_GUI_SLOTLESS_TEXTURE);
@@ -122,8 +128,11 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
         int l1 = (this.container).levelCosts[currentLevel];
 
         int itemAmountCost = (this.container).itemAmountCosts[currentLevel];
-        boolean itemFlag = SpelledConfig.COMMON.requireItems.get() ? this.container.getCostStackCount() < itemAmountCost : false;
-        boolean flag = ((itemFlag || this.minecraft.player.experienceLevel < l1) && !this.minecraft.player.abilities.isCreativeMode);
+        boolean itemFlag = SpelledConfig.COMMON.requireItems.get() && this.container.getCostStackCount() < itemAmountCost;
+        boolean flag = true;
+        if(player != null) {
+            flag = ((itemFlag || player.experienceLevel < l1) && !player.abilities.isCreativeMode);
+        }
         boolean bookHovered = bookHovered(x, y);
 
         RenderSystem.enableRescaleNormal();
@@ -138,12 +147,11 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
             if(flag) {
                 red = 0.6F;
                 green = 0.4F;
-                blue = 0.4F;
             } else {
                 red = 0.4F;
                 green = 0.6F;
-                blue = 0.4F;
             }
+            blue = 0.4F;
         } else {
             if(flag) {
                 red = 0.4F;
@@ -171,7 +179,7 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         String s = "" + l1;
         int j2;
-        if (((itemFlag || this.minecraft.player.experienceLevel < l1) && !this.minecraft.player.abilities.isCreativeMode)) {
+        if (player != null && ((itemFlag || player.experienceLevel < l1) && !player.abilities.isCreativeMode)) {
             j2 = 4226832;
         } else {
             j2 = 8453920;
@@ -181,18 +189,21 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
     }
 
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        partialTicks = this.minecraft.getRenderPartialTicks();
+        PlayerEntity player = this.minecraft != null ? this.minecraft.player : null;
+        if (this.minecraft != null) {
+            partialTicks = this.minecraft.getRenderPartialTicks();
+        }
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
-        boolean flag = this.minecraft.player.abilities.isCreativeMode;
+        boolean flag = player != null && player.abilities.isCreativeMode;
 
         if (bookHovered(mouseX, mouseY) && !flag) {
             final int currentLevel = (this.container).currentLevel[0];
             final int levelCost = (this.container).levelCosts[currentLevel];
 
             List<ITextComponent> list = Lists.newArrayList();
-            boolean noXP = this.minecraft.player.experienceLevel < levelCost;
+            boolean noXP = (player == null ? 0 : player.experienceLevel) < levelCost;
 
             IFormattableTextComponent iformattabletextcomponent;
             if(noXP) {
