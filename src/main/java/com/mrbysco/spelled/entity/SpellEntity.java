@@ -31,18 +31,18 @@ public class SpellEntity extends AbstractSpellEntity {
     }
 
     @Override
-    protected void onImpact(RayTraceResult result) {
-        if (!this.world.isRemote) {
-            super.onImpact(result);
+    protected void onHit(RayTraceResult result) {
+        if (!this.level.isClientSide) {
+            super.onHit(result);
             explode();
-            this.world.addParticle(getParticle(), this.getPosX(), this.getPosY(), this.getPosZ(), 1.0D, 0.0D, 0.0D);
+            this.level.addParticle(getTrailParticle(), this.getX(), this.getY(), this.getZ(), 1.0D, 0.0D, 0.0D);
             this.remove();
         }
     }
 
     @Override
-    protected void onEntityHit(EntityRayTraceResult entityResult) {
-        super.onEntityHit(entityResult);
+    protected void onHitEntity(EntityRayTraceResult entityResult) {
+        super.onHitEntity(entityResult);
         Entity hitEntity = entityResult.getEntity();
         this.handleEntityHit(hitEntity);
     }
@@ -64,9 +64,9 @@ public class SpellEntity extends AbstractSpellEntity {
 
     //On block hit
     @Override
-    protected void func_230299_a_(BlockRayTraceResult blockResult) {
-        super.func_230299_a_(blockResult);
-        BlockPos pos = blockResult.getPos();
+    protected void onHitBlock(BlockRayTraceResult blockResult) {
+        super.onHitBlock(blockResult);
+        BlockPos pos = blockResult.getBlockPos();
         List<BlockPos> multiplePos = getSizedPos(pos);
         HashMap<String, ISpellBehavior> behaviors = BehaviorRegistry.instance().getBehaviors();
 
@@ -75,7 +75,7 @@ public class SpellEntity extends AbstractSpellEntity {
             ISpellBehavior behavior = behaviors.get(action);
             if(behavior != null) {
                 for(BlockPos boxPos : multiplePos) {
-                    behavior.onBlockHit(this, boxPos, boxPos.offset(blockResult.getFace()));
+                    behavior.onBlockHit(this, boxPos, boxPos.relative(blockResult.getDirection()));
                 }
             }
         }

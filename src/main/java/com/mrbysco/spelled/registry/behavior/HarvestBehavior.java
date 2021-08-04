@@ -15,11 +15,11 @@ public class HarvestBehavior extends BaseBehavior {
 
     @Override
     public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
-        World world = spell.world;
+        World world = spell.level;
         BlockState hitState = world.getBlockState(pos);
-        float hardness = hitState.getBlockHardness(world, pos);
+        float hardness = hitState.getDestroySpeed(world, pos);
         if(hardness > 0.0F && hitState.getHarvestLevel() <= 2) {
-            spell.world.destroyBlock(pos, true);
+            spell.level.destroyBlock(pos, true);
         }
     }
 }

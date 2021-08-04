@@ -36,7 +36,7 @@ public class LootHandler {
     public void firstJoin(PlayerLoggedInEvent event) {
         PlayerEntity player = event.getPlayer();
 
-        if(!player.world.isRemote && SpelledConfig.COMMON.startWithBook.get()) {
+        if(!player.level.isClientSide && SpelledConfig.COMMON.startWithBook.get()) {
             CompoundNBT playerData = player.getPersistentData();
 
             if(!playerData.getBoolean(hasBookTag)) {
@@ -46,7 +46,7 @@ public class LootHandler {
                     CompoundNBT tag = new CompoundNBT();
                     tag.putString("patchouli:book", "spelled:knowledge_tome");
                     guideStack.setTag(tag);
-                    player.inventory.addItemStackToInventory(guideStack);
+                    player.inventory.add(guideStack);
                     playerData.putBoolean(hasBookTag, true);
                 }
             }
@@ -78,15 +78,15 @@ public class LootHandler {
     }
 
     public static LootPool getInjectPool() {
-        LootPool.Builder builder = LootPool.builder();
+        LootPool.Builder builder = LootPool.lootPool();
         KeywordRegistry registry = KeywordRegistry.instance();
         if(registry.getAdjectives().isEmpty()) {
             registry.initializeKeywords();
         }
         for(String adjective : registry.getAdjectives()) {
-            builder.addEntry(injectTome(adjective));
+            builder.add(injectTome(adjective));
         }
-        builder.addEntry(EmptyLootEntry.func_216167_a().weight(1));
+        builder.add(EmptyLootEntry.emptyItem().setWeight(1));
 
        builder.bonusRolls(0, 1)
                .name("spelled_inject");
@@ -99,10 +99,10 @@ public class LootHandler {
         CompoundNBT tag = new CompoundNBT();
         tag.putString(Reference.tomeUnlock, adjective);
         stack.setTag(tag);
-        LootEntry.Builder<?> entry = ItemLootEntry.builder(SpelledRegistry.KNOWLEDGE_TOME.get())
-                .acceptFunction(SetNBT.builder(tag))
-                .acceptCondition(RandomChance.builder(0.2F))
-                .weight(1);
+        LootEntry.Builder<?> entry = ItemLootEntry.lootTableItem(SpelledRegistry.KNOWLEDGE_TOME.get())
+                .apply(SetNBT.setTag(tag))
+                .when(RandomChance.randomChance(0.2F))
+                .setWeight(1);
 
         return entry;
     }

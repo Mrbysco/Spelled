@@ -16,15 +16,15 @@ public class FireBehavior extends BaseBehavior {
 
     @Override
     public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
-        BlockState offState = spell.world.getBlockState(offPos);
+        BlockState offState = spell.level.getBlockState(offPos);
 
         if (offState.getMaterial().isReplaceable()) {
-            spell.world.setBlockState(offPos, AbstractFireBlock.getFireForPlacement(spell.world, offPos));
+            spell.level.setBlockAndUpdate(offPos, AbstractFireBlock.getState(spell.level, offPos));
         }
     }
 
     @Override
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        entity.setFire(5);
+        entity.setSecondsOnFire(5);
     }
 }

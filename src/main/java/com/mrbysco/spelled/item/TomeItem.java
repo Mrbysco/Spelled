@@ -23,15 +23,17 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.item.Item.Properties;
+
 public class TomeItem extends Item {
     public TomeItem(Properties builder) {
         super(builder);
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        if(!worldIn.isRemote) {
-            ItemStack itemstack = playerIn.getHeldItem(handIn);
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        if(!worldIn.isClientSide) {
+            ItemStack itemstack = playerIn.getItemInHand(handIn);
 
             if(itemstack.hasTag() && itemstack.getTag() != null && itemstack.getTag().contains(Reference.tomeUnlock)) {
                 CompoundNBT tag = itemstack.getTag();
@@ -40,14 +42,14 @@ public class TomeItem extends Item {
                 if(cap.isPresent()) {
                     String word = tag.getString(Reference.tomeUnlock);
                     if(!data.knowsKeyword(word)) {
-                        playerIn.setActiveHand(handIn);
+                        playerIn.startUsingItem(handIn);
                         SpelledAPI.unlockKeyword((ServerPlayerEntity)playerIn, word);
                         SpelledAPI.syncCap((ServerPlayerEntity) playerIn);
-                        playerIn.sendStatusMessage(new TranslationTextComponent("spelled.tome.success"), true);
-                        return ActionResult.resultConsume(itemstack);
+                        playerIn.displayClientMessage(new TranslationTextComponent("spelled.tome.success"), true);
+                        return ActionResult.consume(itemstack);
                     } else {
-                        playerIn.sendStatusMessage(new TranslationTextComponent("spelled.tome.fail"), true);
-                        return ActionResult.resultFail(itemstack);
+                        playerIn.displayClientMessage(new TranslationTextComponent("spelled.tome.fail"), true);
+                        return ActionResult.fail(itemstack);
                     }
                 }
             } else {
@@ -56,19 +58,19 @@ public class TomeItem extends Item {
                 itemstack.setTag(tag);
             }
         }
-        return super.onItemRightClick(worldIn, playerIn, handIn);
+        return super.use(worldIn, playerIn, handIn);
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if(!SpelledConfig.COMMON.hideKnowledgeTomeInfo.get()) {
             if (stack.hasTag() && stack.getTag().contains(Reference.tomeUnlock)) {
                 CompoundNBT tag = stack.getTag();
-                tooltip.add(new TranslationTextComponent("spelled.tome.description", new StringTextComponent(tag.getString(Reference.tomeUnlock)).mergeStyle(TextFormatting.GOLD)).mergeStyle(TextFormatting.YELLOW));
+                tooltip.add(new TranslationTextComponent("spelled.tome.description", new StringTextComponent(tag.getString(Reference.tomeUnlock)).withStyle(TextFormatting.GOLD)).withStyle(TextFormatting.YELLOW));
             } else {
-                tooltip.add(new TranslationTextComponent("spelled.tome.description.invalid").mergeStyle(TextFormatting.RED));
+                tooltip.add(new TranslationTextComponent("spelled.tome.description.invalid").withStyle(TextFormatting.RED));
             }
         }
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 }

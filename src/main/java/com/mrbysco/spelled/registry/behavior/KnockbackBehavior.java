@@ -14,8 +14,8 @@ public class KnockbackBehavior extends BaseBehavior {
 
     @Override
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        Vector3d vector3d = spell.getMotion().mul(1.0D, 0.0D, 1.0D).normalize().scale((double)1 * 0.6D);
-        if (vector3d.lengthSquared() > 0.0D)
-            entity.addVelocity(vector3d.x, 0.1D, vector3d.z);
+        Vector3d vector3d = spell.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale((double)1 * 0.6D);
+        if (vector3d.lengthSqr() > 0.0D)
+            entity.push(vector3d.x, 0.1D, vector3d.z);
     }
 }
