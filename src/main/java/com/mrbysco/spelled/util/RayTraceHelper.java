@@ -1,15 +1,15 @@
 package com.mrbysco.spelled.util;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,26 +21,26 @@ import java.util.function.Predicate;
 
 public class RayTraceHelper {
 
-    private static final Predicate<Entity> defaultFilter = e -> EntityPredicates.ENTITY_STILL_ALIVE.test(e) && EntityPredicates.NO_SPECTATORS.test(e);
+    private static final Predicate<Entity> defaultFilter = e -> EntitySelector.ENTITY_STILL_ALIVE.test(e) && EntitySelector.NO_SPECTATORS.test(e);
 
-    public static <E extends Entity> RayTraceResult getLookingAt(Class<E> clazz, final Entity mainEntity, double distance, final Predicate<E> entityPredicate) {
+    public static <E extends Entity> HitResult getLookingAt(Class<E> clazz, final Entity mainEntity, double distance, final Predicate<E> entityPredicate) {
         Predicate<E> finalFilter = e -> e != mainEntity && defaultFilter.test(e) && e.isPickable() && entityPredicate.test(e);
-        RayTraceResult position = null;
+        HitResult position = null;
         if (mainEntity.level != null) {
-            Vector3d look = mainEntity.getLookAngle().scale(distance);
-            Vector3d from = mainEntity.position().add(0, mainEntity.getEyeHeight(), 0);
-            Vector3d to = from.add(look);
+            Vec3 look = mainEntity.getLookAngle().scale(distance);
+            Vec3 from = mainEntity.position().add(0, mainEntity.getEyeHeight(), 0);
+            Vec3 to = from.add(look);
             position = rayTraceBlocksAndEntities(clazz, mainEntity, from, to, finalFilter);
         }
         return position;
     }
 
-    public static BlockRayTraceResult rayTraceBlocks(Entity entity, Vector3d from, Vector3d to) {
-        RayTraceContext context = new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, entity);
+    public static BlockHitResult rayTraceBlocks(Entity entity, Vec3 from, Vec3 to) {
+        ClipContext context = new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity);
         return entity.getCommandSenderWorld().clip(context);
     }
 
-    public static <E extends Entity> EntityRayTraceResult rayTraceEntities(Class<E> clazz, World world, Vector3d from, Vector3d to, Vector3d aaExpansion, float aaGrowth,
+    public static <E extends Entity> EntityHitResult rayTraceEntities(Class<E> clazz, Level world, Vec3 from, Vec3 to, Vec3 aaExpansion, float aaGrowth,
                                                                            float entityExpansion, final Predicate<E> filter) {
 
         Predicate<E> predicate = input -> defaultFilter.test(input) && filter.test(input);
@@ -48,13 +48,13 @@ public class RayTraceHelper {
         Entity nearest = null;
         double distance = 0;
 
-        AxisAlignedBB bb = new AxisAlignedBB(new BlockPos(from), new BlockPos(to))
+        AABB bb = new AABB(new BlockPos(from), new BlockPos(to))
                 .expandTowards(aaExpansion.x, aaExpansion.y, aaExpansion.z)
                 .inflate(aaGrowth);
         List<E> entities = world.getEntitiesOfClass(clazz, bb, predicate);
         for (Entity entity : entities) {
-            AxisAlignedBB entityBB = entity.getBoundingBox().inflate(entityExpansion);
-            Optional<Vector3d> intercept = entityBB.clip(from, to);
+            AABB entityBB = entity.getBoundingBox().inflate(entityExpansion);
+            Optional<Vec3> intercept = entityBB.clip(from, to);
             if (intercept.isPresent()) {
                 double dist = from.distanceTo(intercept.get());
                 if (dist < distance || distance == 0.0D) {
@@ -65,18 +65,18 @@ public class RayTraceHelper {
         }
 
         if (nearest != null)
-            return new EntityRayTraceResult(nearest);
+            return new EntityHitResult(nearest);
         return null;
     }
 
-    private static <E extends Entity> RayTraceResult rayTraceBlocksAndEntities(Class<E> clazz, Entity mainEntity, Vector3d from, Vector3d to,final Predicate<E> entityFilter) {
-        BlockRayTraceResult block = rayTraceBlocks(mainEntity, from, to);
-        if (block.getType() == RayTraceResult.Type.BLOCK)
+    private static <E extends Entity> HitResult rayTraceBlocksAndEntities(Class<E> clazz, Entity mainEntity, Vec3 from, Vec3 to,final Predicate<E> entityFilter) {
+        BlockHitResult block = rayTraceBlocks(mainEntity, from, to);
+        if (block.getType() == HitResult.Type.BLOCK)
             to = block.getLocation();
 
-        EntityRayTraceResult entity = rayTraceEntities(clazz, mainEntity.getCommandSenderWorld(), from, to, Vector3d.ZERO, 0.5f, 0.5f, entityFilter);
+        EntityHitResult entity = rayTraceEntities(clazz, mainEntity.getCommandSenderWorld(), from, to, Vec3.ZERO, 0.5f, 0.5f, entityFilter);
 
-        if (block.getType() == RayTraceResult.Type.MISS) {
+        if (block.getType() == HitResult.Type.MISS) {
             return entity;
         } else {
             if (entity == null) {

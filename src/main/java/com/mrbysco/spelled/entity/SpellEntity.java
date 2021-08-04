@@ -3,35 +3,35 @@ package com.mrbysco.spelled.entity;
 import com.mrbysco.spelled.api.behavior.BehaviorRegistry;
 import com.mrbysco.spelled.api.behavior.ISpellBehavior;
 import com.mrbysco.spelled.registry.SpelledRegistry;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.DamagingProjectileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 
 import java.util.HashMap;
 import java.util.List;
 
 public class SpellEntity extends AbstractSpellEntity {
-    public SpellEntity(EntityType<? extends DamagingProjectileEntity> entityType, World world) {
+    public SpellEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level world) {
         super(entityType, world);
     }
 
-    public SpellEntity(LivingEntity shooter, World worldIn) {
+    public SpellEntity(LivingEntity shooter, Level worldIn) {
         super(SpelledRegistry.SPELL.get(), shooter, worldIn);
     }
 
-    public SpellEntity(FMLPlayMessages.SpawnEntity spawnEntity, World worldIn) {
+    public SpellEntity(FMLPlayMessages.SpawnEntity spawnEntity, Level worldIn) {
         this(SpelledRegistry.SPELL.get(), worldIn);
     }
 
     @Override
-    protected void onHit(RayTraceResult result) {
+    protected void onHit(HitResult result) {
         if (!this.level.isClientSide) {
             super.onHit(result);
             explode();
@@ -41,7 +41,7 @@ public class SpellEntity extends AbstractSpellEntity {
     }
 
     @Override
-    protected void onHitEntity(EntityRayTraceResult entityResult) {
+    protected void onHitEntity(EntityHitResult entityResult) {
         super.onHitEntity(entityResult);
         Entity hitEntity = entityResult.getEntity();
         this.handleEntityHit(hitEntity);
@@ -64,7 +64,7 @@ public class SpellEntity extends AbstractSpellEntity {
 
     //On block hit
     @Override
-    protected void onHitBlock(BlockRayTraceResult blockResult) {
+    protected void onHitBlock(BlockHitResult blockResult) {
         super.onHitBlock(blockResult);
         BlockPos pos = blockResult.getBlockPos();
         List<BlockPos> multiplePos = getSizedPos(pos);

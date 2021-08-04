@@ -1,36 +1,36 @@
 package com.mrbysco.spelled.client.gui;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.container.AltarContainer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.model.BookModel;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.MultiBufferSource;
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.client.model.BookModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.List;
 import java.util.Random;
 
-public class AltarScreen extends ContainerScreen<AltarContainer> {
+public class AltarScreen extends AbstractContainerScreen<AltarContainer> {
     private static final ResourceLocation ALTAR_GUI_TEXTURE = new ResourceLocation(Reference.MOD_PREFIX + "textures/gui/container/leveling_altar.png");
     private static final ResourceLocation ALTAR_GUI_SLOTLESS_TEXTURE = new ResourceLocation(Reference.MOD_PREFIX + "textures/gui/container/leveling_altar_no_slot.png");
 
@@ -47,7 +47,7 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
     public float oOpen;
     private ItemStack last = ItemStack.EMPTY;
 
-    public AltarScreen(AltarContainer container, PlayerInventory playerInventory, ITextComponent textComponent) {
+    public AltarScreen(AltarContainer container, Inventory playerInventory, Component textComponent) {
         super(container, playerInventory, textComponent);
     }
 
@@ -74,9 +74,9 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
         return this.isHovering(74, 20, 28, 22, (double) mouseX, (double) mouseY) && levelCost > 0;
     }
 
-    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
-        PlayerEntity player = this.minecraft != null ? this.minecraft.player : null;
-        RenderHelper.setupForFlatItems();
+    protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
+        Player player = this.minecraft != null ? this.minecraft.player : null;
+        Lighting.setupForFlatItems();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bind(SpelledConfig.COMMON.requireItems.get() ? ALTAR_GUI_TEXTURE : ALTAR_GUI_SLOTLESS_TEXTURE);
         int i = (this.width - this.imageWidth) / 2;
@@ -91,7 +91,7 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
         RenderSystem.multMatrix(Matrix4f.perspective(90.0D, 1.3333334F, 9.0F, 80.0F));
         RenderSystem.matrixMode(5888);
         matrixStack.pushPose();
-        MatrixStack.Entry matrixstack$entry = matrixStack.last();
+        PoseStack.Pose matrixstack$entry = matrixStack.last();
         matrixstack$entry.pose().setIdentity();
         matrixstack$entry.normal().setIdentity();
         matrixStack.translate(0.0D, (double)3.3F, 1984.0D);
@@ -99,15 +99,15 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
         matrixStack.scale(5.0F, 5.0F, 5.0F);
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(20.0F));
-        float f1 = MathHelper.lerp(partialTicks, this.oOpen, this.open);
+        float f1 = Mth.lerp(partialTicks, this.oOpen, this.open);
         matrixStack.translate((double)((1.0F - f1) * 0.2F), (double)((1.0F - f1) * 0.1F), (double)((1.0F - f1) * 0.25F));
         float f2 = -(1.0F - f1) * 90.0F - 90.0F;
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(f2));
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
-        float f3 = MathHelper.lerp(partialTicks, this.oFlip, this.flip) + 0.25F;
-        float f4 = MathHelper.lerp(partialTicks, this.oFlip, this.flip) + 0.75F;
-        f3 = (f3 - (float)MathHelper.fastFloor((double)f3)) * 1.6F - 0.3F;
-        f4 = (f4 - (float)MathHelper.fastFloor((double)f4)) * 1.6F - 0.3F;
+        float f3 = Mth.lerp(partialTicks, this.oFlip, this.flip) + 0.25F;
+        float f4 = Mth.lerp(partialTicks, this.oFlip, this.flip) + 0.75F;
+        f3 = (f3 - (float)Mth.fastFloor((double)f3)) * 1.6F - 0.3F;
+        f4 = (f4 - (float)Mth.fastFloor((double)f4)) * 1.6F - 0.3F;
         if (f3 < 0.0F) {
             f3 = 0.0F;
         }
@@ -137,8 +137,8 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
 
         RenderSystem.enableRescaleNormal();
         MODEL_BOOK.setupAnim(0.0F, f3, f4, f1);
-        IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
-        IVertexBuilder ivertexbuilder = irendertypebuffer$impl.getBuffer(MODEL_BOOK.renderType(ALTAR_BOOK_TEXTURE));
+        MultiBufferSource.BufferSource irendertypebuffer$impl = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        VertexConsumer ivertexbuilder = irendertypebuffer$impl.getBuffer(MODEL_BOOK.renderType(ALTAR_BOOK_TEXTURE));
         float red = 1.0F;
         float green = 1.0F;
         float blue = 1.0F;
@@ -167,7 +167,7 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
         RenderSystem.viewport(0, 0, this.minecraft.getWindow().getWidth(), this.minecraft.getWindow().getHeight());
         RenderSystem.popMatrix();
         RenderSystem.matrixMode(5888);
-        RenderHelper.setupFor3DItems();
+        Lighting.setupFor3DItems();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 
@@ -188,8 +188,8 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
         drawCenteredString(matrixStack, this.font, s, (k1 + 8), (j + 44), j2 );
     }
 
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        PlayerEntity player = this.minecraft != null ? this.minecraft.player : null;
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        Player player = this.minecraft != null ? this.minecraft.player : null;
         if (this.minecraft != null) {
             partialTicks = this.minecraft.getFrameTime();
         }
@@ -202,17 +202,17 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
             final int currentLevel = (this.menu).currentLevel[0];
             final int levelCost = (this.menu).levelCosts[currentLevel];
 
-            List<ITextComponent> list = Lists.newArrayList();
+            List<Component> list = Lists.newArrayList();
             boolean noXP = (player == null ? 0 : player.experienceLevel) < levelCost;
 
-            IFormattableTextComponent iformattabletextcomponent;
+            MutableComponent iformattabletextcomponent;
             if(noXP) {
-                iformattabletextcomponent = new TranslationTextComponent(Reference.MOD_PREFIX + "container.altar.level.requirement", levelCost);
+                iformattabletextcomponent = new TranslatableComponent(Reference.MOD_PREFIX + "container.altar.level.requirement", levelCost);
             } else {
                 if (levelCost == 1) {
-                    iformattabletextcomponent = new TranslationTextComponent(Reference.MOD_PREFIX + "container.altar.level.one");
+                    iformattabletextcomponent = new TranslatableComponent(Reference.MOD_PREFIX + "container.altar.level.one");
                 } else {
-                    iformattabletextcomponent = new TranslationTextComponent(Reference.MOD_PREFIX + "container.altar.level.many", levelCost);
+                    iformattabletextcomponent = new TranslatableComponent(Reference.MOD_PREFIX + "container.altar.level.many", levelCost);
                 }
             }
 
@@ -222,15 +222,15 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
                 final int itemAmountCost = (this.menu).itemAmountCosts[currentLevel];
                 boolean noItems = stackCount <= itemAmountCost;
 
-                list.add(iformattabletextcomponent.withStyle(noXP ? TextFormatting.RED :  TextFormatting.GREEN));
-                IFormattableTextComponent iformattabletextcomponent1;
+                list.add(iformattabletextcomponent.withStyle(noXP ? ChatFormatting.RED :  ChatFormatting.GREEN));
+                MutableComponent iformattabletextcomponent1;
                 if(noItems) {
-                    iformattabletextcomponent1 = new TranslationTextComponent(Reference.MOD_PREFIX + "container.altar.item.requirement", itemAmountCost, itemCost.getDescription());
+                    iformattabletextcomponent1 = new TranslatableComponent(Reference.MOD_PREFIX + "container.altar.item.requirement", itemAmountCost, itemCost.getDescription());
                 } else {
-                    iformattabletextcomponent1 = new TranslationTextComponent(Reference.MOD_PREFIX + "container.altar.item", itemAmountCost, itemCost.getDescription());
+                    iformattabletextcomponent1 = new TranslatableComponent(Reference.MOD_PREFIX + "container.altar.item", itemAmountCost, itemCost.getDescription());
                 }
 
-                list.add(iformattabletextcomponent1.withStyle(noItems ? TextFormatting.RED : TextFormatting.GREEN));
+                list.add(iformattabletextcomponent1.withStyle(noItems ? ChatFormatting.RED : ChatFormatting.GREEN));
             }
 
             this.renderComponentTooltip(matrixStack, list, mouseX, mouseY);
@@ -267,10 +267,10 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
             this.open -= 0.2F;
         }
 
-        this.open = MathHelper.clamp(this.open, 0.0F, 1.0F);
+        this.open = Mth.clamp(this.open, 0.0F, 1.0F);
         float f1 = (this.flipT - this.flip) * 0.4F;
         float f = 0.2F;
-        f1 = MathHelper.clamp(f1, -0.2F, 0.2F);
+        f1 = Mth.clamp(f1, -0.2F, 0.2F);
         this.flipA += (f1 - this.flipA) * 0.9F;
         this.flip += this.flipA;
     }

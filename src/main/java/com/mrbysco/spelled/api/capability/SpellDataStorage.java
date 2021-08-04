@@ -1,9 +1,9 @@
 package com.mrbysco.spelled.api.capability;
 
 import com.mrbysco.spelled.Reference;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 
 import javax.annotation.Nullable;
@@ -12,8 +12,8 @@ public class SpellDataStorage implements Capability.IStorage<ISpellData> {
 
     @Nullable
     @Override
-    public INBT writeNBT(Capability<ISpellData> capability, ISpellData instance, Direction side) {
-        CompoundNBT tag = new CompoundNBT();
+    public Tag writeNBT(Capability<ISpellData> capability, ISpellData instance, Direction side) {
+        CompoundTag tag = new CompoundTag();
         tag.putInt(Reference.characterLevel, instance.getLevel());
         tag.put(Reference.characterUnlocks, instance.getUnlocked());
         tag.putInt(Reference.characterCooldown, instance.getCastCooldown());
@@ -22,10 +22,10 @@ public class SpellDataStorage implements Capability.IStorage<ISpellData> {
     }
 
     @Override
-    public void readNBT(Capability<ISpellData> capability, ISpellData instance, Direction side, INBT nbt) {
-        CompoundNBT tag = ((CompoundNBT)nbt);
+    public void readNBT(Capability<ISpellData> capability, ISpellData instance, Direction side, Tag nbt) {
+        CompoundTag tag = ((CompoundTag)nbt);
         int level = tag.getInt(Reference.characterLevel);
-        CompoundNBT characterUnlocks = (CompoundNBT)tag.get(Reference.characterUnlocks);
+        CompoundTag characterUnlocks = (CompoundTag)tag.get(Reference.characterUnlocks);
         int castCooldown = tag.getInt(Reference.characterCooldown);
 
         instance.setLevel(level);

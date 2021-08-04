@@ -1,10 +1,10 @@
 package com.mrbysco.spelled.api.keywords;
 
 import com.mrbysco.spelled.entity.SpellEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
@@ -20,7 +20,7 @@ public class BaseKeyword implements IKeyword {
     }
 
     @Override
-    public void cast(World worldIn, ServerPlayerEntity caster, SpellEntity spell, @Nullable IKeyword adjective) {
+    public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
         //Do stuff
     }
 
@@ -30,8 +30,8 @@ public class BaseKeyword implements IKeyword {
     }
 
     @Override
-    public ITextComponent getDescription() {
-        return new TranslationTextComponent("spelled.keyword." + this.keyword + ".description");
+    public Component getDescription() {
+        return new TranslatableComponent("spelled.keyword." + this.keyword + ".description");
     }
 
     @Override

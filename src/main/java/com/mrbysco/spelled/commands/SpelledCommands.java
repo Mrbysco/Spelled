@@ -9,23 +9,23 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.config.SpelledConfig;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class SpelledCommands {
-    public static void initializeCommands (CommandDispatcher<CommandSource> dispatcher) {
-        final LiteralArgumentBuilder<CommandSource> root = Commands.literal("spelled");
+    public static void initializeCommands (CommandDispatcher<CommandSourceStack> dispatcher) {
+        final LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal("spelled");
         ArrayList<String> adjectives = KeywordRegistry.instance().getAdjectives();
         adjectives.add("all");
 
@@ -39,11 +39,11 @@ public class SpelledCommands {
                         .then(Commands.argument("player", EntityArgument.players())
                                 .then(Commands.literal("unlock")
                                         .then(Commands.argument("word", StringArgumentType.string())
-                                                .suggests((cs, builder) -> ISuggestionProvider.suggest(SpelledCommands.getAdjectivesPlusAll(), builder))
+                                                .suggests((cs, builder) -> SharedSuggestionProvider.suggest(SpelledCommands.getAdjectivesPlusAll(), builder))
                                                         .executes(SpelledCommands::unlockWord)))
                                 .then(Commands.literal("lock")
                                         .then(Commands.argument("word", StringArgumentType.string())
-                                                .suggests((cs, builder) -> ISuggestionProvider.suggest(SpelledCommands.getAdjectivesPlusAll(), builder))
+                                                .suggests((cs, builder) -> SharedSuggestionProvider.suggest(SpelledCommands.getAdjectivesPlusAll(), builder))
                                                 .executes(SpelledCommands::lockWord)))
                                 .then(Commands.literal("reset").executes(SpelledCommands::resetWords))));
 
@@ -56,12 +56,12 @@ public class SpelledCommands {
         return adjectives;
     }
 
-    private static int getLevel(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
-        for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
+    private static int getLevel(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        for(ServerPlayer player : EntityArgument.getPlayers(ctx, "player")) {
             int level = SpelledAPI.getLevel(player);
             if(level >= 0) {
-                ITextComponent levelText = new StringTextComponent(String.valueOf(level)).withStyle(TextFormatting.GOLD);
-                ITextComponent text = new TranslationTextComponent("spelled.commands.level.get.message",
+                Component levelText = new TextComponent(String.valueOf(level)).withStyle(ChatFormatting.GOLD);
+                Component text = new TranslatableComponent("spelled.commands.level.get.message",
                         player.getDisplayName(), levelText);
                 ctx.getSource().sendSuccess(text, false);
             }
@@ -70,89 +70,89 @@ public class SpelledCommands {
         return 0;
     }
 
-    private static int setLevel(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+    private static int setLevel(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         int level = IntegerArgumentType.getInteger(ctx, "level");
         if(level >= 0 && level <= SpelledConfig.COMMON.maxLevel.get()) {
-            for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
+            for(ServerPlayer player : EntityArgument.getPlayers(ctx, "player")) {
                 SpelledAPI.forceSetLevel(player, level);
-                ITextComponent levelText = new StringTextComponent(String.valueOf(level)).withStyle(TextFormatting.GOLD);
-                ITextComponent text = new TranslationTextComponent("spelled.commands.level.set.message",
+                Component levelText = new TextComponent(String.valueOf(level)).withStyle(ChatFormatting.GOLD);
+                Component text = new TranslatableComponent("spelled.commands.level.set.message",
                         player.getDisplayName(), levelText);
                 ctx.getSource().sendSuccess(text, true);
             }
         } else {
-            ITextComponent text = new TranslationTextComponent("spelled.commands.level.set.invalid", level, SpelledConfig.COMMON.maxLevel)
-                    .withStyle(TextFormatting.RED);
+            Component text = new TranslatableComponent("spelled.commands.level.set.invalid", level, SpelledConfig.COMMON.maxLevel)
+                    .withStyle(ChatFormatting.RED);
             ctx.getSource().sendSuccess(text, true);
         }
 
         return 0;
     }
 
-    private static int unlockWord(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+    private static int unlockWord(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         String word = StringArgumentType.getString(ctx, "word").toLowerCase(Locale.ROOT);
         if(!word.isEmpty()) {
             if(word.equals("all")) {
-                for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
+                for(ServerPlayer player : EntityArgument.getPlayers(ctx, "player")) {
                     List<String> adjectives = KeywordRegistry.instance().getAdjectives();
                     for(String adjective : adjectives) {
                         SpelledAPI.unlockKeyword(player, adjective);
                     }
 
-                    ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.unlock.all", player.getDisplayName());
+                    Component text = new TranslatableComponent("spelled.commands.knowledge.unlock.all", player.getDisplayName());
                     ctx.getSource().sendSuccess(text, true);
                 }
             } else if(KeywordRegistry.instance().containsKey(word)) {
-                for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
+                for(ServerPlayer player : EntityArgument.getPlayers(ctx, "player")) {
                     SpelledAPI.unlockKeyword(player, word);
 
-                    ITextComponent wordComponent = new StringTextComponent(word).withStyle(TextFormatting.GOLD);
-                    ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.unlock.message", wordComponent, player.getDisplayName());
+                    Component wordComponent = new TextComponent(word).withStyle(ChatFormatting.GOLD);
+                    Component text = new TranslatableComponent("spelled.commands.knowledge.unlock.message", wordComponent, player.getDisplayName());
                     ctx.getSource().sendSuccess(text, true);
                 }
             }
         } else {
-            ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.unlock.invalid", word)
-                    .withStyle(TextFormatting.RED);
+            Component text = new TranslatableComponent("spelled.commands.knowledge.unlock.invalid", word)
+                    .withStyle(ChatFormatting.RED);
             ctx.getSource().sendSuccess(text, true);
         }
 
         return 0;
     }
 
-    private static int lockWord(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+    private static int lockWord(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         String word = StringArgumentType.getString(ctx, "word").toLowerCase(Locale.ROOT);
         if(!word.isEmpty()) {
             if(word.equals("all")) {
-                for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
+                for(ServerPlayer player : EntityArgument.getPlayers(ctx, "player")) {
                     SpelledAPI.resetUnlocks(player);
 
-                    ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.reset.message", player.getDisplayName());
+                    Component text = new TranslatableComponent("spelled.commands.knowledge.reset.message", player.getDisplayName());
                     ctx.getSource().sendSuccess(text, true);
                 }
             } else if(KeywordRegistry.instance().containsKey(word)) {
-                for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
+                for(ServerPlayer player : EntityArgument.getPlayers(ctx, "player")) {
                     SpelledAPI.lockKeyword(player, word);
 
-                    ITextComponent wordComponent = new StringTextComponent(word).withStyle(TextFormatting.GOLD);
-                    ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.lock.message", wordComponent, player.getDisplayName());
+                    Component wordComponent = new TextComponent(word).withStyle(ChatFormatting.GOLD);
+                    Component text = new TranslatableComponent("spelled.commands.knowledge.lock.message", wordComponent, player.getDisplayName());
                     ctx.getSource().sendSuccess(text, true);
                 }
             }
         } else {
-            ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.lock.invalid", word)
-                    .withStyle(TextFormatting.RED);
+            Component text = new TranslatableComponent("spelled.commands.knowledge.lock.invalid", word)
+                    .withStyle(ChatFormatting.RED);
             ctx.getSource().sendSuccess(text, true);
         }
 
         return 0;
     }
 
-    private static int resetWords(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
-        for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
+    private static int resetWords(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        for(ServerPlayer player : EntityArgument.getPlayers(ctx, "player")) {
             SpelledAPI.resetUnlocks(player);
 
-            ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.reset.message", player.getDisplayName());
+            Component text = new TranslatableComponent("spelled.commands.knowledge.reset.message", player.getDisplayName());
             ctx.getSource().sendSuccess(text, true);
         }
 

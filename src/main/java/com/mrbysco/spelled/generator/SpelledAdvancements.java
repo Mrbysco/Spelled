@@ -8,15 +8,15 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementRewards.Builder;
 import net.minecraft.advancements.FrameType;
-import net.minecraft.advancements.criterion.EnterBlockTrigger;
-import net.minecraft.advancements.criterion.ImpossibleTrigger;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.AdvancementProvider;
+import net.minecraft.advancements.critereon.EnterBlockTrigger;
+import net.minecraft.advancements.critereon.ImpossibleTrigger;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.data.HashCache;
+import net.minecraft.data.DataProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -68,12 +68,12 @@ public class SpelledAdvancements extends AdvancementProvider {
     }
 
     @Override
-    public void run(DirectoryCache cache) {
+    public void run(HashCache cache) {
         Path outputFolder = this.dataGenerator.getOutputFolder();
         Consumer<Advancement> consumer = advancement -> {
             Path path = outputFolder.resolve("data/" + advancement.getId().getNamespace() + "/advancements/" + advancement.getId().getPath() + ".json");
             try {
-                IDataProvider.save(GSON, cache, advancement.deconstruct().serializeToJson(), path);
+                DataProvider.save(GSON, cache, advancement.deconstruct().serializeToJson(), path);
             } catch (IOException e) {
                 System.out.println(e);
             }
@@ -84,20 +84,20 @@ public class SpelledAdvancements extends AdvancementProvider {
     private void registerAdvancements(Consumer<Advancement> consumer) {
         root = Advancement.Builder.advancement()
                 .display(SpelledRegistry.KNOWLEDGE_TOME.get(),
-                        new TranslationTextComponent("advancement.spelled.root"),
-                        new TranslationTextComponent("advancement.spelled.root.desc"),
+                        new TranslatableComponent("advancement.spelled.root"),
+                        new TranslatableComponent("advancement.spelled.root.desc"),
                         new ResourceLocation("minecraft:textures/block/bookshelf.png"), FrameType.TASK, true, false, false)
-                .addCriterion("air", EnterBlockTrigger.Instance.entersBlock(Blocks.AIR))
+                .addCriterion("air", EnterBlockTrigger.TriggerInstance.entersBlock(Blocks.AIR))
                 .rewards(withLoot(new ResourceLocation(Reference.MOD_ID, "advancements/manual")))
                 .save(consumer, "spelled:root");
 
         color_lore = Advancement.Builder.advancement()
                 .display(SpelledRegistry.KNOWLEDGE_TOME.get(),
-                        new TranslationTextComponent("advancement.spelled.color_lore"),
-                        new TranslationTextComponent("advancement.spelled.color_lore.desc"),
+                        new TranslatableComponent("advancement.spelled.color_lore"),
+                        new TranslatableComponent("advancement.spelled.color_lore.desc"),
                         null, FrameType.TASK, false, false, false)
                 .parent(root)
-                .addCriterion("impossible", new ImpossibleTrigger.Instance())
+                .addCriterion("impossible", new ImpossibleTrigger.TriggerInstance())
                 .save(consumer, "spelled:color_lore");
 
         ater = generateAdjectiveAdvancement("ater", color_lore, consumer);
@@ -136,11 +136,11 @@ public class SpelledAdvancements extends AdvancementProvider {
     private Advancement generateAdjectiveAdvancement(String adjective, Advancement parent, Consumer<Advancement> consumer) {
         return Advancement.Builder.advancement()
                 .display(SpelledRegistry.KNOWLEDGE_TOME.get(),
-                        new TranslationTextComponent(String.format("advancement.spelled.%s", adjective)),
-                        new TranslationTextComponent(String.format("advancement.spelled.%s.desc", adjective)),
+                        new TranslatableComponent(String.format("advancement.spelled.%s", adjective)),
+                        new TranslatableComponent(String.format("advancement.spelled.%s.desc", adjective)),
                         null, FrameType.TASK, false, false, false)
                 .parent(parent)
-                .addCriterion("impossible", new ImpossibleTrigger.Instance())
+                .addCriterion("impossible", new ImpossibleTrigger.TriggerInstance())
                 .save(consumer, "spelled:adjective_" + adjective);
     }
 }

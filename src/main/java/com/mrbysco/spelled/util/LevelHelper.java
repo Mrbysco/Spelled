@@ -3,9 +3,9 @@ package com.mrbysco.spelled.util;
 import com.mrbysco.spelled.config.ConfigCache;
 import com.mrbysco.spelled.config.ConfigCache.ItemCost;
 import com.mrbysco.spelled.config.SpelledConfig;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class LevelHelper {
 
@@ -26,11 +26,11 @@ public class LevelHelper {
         return SpelledConfig.COMMON.individualLevels.get() ? individualXPCost : xpCost;
     }
 
-    public static void levelUpFailItems(PlayerEntity player) {
-        player.displayClientMessage(new TranslationTextComponent("spelled.level_up.fail_item").withStyle(TextFormatting.GOLD), true);
+    public static void levelUpFailItems(Player player) {
+        player.displayClientMessage(new TranslatableComponent("spelled.level_up.fail_item").withStyle(ChatFormatting.GOLD), true);
     }
 
-    public static void levelUpFailXP(PlayerEntity player) {
-        player.displayClientMessage(new TranslationTextComponent("spelled.level_up.fail_xp").withStyle(TextFormatting.GOLD), true);
+    public static void levelUpFailXP(Player player) {
+        player.displayClientMessage(new TranslatableComponent("spelled.level_up.fail_xp").withStyle(ChatFormatting.GOLD), true);
     }
 }

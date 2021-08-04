@@ -2,11 +2,11 @@ package com.mrbysco.spelled.registry.behavior;
 
 import com.mrbysco.spelled.api.behavior.BaseBehavior;
 import com.mrbysco.spelled.entity.SpellEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.core.BlockPos;
 
 import javax.annotation.Nonnull;
 

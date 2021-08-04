@@ -1,9 +1,9 @@
 package com.mrbysco.spelled;
 
 import com.mrbysco.spelled.entity.AbstractSpellEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSource;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.resources.ResourceLocation;
 
 public class Reference {
     public static final String MOD_ID = "spelled";

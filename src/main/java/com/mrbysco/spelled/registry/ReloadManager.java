@@ -2,15 +2,15 @@ package com.mrbysco.spelled.registry;
 
 import com.mrbysco.spelled.api.behavior.BehaviorRegistry;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.resources.IResourceManagerReloadListener;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class ReloadManager implements IResourceManagerReloadListener {
+public class ReloadManager implements ResourceManagerReloadListener {
     @Override
-    public void onResourceManagerReload(IResourceManager resourceManager) {
+    public void onResourceManagerReload(ResourceManager resourceManager) {
         KeywordRegistry.instance().reloadKeywords();
         BehaviorRegistry.instance().reloadBehaviors();
     }

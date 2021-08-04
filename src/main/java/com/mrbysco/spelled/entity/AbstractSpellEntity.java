@@ -1,30 +1,30 @@
 package com.mrbysco.spelled.entity;
 
 import com.mrbysco.spelled.registry.SpelledRegistry;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.projectile.DamagingProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceContext.FluidMode;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.ClipContext.Fluid;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import java.util.ArrayList;
@@ -33,25 +33,25 @@ import java.util.List;
 import java.util.OptionalInt;
 import java.util.function.Predicate;
 
-public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
-    private static final DataParameter<CompoundNBT> SPELL_ORDER = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.COMPOUND_TAG);
-    private static final DataParameter<Integer> SPELL_TYPE = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.INT);
-    private static final DataParameter<OptionalInt> COLOR = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.OPTIONAL_UNSIGNED_INT);
-    private static final DataParameter<Boolean> EXPLODING = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> FIERY = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> LAVA = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> WATER = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> COLD = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> SNOW = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> SMOKY = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> INKY = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Float> SIZE_MULTIPLIER = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.FLOAT);
+public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
+    private static final EntityDataAccessor<CompoundTag> SPELL_ORDER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.COMPOUND_TAG);
+    private static final EntityDataAccessor<Integer> SPELL_TYPE = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<OptionalInt> COLOR = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.OPTIONAL_UNSIGNED_INT);
+    private static final EntityDataAccessor<Boolean> EXPLODING = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> FIERY = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> LAVA = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> WATER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> COLD = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> SNOW = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> SMOKY = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> INKY = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float> SIZE_MULTIPLIER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.FLOAT);
 
-    public AbstractSpellEntity(EntityType<? extends DamagingProjectileEntity> entityType, World worldIn) {
+    public AbstractSpellEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level worldIn) {
         super(entityType, worldIn);
     }
 
-    public AbstractSpellEntity(EntityType<? extends DamagingProjectileEntity> entityType, LivingEntity shooter, World worldIn) {
+    public AbstractSpellEntity(EntityType<? extends AbstractHurtingProjectile> entityType, LivingEntity shooter, Level worldIn) {
         super(SpelledRegistry.SPELL.get(), worldIn);
         this.setPos(shooter.getX(), shooter.getEyeY() - (double)0.1F, shooter.getZ());
         this.setOwner(shooter);
@@ -60,7 +60,7 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(SPELL_ORDER, new CompoundNBT());
+        this.entityData.define(SPELL_ORDER, new CompoundTag());
         this.entityData.define(SPELL_TYPE, 0);
         this.entityData.define(COLOR, OptionalInt.empty());
         this.entityData.define(FIERY, false);
@@ -74,15 +74,15 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         this.entityData.define(SIZE_MULTIPLIER, 1.0F);
     }
 
-    public void setSpellOrder(CompoundNBT order) {
+    public void setSpellOrder(CompoundTag order) {
         this.getEntityData().set(SPELL_ORDER, order);
     }
     public void insertAction(String action) {
-        CompoundNBT order = this.getSpellOrder();
+        CompoundTag order = this.getSpellOrder();
         order.putString(order.isEmpty() ? String.valueOf(0) : String.valueOf(order.size()), action);
         this.setSpellOrder(order);
     }
-    public CompoundNBT getSpellOrder() {
+    public CompoundTag getSpellOrder() {
         return this.getEntityData().get(SPELL_ORDER);
     }
 
@@ -174,7 +174,7 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         this.setPos(d0, d1, d2);
     }
 
-    public void onSyncedDataUpdated(DataParameter<?> key) {
+    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
         if (SIZE_MULTIPLIER.equals(key)) {
             this.refreshDimensions();
         }
@@ -183,12 +183,12 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     }
 
     @Override
-    public EntitySize getDimensions(Pose poseIn) {
+    public EntityDimensions getDimensions(Pose poseIn) {
         return super.getDimensions(poseIn).scale(this.getSizeMultiplier());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compound) {
+    public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
 
         if (compound.contains("SpellOrder", 10))
@@ -210,7 +210,7 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compound) {
+    public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
 
         if (!this.getSpellOrder().isEmpty())
@@ -238,14 +238,14 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    protected IParticleData getTrailParticle() {
+    protected ParticleOptions getTrailParticle() {
         if(isLava() && (isCold() || isSnow() || isWater())) {
-            return new BlockParticleData(ParticleTypes.BLOCK, Blocks.STONE.defaultBlockState());
+            return new BlockParticleOption(ParticleTypes.BLOCK, Blocks.STONE.defaultBlockState());
         } else {
             if(isWater() || (isFiery() && isSnow()))
                 return ParticleTypes.DRIPPING_WATER;
@@ -276,34 +276,34 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         if(isCold() || isWater()) {
             Entity entity = this.getOwner();
             if (this.level.isClientSide || (entity == null || entity.isAlive()) && this.level.hasChunkAt(this.blockPosition())) {
-                RayTraceResult raytraceresult = rayTraceWater(this::canHitEntity);
-                if (raytraceresult.getType() != RayTraceResult.Type.MISS) {
+                HitResult raytraceresult = rayTraceWater(this::canHitEntity);
+                if (raytraceresult.getType() != HitResult.Type.MISS) {
                     this.onHit(raytraceresult);
                 }
             }
         }
-        Vector3d vector3d = this.getDeltaMovement();
+        Vec3 vector3d = this.getDeltaMovement();
         this.updateRotation();
         this.setDeltaMovement(vector3d.scale((double)0.99F));
         if (!this.isNoGravity()) {
-            Vector3d vector3d1 = this.getDeltaMovement();
+            Vec3 vector3d1 = this.getDeltaMovement();
             this.setDeltaMovement(vector3d1.x, vector3d1.y - (double)0.02F, vector3d1.z);
         }
 
         super.tick();
     }
 
-    public RayTraceResult rayTraceWater(Predicate<Entity> entityPredicate) {
-        Vector3d vector3d = this.getDeltaMovement();
-        World world = this.level;
-        Vector3d vector3d1 = this.position();
-        Vector3d vector3d2 = vector3d1.add(vector3d);
-        RayTraceResult raytraceresult = world.clip(new RayTraceContext(vector3d1, vector3d2, RayTraceContext.BlockMode.COLLIDER, FluidMode.SOURCE_ONLY, this));
-        if (raytraceresult.getType() != RayTraceResult.Type.MISS) {
+    public HitResult rayTraceWater(Predicate<Entity> entityPredicate) {
+        Vec3 vector3d = this.getDeltaMovement();
+        Level world = this.level;
+        Vec3 vector3d1 = this.position();
+        Vec3 vector3d2 = vector3d1.add(vector3d);
+        HitResult raytraceresult = world.clip(new ClipContext(vector3d1, vector3d2, ClipContext.Block.COLLIDER, Fluid.SOURCE_ONLY, this));
+        if (raytraceresult.getType() != HitResult.Type.MISS) {
             vector3d2 = raytraceresult.getLocation();
         }
 
-        RayTraceResult raytraceresult1 = ProjectileHelper.getEntityHitResult(world, this, vector3d1, vector3d2, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), entityPredicate);
+        HitResult raytraceresult1 = ProjectileUtil.getEntityHitResult(world, this, vector3d1, vector3d2, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), entityPredicate);
         if (raytraceresult1 != null) {
             raytraceresult = raytraceresult1;
         }
@@ -315,7 +315,7 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         if (doesExplode()) {
             boolean flag = isSnow() || isWater();
             int size = (int) Math.ceil(1 * getSizeMultiplier());
-            this.level.explode((Entity) null, this.getX(), this.getY(), this.getZ(), (float) size, !flag, !flag ? Explosion.Mode.DESTROY : Explosion.Mode.NONE);
+            this.level.explode((Entity) null, this.getX(), this.getY(), this.getZ(), (float) size, !flag, !flag ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
         }
     }
 
@@ -337,7 +337,7 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     public List<Entity> getRangedEntities(Entity hitEntity) {
         if(getSizeMultiplier() > 1) {
             double offset = getSizeMultiplier();
-            AxisAlignedBB hitbox = new AxisAlignedBB(hitEntity.getX() - 0.5f, hitEntity.getY() - 0.5f, hitEntity.getZ() - 0.5f, hitEntity.getX() + 0.5f, hitEntity.getY() + 0.5f, hitEntity.getZ() + 0.5f)
+            AABB hitbox = new AABB(hitEntity.getX() - 0.5f, hitEntity.getY() - 0.5f, hitEntity.getZ() - 0.5f, hitEntity.getX() + 0.5f, hitEntity.getY() + 0.5f, hitEntity.getZ() + 0.5f)
                     .expandTowards(-offset, -offset, -offset).expandTowards(offset, offset, offset);
 
             return level.getEntities(this, hitbox, Entity::isAlive);
@@ -345,7 +345,7 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         return Collections.singletonList(hitEntity);
     }
 
-    public void shootSpell(Vector3d lookVec) {
+    public void shootSpell(Vec3 lookVec) {
         this.setDeltaMovement(lookVec);
         this.xPower = lookVec.x * 0.1D;
         this.yPower = lookVec.y * 0.1D;

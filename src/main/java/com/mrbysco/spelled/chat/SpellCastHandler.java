@@ -10,15 +10,15 @@ import com.mrbysco.spelled.entity.SpellEntity;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword.Type;
 import com.mrbysco.spelled.util.LevelHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.event.HoverEvent;
-import net.minecraft.util.text.event.HoverEvent.Action;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.HoverEvent.Action;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
@@ -34,9 +34,9 @@ public class SpellCastHandler {
         if(event.phase == TickEvent.Phase.START)
             return;
 
-        World world = event.player.level;
+        Level world = event.player.level;
         if(!world.isClientSide && world.getGameTime() % 20 == 0) {
-            ServerPlayerEntity player = (ServerPlayerEntity) event.player;
+            ServerPlayer player = (ServerPlayer) event.player;
             int cooldown = SpelledAPI.getCooldown(player);
             if(cooldown > 0) {
                 SpelledAPI.setCooldown(player, cooldown - 1);
@@ -48,7 +48,7 @@ public class SpellCastHandler {
 
     @SubscribeEvent
     public void onChatEvent(ServerChatEvent event) {
-        ServerPlayerEntity player = event.getPlayer();
+        ServerPlayer player = event.getPlayer();
         final String regExp = "^[a-zA-Z\\s]*$";
         String actualMessage = event.getMessage();
         if(!actualMessage.isEmpty() && actualMessage.matches(regExp)) {
@@ -66,21 +66,21 @@ public class SpellCastHandler {
 
                             //Do our stuff
                             IKeyword lastKeyword = registry.getKeywordFromName(words[words.length - 1]);
-                            World world = player.level;
+                            Level world = player.level;
 
                             if(lastKeyword instanceof TypeKeyword) {
                                 TypeKeyword typeKeyword = (TypeKeyword) lastKeyword;
                                 SpellEntity spell = constructEntity(player, typeKeyword.getType());
 
                                 StringBuilder castText = new StringBuilder();
-                                IFormattableTextComponent descriptionComponent = new StringTextComponent("");
+                                MutableComponent descriptionComponent = new TextComponent("");
                                 int cooldown = -1;
                                 for(int i = 0; i < (words.length - 1); i++) {
                                     IKeyword keyword = registry.getKeywordFromName(words[i]);
                                     if(keyword != null) {
                                         cooldown += keyword.getSlots();
                                         castText.append(keyword.getKeyword()).append(" ");
-                                        descriptionComponent.append(keyword.getDescription()).append(new StringTextComponent(" "));
+                                        descriptionComponent.append(keyword.getDescription()).append(new TextComponent(" "));
                                         int previous = i - 1;
                                         if(previous >= 0 && previous < (words.length - 1))
                                             keyword.cast(world, player, spell, registry.getKeywordFromName(words[previous]));
@@ -89,13 +89,13 @@ public class SpellCastHandler {
                                     }
                                 }
                                 castText.append(lastKeyword.getKeyword());
-                                StringTextComponent castComponent = new StringTextComponent(castText.toString());
+                                TextComponent castComponent = new TextComponent(castText.toString());
                                 descriptionComponent.append(typeKeyword.getDescription());
-                                descriptionComponent.withStyle(TextFormatting.GOLD);
+                                descriptionComponent.withStyle(ChatFormatting.GOLD);
                                 castComponent.setStyle(event.getComponent().getStyle().withHoverEvent(
-                                        new HoverEvent(Action.SHOW_TEXT, descriptionComponent))).withStyle(TextFormatting.GOLD);
+                                        new HoverEvent(Action.SHOW_TEXT, descriptionComponent))).withStyle(ChatFormatting.GOLD);
 
-                                IFormattableTextComponent finalMessage = new TranslationTextComponent("spelled.spell.cast", player.getDisplayName(), castComponent);
+                                MutableComponent finalMessage = new TranslatableComponent("spelled.spell.cast", player.getDisplayName(), castComponent);
                                 if(spell != null) {
                                     if(!player.abilities.instabuild) {
                                         SpelledAPI.setCooldown(player, cooldown);
@@ -112,8 +112,8 @@ public class SpellCastHandler {
 
                                 if(SpelledConfig.COMMON.proximity.get() > 0) {
                                     event.setCanceled(true);
-                                    List<? extends PlayerEntity> playerEntities = world.players();
-                                    for(PlayerEntity nearbyPlayer : playerEntities) {
+                                    List<? extends Player> playerEntities = world.players();
+                                    for(Player nearbyPlayer : playerEntities) {
                                         if(nearbyPlayer.getUUID().equals(player.getUUID()) ||
                                                 (nearbyPlayer.level.dimension() == world.dimension() && player.distanceToSqr(nearbyPlayer) <= SpelledConfig.COMMON.proximity.get())) {
                                             player.sendMessage(finalMessage, player.getUUID());
@@ -129,7 +129,7 @@ public class SpellCastHandler {
         }
     }
 
-    public boolean canCastSpell(ServerPlayerEntity player, String[] words) {
+    public boolean canCastSpell(ServerPlayer player, String[] words) {
         ISpellData data = SpelledAPI.getSpellDataCap(player).orElse(new SpellDataCapability());
         final KeywordRegistry registry = KeywordRegistry.instance();
 
@@ -166,25 +166,25 @@ public class SpellCastHandler {
         return maxWordCount > 0 && words.length <= maxWordCount;
     }
 
-    public boolean isOnCooldown(ServerPlayerEntity player) {
+    public boolean isOnCooldown(ServerPlayer player) {
         ISpellData data = SpelledAPI.getSpellDataCap(player).orElse(new SpellDataCapability());
         //Check if player is on cooldown
         int cooldown = data.getCastCooldown();
         if(cooldown > 0) {
-            IFormattableTextComponent finalMessage = new TranslationTextComponent("spelled.spell.cooldown", player.getDisplayName(), cooldown);
+            MutableComponent finalMessage = new TranslatableComponent("spelled.spell.cooldown", player.getDisplayName(), cooldown);
             return true;
         }
         return false;
     }
 
-    public SpellEntity constructEntity(ServerPlayerEntity player, @Nonnull Type type) {
+    public SpellEntity constructEntity(ServerPlayer player, @Nonnull Type type) {
         SpellEntity spell = new SpellEntity(player, player.level);
         spell.setSpellType(type.getId());
 
         return spell;
     }
 
-    public SpellEntity shootSpell(ServerPlayerEntity player, SpellEntity spell) {
+    public SpellEntity shootSpell(ServerPlayer player, SpellEntity spell) {
         spell.setOwner(player);
         spell.setPos(player.getX(), player.getEyeY() - (double)0.1F, player.getZ());
         switch(spell.getSpellType()) {

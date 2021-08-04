@@ -3,8 +3,8 @@ package com.mrbysco.spelled.registry.behavior;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.api.behavior.BaseBehavior;
 import com.mrbysco.spelled.entity.SpellEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 
 import javax.annotation.Nonnull;
 

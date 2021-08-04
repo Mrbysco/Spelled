@@ -16,7 +16,7 @@ import com.mrbysco.spelled.registry.keyword.SizeKeyword;
 import com.mrbysco.spelled.registry.keyword.SnowKeyword;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword.Type;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -52,15 +52,15 @@ public class KeywordRegistry {
         Spelled.LOGGER.info("Initializing keywords");
 
         //Colors
-        registerKeyword(new ColorKeyword("ater", TextFormatting.BLACK, 1, 1));
-        registerKeyword(new ColorKeyword("aureus", TextFormatting.GOLD, 1, 1));
-        registerKeyword(new ColorKeyword("caeruleus", TextFormatting.BLUE, 1, 1));
-        registerKeyword(new ColorKeyword("viridis", TextFormatting.GREEN, 1, 1));
-        registerKeyword(new ColorKeyword("aqua", TextFormatting.AQUA, 1, 1));
-        registerKeyword(new ColorKeyword("rubrum", TextFormatting.RED, 1, 1));
-        registerKeyword(new ColorKeyword("roseus", TextFormatting.LIGHT_PURPLE, 1, 1));
-        registerKeyword(new ColorKeyword("flavus", TextFormatting.YELLOW, 1, 1));
-        registerKeyword(new ColorKeyword("albus", TextFormatting.WHITE, 1, 1));
+        registerKeyword(new ColorKeyword("ater", ChatFormatting.BLACK, 1, 1));
+        registerKeyword(new ColorKeyword("aureus", ChatFormatting.GOLD, 1, 1));
+        registerKeyword(new ColorKeyword("caeruleus", ChatFormatting.BLUE, 1, 1));
+        registerKeyword(new ColorKeyword("viridis", ChatFormatting.GREEN, 1, 1));
+        registerKeyword(new ColorKeyword("aqua", ChatFormatting.AQUA, 1, 1));
+        registerKeyword(new ColorKeyword("rubrum", ChatFormatting.RED, 1, 1));
+        registerKeyword(new ColorKeyword("roseus", ChatFormatting.LIGHT_PURPLE, 1, 1));
+        registerKeyword(new ColorKeyword("flavus", ChatFormatting.YELLOW, 1, 1));
+        registerKeyword(new ColorKeyword("albus", ChatFormatting.WHITE, 1, 1));
 
         //Size
         registerKeyword(new SizeKeyword("parvus", 0.5F, 1, 1));

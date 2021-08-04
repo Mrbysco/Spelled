@@ -1,13 +1,13 @@
 package com.mrbysco.spelled.api.capability;
 
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 import java.util.Locale;
 
 public class SpellDataCapability implements ISpellData {
     private int level;
-    private CompoundNBT unlockedKeywords;
+    private CompoundTag unlockedKeywords;
     private int castCooldown;
 
     public SpellDataCapability() {
@@ -27,12 +27,12 @@ public class SpellDataCapability implements ISpellData {
     }
 
     @Override
-    public CompoundNBT getUnlocked() {
+    public CompoundTag getUnlocked() {
         return this.unlockedKeywords;
     }
 
     @Override
-    public void setUnlocked(CompoundNBT nbt) {
+    public void setUnlocked(CompoundTag nbt) {
         this.unlockedKeywords = nbt;
     }
 
@@ -69,9 +69,9 @@ public class SpellDataCapability implements ISpellData {
         this.unlockedKeywords = getDefaultUnlocks();
     }
 
-    private CompoundNBT getDefaultUnlocks() {
+    private CompoundTag getDefaultUnlocks() {
         KeywordRegistry registry = KeywordRegistry.instance();
-        CompoundNBT tag = new CompoundNBT();
+        CompoundTag tag = new CompoundTag();
         registry.getTypes().forEach(type -> tag.putBoolean(type, true));
         return tag;
     }

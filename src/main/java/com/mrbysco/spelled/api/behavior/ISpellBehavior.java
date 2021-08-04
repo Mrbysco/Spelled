@@ -1,8 +1,8 @@
 package com.mrbysco.spelled.api.behavior;
 
 import com.mrbysco.spelled.entity.SpellEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.core.BlockPos;
 
 import javax.annotation.Nonnull;
 

@@ -3,12 +3,12 @@ package com.mrbysco.spelled.util;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 
 public class AdvancementHelper {
 
-    public static void removeAllAdjectiveAdvancements(ServerPlayerEntity player) {
+    public static void removeAllAdjectiveAdvancements(ServerPlayer player) {
         KeywordRegistry registry = KeywordRegistry.instance();
         for(String adjective : registry.getAdjectives()) {
             lockAdjectiveAdvancement(player, adjective);
@@ -16,7 +16,7 @@ public class AdvancementHelper {
         lockAdvancement(player, "color_lore");
     }
 
-    public static void unlockAdjectiveAdvancement(ServerPlayerEntity player, String adjective) {
+    public static void unlockAdjectiveAdvancement(ServerPlayer player, String adjective) {
         unlockAdvancement(player, "adjective_" + adjective);
 
         if(KeywordRegistry.instance().isColor(adjective) && hasAllColors(player)) {
@@ -24,7 +24,7 @@ public class AdvancementHelper {
         }
     }
 
-    public static void unlockAdvancement(ServerPlayerEntity player, String name) {
+    public static void unlockAdvancement(ServerPlayer player, String name) {
         Advancement advancementIn = player.getServer().getAdvancements().getAdvancement(new ResourceLocation("spelled:" + name));
         if(advancementIn != null) {
             AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementIn);
@@ -36,11 +36,11 @@ public class AdvancementHelper {
         }
     }
 
-    public static void lockAdjectiveAdvancement(ServerPlayerEntity player, String adjective) {
+    public static void lockAdjectiveAdvancement(ServerPlayer player, String adjective) {
         lockAdvancement(player, "adjective_" + adjective);
     }
 
-    public static void lockAdvancement(ServerPlayerEntity player, String name) {
+    public static void lockAdvancement(ServerPlayer player, String name) {
         Advancement advancementIn = player.getServer().getAdvancements().getAdvancement(new ResourceLocation("spelled:" + name));
         if(advancementIn != null) {
             AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementIn);
@@ -52,7 +52,7 @@ public class AdvancementHelper {
         }
     }
 
-    public static boolean hasAllColors(ServerPlayerEntity player) {
+    public static boolean hasAllColors(ServerPlayer player) {
         KeywordRegistry registry = KeywordRegistry.instance();
         boolean flag = true;
         for(String color : registry.getColors()) {

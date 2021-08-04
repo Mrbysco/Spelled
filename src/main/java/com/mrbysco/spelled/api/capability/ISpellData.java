@@ -1,11 +1,11 @@
 package com.mrbysco.spelled.api.capability;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 public interface ISpellData {
-    CompoundNBT getUnlocked();
+    CompoundTag getUnlocked();
 
-    void setUnlocked(CompoundNBT nbt);
+    void setUnlocked(CompoundTag nbt);
 
     boolean knowsKeyword(String keyword);
 

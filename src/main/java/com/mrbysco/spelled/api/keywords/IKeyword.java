@@ -1,15 +1,15 @@
 package com.mrbysco.spelled.api.keywords;
 
 import com.mrbysco.spelled.entity.SpellEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
 public interface IKeyword {
 
-    void cast(World worldIn, ServerPlayerEntity caster, SpellEntity spell, @Nullable IKeyword adjective);
+    void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective);
 
     /*
      * @return keyword
@@ -19,7 +19,7 @@ public interface IKeyword {
     /*
      * @return description of keyword
      */
-    ITextComponent getDescription();
+    Component getDescription();
 
     /*
      * @return level required for keyword

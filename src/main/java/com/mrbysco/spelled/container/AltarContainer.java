@@ -5,23 +5,23 @@ import com.mrbysco.spelled.config.ConfigCache.ItemCost;
 import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import com.mrbysco.spelled.util.LevelHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.IntReferenceHolder;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
 
-public class AltarContainer extends Container {
+public class AltarContainer extends AbstractContainerMenu {
 
-    private final IInventory tableInventory = new Inventory(1) {
+    private final Container tableInventory = new SimpleContainer(1) {
         /**
          * For tile entities, ensures the chunk containing the tile entity is saved to disk later - the game won't think
          * it hasn't changed and skip it.
@@ -31,31 +31,31 @@ public class AltarContainer extends Container {
             AltarContainer.this.slotsChanged(this);
         }
     };
-    private final IWorldPosCallable worldPosCallable;
+    private final ContainerLevelAccess worldPosCallable;
 
     public final int[] currentLevel = new int[1];
     public final int[] levelCosts = new int[SpelledConfig.COMMON.maxLevel.get()];
     public final int[] itemAmountCosts = new int[SpelledConfig.COMMON.maxLevel.get()];
     public final Item[] itemCosts = new Item[SpelledConfig.COMMON.maxLevel.get()];
 
-    public AltarContainer(int id, PlayerInventory playerInventory) {
-        this(id, playerInventory, IWorldPosCallable.NULL, 0);
+    public AltarContainer(int id, Inventory playerInventory) {
+        this(id, playerInventory, ContainerLevelAccess.NULL, 0);
     }
 
-    public AltarContainer(int id, PlayerInventory playerInventory, IWorldPosCallable worldPosCallable, int currentLevel) {
+    public AltarContainer(int id, Inventory playerInventory, ContainerLevelAccess worldPosCallable, int currentLevel) {
         super(SpelledRegistry.ALTAR_CONTAINER.get(), id);
         this.worldPosCallable = worldPosCallable;
 
         this.currentLevel[0] = currentLevel;
-        this.addDataSlot(IntReferenceHolder.shared(this.currentLevel, 0));
+        this.addDataSlot(DataSlot.shared(this.currentLevel, 0));
 
         for(int level = 0; level < SpelledConfig.COMMON.maxLevel.get(); level++) {
             levelCosts[level] = LevelHelper.getXPCost(level + 1);
             ItemCost cost = LevelHelper.getItemCost(level + 1);
             itemAmountCosts[level] = cost.getCost();
             itemCosts[level] = cost.getItem();
-            this.addDataSlot(IntReferenceHolder.shared(this.levelCosts, level));
-            this.addDataSlot(IntReferenceHolder.shared(this.itemAmountCosts, level));
+            this.addDataSlot(DataSlot.shared(this.levelCosts, level));
+            this.addDataSlot(DataSlot.shared(this.itemAmountCosts, level));
         }
 
         if(SpelledConfig.COMMON.requireItems.get()) {
@@ -79,7 +79,7 @@ public class AltarContainer extends Container {
         return itemstack.isEmpty() ? 0 : itemstack.getCount();
     }
 
-    private boolean hasXP(PlayerEntity playerIn, int level) {
+    private boolean hasXP(Player playerIn, int level) {
         int XPCost = this.levelCosts[level];
         return SpelledConfig.COMMON.individualLevels.get() ? playerIn.experienceLevel >= XPCost : playerIn.totalExperience >= XPCost;
     }
@@ -87,7 +87,7 @@ public class AltarContainer extends Container {
     /**
      * Handles the button-click for leveling (Name is due to it in the past only being used by the enchanting table)
      */
-    public boolean clickMenuButton(PlayerEntity playerIn, int id) {
+    public boolean clickMenuButton(Player playerIn, int id) {
         int level = this.currentLevel[0];
         final int newLevel = level + 1;
         final int XPCost = this.levelCosts[level];
@@ -117,25 +117,25 @@ public class AltarContainer extends Container {
 
                         this.tableInventory.setChanged();
                         this.slotsChanged(this.tableInventory);
-                        p_217003_6_.playSound((PlayerEntity)null, p_217003_7_, SoundEvents.ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 1.0F, p_217003_6_.random.nextFloat() * 0.1F + 0.9F);
+                        p_217003_6_.playSound((Player)null, p_217003_7_, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, p_217003_6_.random.nextFloat() * 0.1F + 0.9F);
 
-                        SpelledAPI.forceSetLevel((ServerPlayerEntity) playerIn, newLevel);
-                        SpelledAPI.syncCap((ServerPlayerEntity) playerIn);
+                        SpelledAPI.forceSetLevel((ServerPlayer) playerIn, newLevel);
+                        SpelledAPI.syncCap((ServerPlayer) playerIn);
                         this.currentLevel[0] = newLevel;
                     });
                     return true;
                 }
             } else {
                 this.useLevels(playerIn, XPCost);
-                SpelledAPI.forceSetLevel((ServerPlayerEntity) playerIn, newLevel);
-                SpelledAPI.syncCap((ServerPlayerEntity) playerIn);
+                SpelledAPI.forceSetLevel((ServerPlayer) playerIn, newLevel);
+                SpelledAPI.syncCap((ServerPlayer) playerIn);
                 this.currentLevel[0] = newLevel;
                 return true;
             }
         }
     }
 
-    public void useLevels(PlayerEntity playerIn, int XPCost) {
+    public void useLevels(Player playerIn, int XPCost) {
         if (SpelledConfig.COMMON.individualLevels.get())
             playerIn.giveExperienceLevels(-XPCost);
         else
@@ -151,7 +151,7 @@ public class AltarContainer extends Container {
     /**
      * Called when the container is closed.
      */
-    public void removed(PlayerEntity playerIn) {
+    public void removed(Player playerIn) {
         super.removed(playerIn);
         this.worldPosCallable.execute((p_217004_2_, p_217004_3_) -> {
             this.clearContainer(playerIn, playerIn.level, this.tableInventory);
@@ -161,7 +161,7 @@ public class AltarContainer extends Container {
     /**
      * Determines whether supplied player can use this container
      */
-    public boolean stillValid(PlayerEntity playerIn) {
+    public boolean stillValid(Player playerIn) {
         return stillValid(this.worldPosCallable, playerIn, SpelledRegistry.LEVELING_ALTAR.get());
     }
 
@@ -169,7 +169,7 @@ public class AltarContainer extends Container {
      * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player
      * inventory and the other inventory(s).
      */
-    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(Player playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {

@@ -3,8 +3,8 @@ package com.mrbysco.spelled.registry.keyword;
 import com.mrbysco.spelled.api.keywords.BaseKeyword;
 import com.mrbysco.spelled.api.keywords.IKeyword;
 import com.mrbysco.spelled.entity.SpellEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
@@ -14,7 +14,7 @@ public class BreakingKeyword extends BaseKeyword {
     }
 
     @Override
-    public void cast(World worldIn, ServerPlayerEntity caster, SpellEntity spell, @Nullable IKeyword adjective) {
+    public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
         if(spell != null) {
             spell.insertAction("harvest");
         }

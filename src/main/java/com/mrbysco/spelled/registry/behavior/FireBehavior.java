@@ -2,10 +2,10 @@ package com.mrbysco.spelled.registry.behavior;
 
 import com.mrbysco.spelled.api.behavior.BaseBehavior;
 import com.mrbysco.spelled.entity.SpellEntity;
-import net.minecraft.block.AbstractFireBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.core.BlockPos;
 
 import javax.annotation.Nonnull;
 
@@ -19,7 +19,7 @@ public class FireBehavior extends BaseBehavior {
         BlockState offState = spell.level.getBlockState(offPos);
 
         if (offState.getMaterial().isReplaceable()) {
-            spell.level.setBlockAndUpdate(offPos, AbstractFireBlock.getState(spell.level, offPos));
+            spell.level.setBlockAndUpdate(offPos, BaseFireBlock.getState(spell.level, offPos));
         }
     }
 
