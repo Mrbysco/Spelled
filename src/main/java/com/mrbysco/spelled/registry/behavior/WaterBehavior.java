@@ -8,8 +8,11 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.ILiquidContainer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
@@ -42,6 +45,8 @@ public class WaterBehavior extends BaseBehavior {
 
     @Override
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
+        World world = entity.world;
+        world.playSound((PlayerEntity) null, entity.getPosition(), SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, entity.getSoundCategory(),0.7F,1.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.4F);
         entity.extinguish();
     }
 }

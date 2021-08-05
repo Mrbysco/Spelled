@@ -39,7 +39,7 @@ public class SnowBehavior extends BaseBehavior {
     @Override
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
         if(entity instanceof LivingEntity) {
-            ((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 1*20));
+            ((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 2*20));
         }
     }
 }

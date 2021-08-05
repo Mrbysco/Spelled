@@ -37,7 +37,6 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     private static final DataParameter<CompoundNBT> SPELL_ORDER = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.COMPOUND_NBT);
     private static final DataParameter<Integer> SPELL_TYPE = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.VARINT);
     private static final DataParameter<OptionalInt> COLOR = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.OPTIONAL_VARINT);
-    private static final DataParameter<Boolean> EXPLODING = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> FIERY = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> LAVA = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> WATER = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
@@ -68,7 +67,6 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         this.dataManager.register(WATER, false);
         this.dataManager.register(COLD, false);
         this.dataManager.register(SNOW, false);
-        this.dataManager.register(EXPLODING, false);
         this.dataManager.register(SMOKY, false);
         this.dataManager.register(INKY, false);
         this.dataManager.register(SIZE_MULTIPLIER, 1.0F);
@@ -136,13 +134,6 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         return this.getDataManager().get(SNOW);
     }
 
-    public void setExploding(boolean explodes) {
-        this.getDataManager().set(EXPLODING, explodes);
-    }
-    public boolean doesExplode() {
-        return this.getDataManager().get(EXPLODING);
-    }
-
     public void setSmoky(boolean smoky) {
         this.getDataManager().set(SMOKY, smoky);
     }
@@ -202,7 +193,6 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         setWater(compound.getBoolean("Water"));
         setCold(compound.getBoolean("Cold"));
         setSnow(compound.getBoolean("Snow"));
-        setExploding(compound.getBoolean("Exploding"));
         setSmoky(compound.getBoolean("Smoky"));
         setInky(compound.getBoolean("Inky"));
 
@@ -225,7 +215,6 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         compound.putBoolean("Water", isWater());
         compound.putBoolean("Cold", isCold());
         compound.putBoolean("Snow", isSnow());
-        compound.putBoolean("Exploding", doesExplode());
         compound.putBoolean("Smoky", isSmoky());
         compound.putBoolean("Inky", isInky());
 
@@ -312,11 +301,9 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     }
 
     public void explode() {
-        if (doesExplode()) {
-            boolean flag = isSnow() || isWater();
-            int size = (int) Math.ceil(1 * getSizeMultiplier());
-            this.world.createExplosion((Entity) null, this.getPosX(), this.getPosY(), this.getPosZ(), (float) size, !flag, !flag ? Explosion.Mode.DESTROY : Explosion.Mode.NONE);
-        }
+        boolean flag = isSnow() || isWater();
+        int size = (int) Math.ceil(1 * getSizeMultiplier());
+        this.world.createExplosion((Entity) null, this.getPosX(), this.getPosY(), this.getPosZ(), (float) size, !flag, !flag ? Explosion.Mode.DESTROY : Explosion.Mode.NONE);
     }
 
     public List<BlockPos> getSizedPos(BlockPos pos) {

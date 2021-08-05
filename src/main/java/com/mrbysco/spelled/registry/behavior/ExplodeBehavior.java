@@ -3,19 +3,22 @@ package com.mrbysco.spelled.registry.behavior;
 import com.mrbysco.spelled.api.behavior.BaseBehavior;
 import com.mrbysco.spelled.entity.SpellEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 
-public class HealBehavior extends BaseBehavior {
-    public HealBehavior() {
-        super("healing");
+public class ExplodeBehavior extends BaseBehavior {
+    public ExplodeBehavior() {
+        super("explode");
+    }
+
+    @Override
+    public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
+        spell.explode();
     }
 
     @Override
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        if(entity instanceof LivingEntity) {
-            ((LivingEntity)entity).heal(1.0F);
-        }
+        spell.explode();
     }
 }

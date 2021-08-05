@@ -3,12 +3,17 @@ package com.mrbysco.spelled.api.behavior;
 import com.google.common.collect.Maps;
 import com.mrbysco.spelled.Spelled;
 import com.mrbysco.spelled.registry.behavior.ColdBehavior;
+import com.mrbysco.spelled.registry.behavior.ExplodeBehavior;
+import com.mrbysco.spelled.registry.behavior.ExtinguishBehavior;
 import com.mrbysco.spelled.registry.behavior.FireBehavior;
+import com.mrbysco.spelled.registry.behavior.GlowBehavior;
 import com.mrbysco.spelled.registry.behavior.HarvestBehavior;
 import com.mrbysco.spelled.registry.behavior.HealBehavior;
+import com.mrbysco.spelled.registry.behavior.HurtBehavior;
 import com.mrbysco.spelled.registry.behavior.InkBehavior;
 import com.mrbysco.spelled.registry.behavior.KnockbackBehavior;
 import com.mrbysco.spelled.registry.behavior.LavaBehavior;
+import com.mrbysco.spelled.registry.behavior.ProtectBehavior;
 import com.mrbysco.spelled.registry.behavior.SmokeBehavior;
 import com.mrbysco.spelled.registry.behavior.SnowBehavior;
 import com.mrbysco.spelled.registry.behavior.WaterBehavior;
@@ -39,14 +44,19 @@ public class BehaviorRegistry {
 
         registerBehavior(new ColdBehavior());
         registerBehavior(new FireBehavior());
+        registerBehavior(new ExplodeBehavior());
         registerBehavior(new HarvestBehavior());
         registerBehavior(new HealBehavior());
+        registerBehavior(new HurtBehavior());
+        registerBehavior(new ProtectBehavior());
         registerBehavior(new InkBehavior());
+        registerBehavior(new GlowBehavior());
         registerBehavior(new KnockbackBehavior());
         registerBehavior(new LavaBehavior());
         registerBehavior(new SmokeBehavior());
         registerBehavior(new SnowBehavior());
         registerBehavior(new WaterBehavior());
+        registerBehavior(new ExtinguishBehavior());
     }
 
     public void registerBehavior(ISpellBehavior behavior) {

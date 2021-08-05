@@ -16,10 +16,10 @@ public class LiquidKeyword extends BaseKeyword {
     @Override
     public void cast(World worldIn, ServerPlayerEntity caster, SpellEntity spell, @Nullable IKeyword adjective) {
         if(spell != null) {
+            spell.insertAction("extinguish");
             if(adjective instanceof FireKeyword) {
                 spell.insertAction("smoke");
             }
-            //TODO: Liquid
         }
     }
 }

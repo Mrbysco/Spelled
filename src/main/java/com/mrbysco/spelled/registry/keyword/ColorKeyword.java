@@ -21,7 +21,7 @@ public class ColorKeyword extends BaseKeyword {
     @Override
     public void cast(World worldIn, ServerPlayerEntity caster, SpellEntity spell, @Nullable IKeyword adjective) {
         if(spell != null) {
-            if(adjective instanceof LiquidKeyword && color == TextFormatting.BLACK) {
+            if((adjective == null || adjective instanceof LiquidKeyword) && color == TextFormatting.BLACK) {
                 spell.setInky(true);
                 spell.insertAction("ink");
             }
@@ -47,6 +47,10 @@ public class ColorKeyword extends BaseKeyword {
                     } else {
                         spell.setColor(colorID);
                     }
+                }
+
+                if(adjective == null && color == TextFormatting.WHITE) {
+                    spell.insertAction("glow");
                 }
             }
         }

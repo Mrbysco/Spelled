@@ -12,6 +12,8 @@ import com.mrbysco.spelled.registry.keyword.TypeKeyword.Type;
 import com.mrbysco.spelled.util.LevelHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.Util;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -88,6 +90,7 @@ public class SpellCastHandler {
                                             keyword.cast(world, player, spell, null);
                                     }
                                 }
+                                cooldown = MathHelper.clamp(cooldown, 1, Integer.MAX_VALUE);
                                 castText.append(lastKeyword.getKeyword());
                                 StringTextComponent castComponent = new StringTextComponent(castText.toString());
                                 descriptionComponent.appendSibling(typeKeyword.getDescription());
@@ -172,6 +175,7 @@ public class SpellCastHandler {
         int cooldown = data.getCastCooldown();
         if(cooldown > 0) {
             IFormattableTextComponent finalMessage = new TranslationTextComponent("spelled.spell.cooldown", player.getDisplayName(), cooldown);
+            player.sendMessage(finalMessage, Util.DUMMY_UUID);
             return true;
         }
         return false;
