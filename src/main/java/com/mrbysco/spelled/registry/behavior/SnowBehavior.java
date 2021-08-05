@@ -20,26 +20,26 @@ public class SnowBehavior extends BaseBehavior {
 
     @Override
     public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
-        BlockState hitState = spell.level.getBlockState(pos);
-        BlockState offState = spell.level.getBlockState(offPos);
+        BlockState hitState = spell.world.getBlockState(pos);
+        BlockState offState = spell.world.getBlockState(offPos);
 
-        if(offState.getBlock() instanceof SnowBlock && offState.getValue(SnowBlock.LAYERS) < 8) {
-            int layers = offState.getValue(SnowBlock.LAYERS);
-            spell.level.setBlockAndUpdate(offPos, offState.getBlock().defaultBlockState().setValue(SnowBlock.LAYERS, layers + 1));
-        } else if(hitState.getBlock() instanceof SnowBlock && hitState.getValue(SnowBlock.LAYERS) < 8) {
-            int layers = hitState.getValue(SnowBlock.LAYERS);
-            spell.level.setBlockAndUpdate(pos, hitState.getBlock().defaultBlockState().setValue(SnowBlock.LAYERS, layers + 1));
+        if(offState.getBlock() instanceof SnowBlock && offState.get(SnowBlock.LAYERS) < 8) {
+            int layers = offState.get(SnowBlock.LAYERS);
+            spell.world.setBlockState(offPos, offState.getBlock().getDefaultState().with(SnowBlock.LAYERS, layers + 1));
+        } else if(hitState.getBlock() instanceof SnowBlock && hitState.get(SnowBlock.LAYERS) < 8) {
+            int layers = hitState.get(SnowBlock.LAYERS);
+            spell.world.setBlockState(pos, hitState.getBlock().getDefaultState().with(SnowBlock.LAYERS, layers + 1));
         } else {
-            BlockState snowState = Blocks.SNOW.defaultBlockState();
-            if (offState.getMaterial().isReplaceable() && snowState.canSurvive(spell.level, offPos))
-                spell.level.setBlockAndUpdate(offPos, snowState);
+            BlockState snowState = Blocks.SNOW.getDefaultState();
+            if (offState.getMaterial().isReplaceable() && snowState.isValidPosition(spell.world, offPos))
+                spell.world.setBlockState(offPos, snowState);
         }
     }
 
     @Override
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
         if(entity instanceof LivingEntity) {
-            ((LivingEntity)entity).addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 1*20));
+            ((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 1*20));
         }
     }
 }

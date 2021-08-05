@@ -34,18 +34,18 @@ import java.util.OptionalInt;
 import java.util.function.Predicate;
 
 public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
-    private static final DataParameter<CompoundNBT> SPELL_ORDER = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.COMPOUND_TAG);
-    private static final DataParameter<Integer> SPELL_TYPE = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.INT);
-    private static final DataParameter<OptionalInt> COLOR = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.OPTIONAL_UNSIGNED_INT);
-    private static final DataParameter<Boolean> EXPLODING = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> FIERY = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> LAVA = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> WATER = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> COLD = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> SNOW = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> SMOKY = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> INKY = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Float> SIZE_MULTIPLIER = EntityDataManager.defineId(AbstractSpellEntity.class, DataSerializers.FLOAT);
+    private static final DataParameter<CompoundNBT> SPELL_ORDER = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.COMPOUND_NBT);
+    private static final DataParameter<Integer> SPELL_TYPE = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.VARINT);
+    private static final DataParameter<OptionalInt> COLOR = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.OPTIONAL_VARINT);
+    private static final DataParameter<Boolean> EXPLODING = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> FIERY = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> LAVA = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> WATER = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> COLD = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> SNOW = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> SMOKY = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> INKY = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Float> SIZE_MULTIPLIER = EntityDataManager.createKey(AbstractSpellEntity.class, DataSerializers.FLOAT);
 
     public AbstractSpellEntity(EntityType<? extends DamagingProjectileEntity> entityType, World worldIn) {
         super(entityType, worldIn);
@@ -53,29 +53,29 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
 
     public AbstractSpellEntity(EntityType<? extends DamagingProjectileEntity> entityType, LivingEntity shooter, World worldIn) {
         super(SpelledRegistry.SPELL.get(), worldIn);
-        this.setPos(shooter.getX(), shooter.getEyeY() - (double)0.1F, shooter.getZ());
-        this.setOwner(shooter);
+        this.setPosition(shooter.getPosX(), shooter.getPosYEye() - (double)0.1F, shooter.getPosZ());
+        this.setShooter(shooter);
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(SPELL_ORDER, new CompoundNBT());
-        this.entityData.define(SPELL_TYPE, 0);
-        this.entityData.define(COLOR, OptionalInt.empty());
-        this.entityData.define(FIERY, false);
-        this.entityData.define(LAVA, false);
-        this.entityData.define(WATER, false);
-        this.entityData.define(COLD, false);
-        this.entityData.define(SNOW, false);
-        this.entityData.define(EXPLODING, false);
-        this.entityData.define(SMOKY, false);
-        this.entityData.define(INKY, false);
-        this.entityData.define(SIZE_MULTIPLIER, 1.0F);
+    protected void registerData() {
+        super.registerData();
+        this.dataManager.register(SPELL_ORDER, new CompoundNBT());
+        this.dataManager.register(SPELL_TYPE, 0);
+        this.dataManager.register(COLOR, OptionalInt.empty());
+        this.dataManager.register(FIERY, false);
+        this.dataManager.register(LAVA, false);
+        this.dataManager.register(WATER, false);
+        this.dataManager.register(COLD, false);
+        this.dataManager.register(SNOW, false);
+        this.dataManager.register(EXPLODING, false);
+        this.dataManager.register(SMOKY, false);
+        this.dataManager.register(INKY, false);
+        this.dataManager.register(SIZE_MULTIPLIER, 1.0F);
     }
 
     public void setSpellOrder(CompoundNBT order) {
-        this.getEntityData().set(SPELL_ORDER, order);
+        this.getDataManager().set(SPELL_ORDER, order);
     }
     public void insertAction(String action) {
         CompoundNBT order = this.getSpellOrder();
@@ -83,113 +83,113 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         this.setSpellOrder(order);
     }
     public CompoundNBT getSpellOrder() {
-        return this.getEntityData().get(SPELL_ORDER);
+        return this.getDataManager().get(SPELL_ORDER);
     }
 
     public void setSpellType(int type) {
-        this.getEntityData().set(SPELL_TYPE, type);
+        this.getDataManager().set(SPELL_TYPE, type);
     }
     public int getSpellType() {
-        return this.getEntityData().get(SPELL_TYPE);
+        return this.getDataManager().get(SPELL_TYPE);
     }
 
     public void setColor(int color) {
-        this.getEntityData().set(COLOR, OptionalInt.of(color));
+        this.getDataManager().set(COLOR, OptionalInt.of(color));
     }
     public OptionalInt getColor() {
-        return this.getEntityData().get(COLOR);
+        return this.getDataManager().get(COLOR);
     }
-    public boolean hasColor() { return this.getEntityData().get(COLOR).isPresent(); }
+    public boolean hasColor() { return this.getDataManager().get(COLOR).isPresent(); }
 
     public void setFiery(boolean fiery) {
-        this.getEntityData().set(FIERY, fiery);
+        this.getDataManager().set(FIERY, fiery);
     }
     public boolean isFiery() {
-        return this.getEntityData().get(FIERY);
+        return this.getDataManager().get(FIERY);
     }
 
     public void setLava(boolean lava) {
-        this.getEntityData().set(LAVA, lava);
+        this.getDataManager().set(LAVA, lava);
     }
     public boolean isLava() {
-        return this.getEntityData().get(LAVA);
+        return this.getDataManager().get(LAVA);
     }
 
     public void setWater(boolean water) {
-        this.getEntityData().set(WATER, water);
+        this.getDataManager().set(WATER, water);
     }
     public boolean isWater() {
-        return this.getEntityData().get(WATER);
+        return this.getDataManager().get(WATER);
     }
 
     public void setCold(boolean cold) {
-        this.getEntityData().set(COLD, cold);
+        this.getDataManager().set(COLD, cold);
     }
     public boolean isCold() {
-        return this.getEntityData().get(COLD);
+        return this.getDataManager().get(COLD);
     }
 
     public void setSnow(boolean snow) {
-        this.getEntityData().set(SNOW, snow);
+        this.getDataManager().set(SNOW, snow);
     }
     public boolean isSnow() {
-        return this.getEntityData().get(SNOW);
+        return this.getDataManager().get(SNOW);
     }
 
     public void setExploding(boolean explodes) {
-        this.getEntityData().set(EXPLODING, explodes);
+        this.getDataManager().set(EXPLODING, explodes);
     }
     public boolean doesExplode() {
-        return this.getEntityData().get(EXPLODING);
+        return this.getDataManager().get(EXPLODING);
     }
 
     public void setSmoky(boolean smoky) {
-        this.getEntityData().set(SMOKY, smoky);
+        this.getDataManager().set(SMOKY, smoky);
     }
     public boolean isSmoky() {
-        return this.getEntityData().get(SMOKY);
+        return this.getDataManager().get(SMOKY);
     }
 
     public void setInky(boolean inky) {
-        this.getEntityData().set(INKY, inky);
+        this.getDataManager().set(INKY, inky);
     }
     public boolean isInky() {
-        return this.getEntityData().get(INKY);
+        return this.getDataManager().get(INKY);
     }
 
     public void setSizeMultiplier(float sizeMultiplier) {
-        this.getEntityData().set(SIZE_MULTIPLIER, sizeMultiplier);
-        this.reapplyPosition();
-        this.refreshDimensions();
+        this.getDataManager().set(SIZE_MULTIPLIER, sizeMultiplier);
+        this.recenterBoundingBox();
+        this.recalculateSize();
     }
     public float getSizeMultiplier() {
-        return this.getEntityData().get(SIZE_MULTIPLIER);
+        return this.getDataManager().get(SIZE_MULTIPLIER);
     }
 
-    public void refreshDimensions() {
-        double d0 = this.getX();
-        double d1 = this.getY();
-        double d2 = this.getZ();
-        super.refreshDimensions();
-        this.setPos(d0, d1, d2);
+    public void recalculateSize() {
+        double d0 = this.getPosX();
+        double d1 = this.getPosY();
+        double d2 = this.getPosZ();
+        super.recalculateSize();
+        this.setPosition(d0, d1, d2);
     }
 
-    public void onSyncedDataUpdated(DataParameter<?> key) {
+    public void notifyDataManagerChange(DataParameter<?> key) {
         if (SIZE_MULTIPLIER.equals(key)) {
-            this.refreshDimensions();
+            this.recalculateSize();
         }
 
-        super.onSyncedDataUpdated(key);
+        super.notifyDataManagerChange(key);
     }
 
     @Override
-    public EntitySize getDimensions(Pose poseIn) {
-        return super.getDimensions(poseIn).scale(this.getSizeMultiplier());
+    public EntitySize getSize(Pose poseIn) {
+        return super.getSize(poseIn).scale(this.getSizeMultiplier());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compound) {
-        super.readAdditionalSaveData(compound);
+    public void readAdditional(CompoundNBT compound) {
+        super.readAdditional(compound);
 
         if (compound.contains("SpellOrder", 10))
             this.setSpellOrder(compound.getCompound("SpellOrder"));
@@ -210,8 +210,8 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compound) {
-        super.addAdditionalSaveData(compound);
+    public void writeAdditional(CompoundNBT compound) {
+        super.writeAdditional(compound);
 
         if (!this.getSpellOrder().isEmpty())
             compound.put("SpellOrder", this.getSpellOrder());
@@ -233,19 +233,19 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     }
 
     @Override
-    protected boolean shouldBurn() {
+    protected boolean isFireballFiery() {
         return isFiery();
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public IPacket<?> createSpawnPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    protected IParticleData getTrailParticle() {
+    protected IParticleData getParticle() {
         if(isLava() && (isCold() || isSnow() || isWater())) {
-            return new BlockParticleData(ParticleTypes.BLOCK, Blocks.STONE.defaultBlockState());
+            return new BlockParticleData(ParticleTypes.BLOCK, Blocks.STONE.getDefaultState());
         } else {
             if(isWater() || (isFiery() && isSnow()))
                 return ParticleTypes.DRIPPING_WATER;
@@ -269,41 +269,41 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
 
     @Override
     public void tick() {
-        if (tickCount > 200) {
+        if (ticksExisted > 200) {
             this.remove();
         }
 
         if(isCold() || isWater()) {
-            Entity entity = this.getOwner();
-            if (this.level.isClientSide || (entity == null || entity.isAlive()) && this.level.hasChunkAt(this.blockPosition())) {
-                RayTraceResult raytraceresult = rayTraceWater(this::canHitEntity);
+            Entity entity = this.getShooter();
+            if (this.world.isRemote || (entity == null || entity.isAlive()) && this.world.isBlockLoaded(this.getPosition())) {
+                RayTraceResult raytraceresult = rayTraceWater(this::func_230298_a_);
                 if (raytraceresult.getType() != RayTraceResult.Type.MISS) {
-                    this.onHit(raytraceresult);
+                    this.onImpact(raytraceresult);
                 }
             }
         }
-        Vector3d vector3d = this.getDeltaMovement();
-        this.updateRotation();
-        this.setDeltaMovement(vector3d.scale((double)0.99F));
-        if (!this.isNoGravity()) {
-            Vector3d vector3d1 = this.getDeltaMovement();
-            this.setDeltaMovement(vector3d1.x, vector3d1.y - (double)0.02F, vector3d1.z);
+        Vector3d vector3d = this.getMotion();
+        this.updatePitchAndYaw();
+        this.setMotion(vector3d.scale((double)0.99F));
+        if (!this.hasNoGravity()) {
+            Vector3d vector3d1 = this.getMotion();
+            this.setMotion(vector3d1.x, vector3d1.y - (double)0.02F, vector3d1.z);
         }
 
         super.tick();
     }
 
     public RayTraceResult rayTraceWater(Predicate<Entity> entityPredicate) {
-        Vector3d vector3d = this.getDeltaMovement();
-        World world = this.level;
-        Vector3d vector3d1 = this.position();
+        Vector3d vector3d = this.getMotion();
+        World world = this.world;
+        Vector3d vector3d1 = this.getPositionVec();
         Vector3d vector3d2 = vector3d1.add(vector3d);
-        RayTraceResult raytraceresult = world.clip(new RayTraceContext(vector3d1, vector3d2, RayTraceContext.BlockMode.COLLIDER, FluidMode.SOURCE_ONLY, this));
+        RayTraceResult raytraceresult = world.rayTraceBlocks(new RayTraceContext(vector3d1, vector3d2, RayTraceContext.BlockMode.COLLIDER, FluidMode.SOURCE_ONLY, this));
         if (raytraceresult.getType() != RayTraceResult.Type.MISS) {
-            vector3d2 = raytraceresult.getLocation();
+            vector3d2 = raytraceresult.getHitVec();
         }
 
-        RayTraceResult raytraceresult1 = ProjectileHelper.getEntityHitResult(world, this, vector3d1, vector3d2, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), entityPredicate);
+        RayTraceResult raytraceresult1 = ProjectileHelper.rayTraceEntities(world, this, vector3d1, vector3d2, this.getBoundingBox().expand(this.getMotion()).grow(1.0D), entityPredicate);
         if (raytraceresult1 != null) {
             raytraceresult = raytraceresult1;
         }
@@ -315,7 +315,7 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         if (doesExplode()) {
             boolean flag = isSnow() || isWater();
             int size = (int) Math.ceil(1 * getSizeMultiplier());
-            this.level.explode((Entity) null, this.getX(), this.getY(), this.getZ(), (float) size, !flag, !flag ? Explosion.Mode.DESTROY : Explosion.Mode.NONE);
+            this.world.createExplosion((Entity) null, this.getPosX(), this.getPosY(), this.getPosZ(), (float) size, !flag, !flag ? Explosion.Mode.DESTROY : Explosion.Mode.NONE);
         }
     }
 
@@ -323,7 +323,7 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
         if(getSizeMultiplier() > 1) {
             double offset = getSizeMultiplier() * 0.5f;
             List<BlockPos> positionList = new ArrayList<>();
-            Iterable<BlockPos> positions = BlockPos.betweenClosed(pos.offset(-offset, -offset, -offset), pos.offset(offset, offset, offset));
+            Iterable<BlockPos> positions = BlockPos.getAllInBoxMutable(pos.add(-offset, -offset, -offset), pos.add(offset, offset, offset));
             for(BlockPos position : positions) {
                 if(!positionList.contains(position)) {
                     positionList.add(new BlockPos(position));
@@ -337,18 +337,18 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     public List<Entity> getRangedEntities(Entity hitEntity) {
         if(getSizeMultiplier() > 1) {
             double offset = getSizeMultiplier();
-            AxisAlignedBB hitbox = new AxisAlignedBB(hitEntity.getX() - 0.5f, hitEntity.getY() - 0.5f, hitEntity.getZ() - 0.5f, hitEntity.getX() + 0.5f, hitEntity.getY() + 0.5f, hitEntity.getZ() + 0.5f)
-                    .expandTowards(-offset, -offset, -offset).expandTowards(offset, offset, offset);
+            AxisAlignedBB hitbox = new AxisAlignedBB(hitEntity.getPosX() - 0.5f, hitEntity.getPosY() - 0.5f, hitEntity.getPosZ() - 0.5f, hitEntity.getPosX() + 0.5f, hitEntity.getPosY() + 0.5f, hitEntity.getPosZ() + 0.5f)
+                    .expand(-offset, -offset, -offset).expand(offset, offset, offset);
 
-            return level.getEntities(this, hitbox, Entity::isAlive);
+            return world.getEntitiesInAABBexcluding(this, hitbox, Entity::isAlive);
         }
         return Collections.singletonList(hitEntity);
     }
 
     public void shootSpell(Vector3d lookVec) {
-        this.setDeltaMovement(lookVec);
-        this.xPower = lookVec.x * 0.1D;
-        this.yPower = lookVec.y * 0.1D;
-        this.zPower = lookVec.z * 0.1D;
+        this.setMotion(lookVec);
+        this.accelerationX = lookVec.x * 0.1D;
+        this.accelerationY = lookVec.y * 0.1D;
+        this.accelerationZ = lookVec.z * 0.1D;
     }
 }

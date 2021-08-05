@@ -63,13 +63,13 @@ public class SpelledDataGen {
 
         @Override
         protected void validate(Map<ResourceLocation, LootTable> map, ValidationTracker validationtracker) {
-            map.forEach((name, table) -> LootTableManager.validate(validationtracker, name, table));
+            map.forEach((name, table) -> LootTableManager.validateLootTable(validationtracker, name, table));
         }
 
         private static class Blocks extends BlockLootTables {
             @Override
             protected void addTables() {
-                this.dropSelf(SpelledRegistry.LEVELING_ALTAR.get());
+                this.registerDropSelfLootTable(SpelledRegistry.LEVELING_ALTAR.get());
             }
 
             @Override

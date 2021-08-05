@@ -17,15 +17,15 @@ public class LavaBehavior extends BaseBehavior {
 
     @Override
     public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
-        BlockState offState = spell.level.getBlockState(offPos);
+        BlockState offState = spell.world.getBlockState(offPos);
 
-        if (offState.canBeReplaced(Fluids.LAVA)) {
-            spell.level.setBlockAndUpdate(offPos, Blocks.LAVA.defaultBlockState());
+        if (offState.isReplaceable(Fluids.LAVA)) {
+            spell.world.setBlockState(offPos, Blocks.LAVA.getDefaultState());
         }
     }
 
     @Override
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        entity.setSecondsOnFire(5);
+        entity.setFire(5);
     }
 }

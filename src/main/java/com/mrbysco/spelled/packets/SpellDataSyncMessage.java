@@ -21,13 +21,13 @@ public class SpellDataSyncMessage {
     }
 
     private SpellDataSyncMessage(PacketBuffer buf) {
-        this.data = buf.readNbt();
-        this.playerUUID = buf.readUUID();
+        this.data = buf.readCompoundTag();
+        this.playerUUID = buf.readUniqueId();
     }
 
     public void encode(PacketBuffer buf) {
-        buf.writeNbt(data);
-        buf.writeUUID(playerUUID);
+        buf.writeCompoundTag(data);
+        buf.writeUniqueId(playerUUID);
     }
 
     public static SpellDataSyncMessage decode(final PacketBuffer packetBuffer) {
@@ -38,7 +38,7 @@ public class SpellDataSyncMessage {
         Context ctx = context.get();
         ctx.enqueueWork(() -> {
             if (ctx.getDirection().getReceptionSide().isClient()) {
-                PlayerEntity player = Minecraft.getInstance().level.getPlayerByUUID(this.playerUUID);
+                PlayerEntity player = Minecraft.getInstance().world.getPlayerByUuid(this.playerUUID);
                 if(player != null) {
                     player.getCapability(SpelledAPI.SPELL_DATA_CAP).ifPresent(sanityCap -> {
                         SpelledAPI.SPELL_DATA_CAP.readNBT(sanityCap, null, data);

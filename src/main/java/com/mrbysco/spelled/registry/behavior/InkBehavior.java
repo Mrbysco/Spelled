@@ -17,7 +17,7 @@ public class InkBehavior extends BaseBehavior {
     @Override
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
         if(entity instanceof LivingEntity) {
-            ((LivingEntity)entity).addEffect(new EffectInstance(Effects.BLINDNESS, 5*20));
+            ((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.BLINDNESS, 5*20));
         }
     }
 }

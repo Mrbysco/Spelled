@@ -59,8 +59,8 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (bookHovered(mouseX, mouseY)) {
             Minecraft mc = this.minecraft;
-            if(mc != null && mc.gameMode != null) {
-                mc.gameMode.handleInventoryButtonClick((this.menu).containerId, 0);
+            if(mc != null && mc.playerController != null) {
+                mc.playerController.sendEnchantPacket((this.container).windowId, 0);
             }
             return true;
         }
@@ -69,41 +69,41 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
     }
 
     public boolean bookHovered(double mouseX, double mouseY) {
-        int currentLevel = (this.menu).currentLevel[0];
-        int levelCost = (this.menu).levelCosts[currentLevel];
-        return this.isHovering(74, 20, 28, 22, (double) mouseX, (double) mouseY) && levelCost > 0;
+        int currentLevel = (this.container).currentLevel[0];
+        int levelCost = (this.container).levelCosts[currentLevel];
+        return this.isPointInRegion(74, 20, 28, 22, (double) mouseX, (double) mouseY) && levelCost > 0;
     }
 
-    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
         PlayerEntity player = this.minecraft != null ? this.minecraft.player : null;
-        RenderHelper.setupForFlatItems();
+        RenderHelper.setupGuiFlatDiffuseLighting();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bind(SpelledConfig.COMMON.requireItems.get() ? ALTAR_GUI_TEXTURE : ALTAR_GUI_SLOTLESS_TEXTURE);
-        int i = (this.width - this.imageWidth) / 2;
-        int j = (this.height - this.imageHeight) / 2;
-        this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        this.minecraft.getTextureManager().bindTexture(SpelledConfig.COMMON.requireItems.get() ? ALTAR_GUI_TEXTURE : ALTAR_GUI_SLOTLESS_TEXTURE);
+        int i = (this.width - this.xSize) / 2;
+        int j = (this.height - this.ySize) / 2;
+        this.blit(matrixStack, i, j, 0, 0, this.xSize, this.ySize);
         RenderSystem.matrixMode(5889);
         RenderSystem.pushMatrix();
         RenderSystem.loadIdentity();
-        int k = (int)this.minecraft.getWindow().getGuiScale();
+        int k = (int)this.minecraft.getMainWindow().getGuiScaleFactor();
         RenderSystem.viewport((this.width - 320) / 2 * k, (this.height - 240) / 2 * k, 320 * k, 240 * k);
         RenderSystem.translatef(0, 0.23F, 0.0F);
         RenderSystem.multMatrix(Matrix4f.perspective(90.0D, 1.3333334F, 9.0F, 80.0F));
         RenderSystem.matrixMode(5888);
-        matrixStack.pushPose();
-        MatrixStack.Entry matrixstack$entry = matrixStack.last();
-        matrixstack$entry.pose().setIdentity();
-        matrixstack$entry.normal().setIdentity();
+        matrixStack.push();
+        MatrixStack.Entry matrixstack$entry = matrixStack.getLast();
+        matrixstack$entry.getMatrix().setIdentity();
+        matrixstack$entry.getNormal().setIdentity();
         matrixStack.translate(0.0D, (double)3.3F, 1984.0D);
         float f = 5.0F;
         matrixStack.scale(5.0F, 5.0F, 5.0F);
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees(20.0F));
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees(180.0F));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(20.0F));
         float f1 = MathHelper.lerp(partialTicks, this.oOpen, this.open);
         matrixStack.translate((double)((1.0F - f1) * 0.2F), (double)((1.0F - f1) * 0.1F), (double)((1.0F - f1) * 0.25F));
         float f2 = -(1.0F - f1) * 90.0F - 90.0F;
-        matrixStack.mulPose(Vector3f.YP.rotationDegrees(f2));
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(f2));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));
         float f3 = MathHelper.lerp(partialTicks, this.oFlip, this.flip) + 0.25F;
         float f4 = MathHelper.lerp(partialTicks, this.oFlip, this.flip) + 0.75F;
         f3 = (f3 - (float)MathHelper.fastFloor((double)f3)) * 1.6F - 0.3F;
@@ -124,21 +124,21 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
             f4 = 1.0F;
         }
 
-        int currentLevel = (this.menu).currentLevel[0];
-        int l1 = (this.menu).levelCosts[currentLevel];
+        int currentLevel = (this.container).currentLevel[0];
+        int l1 = (this.container).levelCosts[currentLevel];
 
-        int itemAmountCost = (this.menu).itemAmountCosts[currentLevel];
-        boolean itemFlag = SpelledConfig.COMMON.requireItems.get() && this.menu.getCostStackCount() < itemAmountCost;
+        int itemAmountCost = (this.container).itemAmountCosts[currentLevel];
+        boolean itemFlag = SpelledConfig.COMMON.requireItems.get() && this.container.getCostStackCount() < itemAmountCost;
         boolean flag = true;
         if(player != null) {
-            flag = ((itemFlag || player.experienceLevel < l1) && !player.abilities.instabuild);
+            flag = ((itemFlag || player.experienceLevel < l1) && !player.abilities.isCreativeMode);
         }
         boolean bookHovered = bookHovered(x, y);
 
         RenderSystem.enableRescaleNormal();
-        MODEL_BOOK.setupAnim(0.0F, f3, f4, f1);
-        IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
-        IVertexBuilder ivertexbuilder = irendertypebuffer$impl.getBuffer(MODEL_BOOK.renderType(ALTAR_BOOK_TEXTURE));
+        MODEL_BOOK.setBookState(0.0F, f3, f4, f1);
+        IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+        IVertexBuilder ivertexbuilder = irendertypebuffer$impl.getBuffer(MODEL_BOOK.getRenderType(ALTAR_BOOK_TEXTURE));
         float red = 1.0F;
         float green = 1.0F;
         float blue = 1.0F;
@@ -159,27 +159,27 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
                 blue = 0.4F;
             }
         }
-        MODEL_BOOK.renderToBuffer(matrixStack, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY, red, green, blue, 1.0F);
+        MODEL_BOOK.render(matrixStack, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY, red, green, blue, 1.0F);
 
-        irendertypebuffer$impl.endBatch();
-        matrixStack.popPose();
+        irendertypebuffer$impl.finish();
+        matrixStack.pop();
         RenderSystem.matrixMode(5889);
-        RenderSystem.viewport(0, 0, this.minecraft.getWindow().getWidth(), this.minecraft.getWindow().getHeight());
+        RenderSystem.viewport(0, 0, this.minecraft.getMainWindow().getFramebufferWidth(), this.minecraft.getMainWindow().getFramebufferHeight());
         RenderSystem.popMatrix();
         RenderSystem.matrixMode(5888);
-        RenderHelper.setupFor3DItems();
+        RenderHelper.setupGui3DDiffuseLighting();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 
         int j1 = i + 60;
         int k1 = j1 + 20;
         this.setBlitOffset(0);
-        this.minecraft.getTextureManager().bind(ALTAR_GUI_TEXTURE);
+        this.minecraft.getTextureManager().bindTexture(ALTAR_GUI_TEXTURE);
 
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         String s = "" + l1;
         int j2;
-        if (player != null && ((itemFlag || player.experienceLevel < l1) && !player.abilities.instabuild)) {
+        if (player != null && ((itemFlag || player.experienceLevel < l1) && !player.abilities.isCreativeMode)) {
             j2 = 4226832;
         } else {
             j2 = 8453920;
@@ -191,16 +191,16 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         PlayerEntity player = this.minecraft != null ? this.minecraft.player : null;
         if (this.minecraft != null) {
-            partialTicks = this.minecraft.getFrameTime();
+            partialTicks = this.minecraft.getRenderPartialTicks();
         }
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(matrixStack, mouseX, mouseY);
-        boolean flag = player != null && player.abilities.instabuild;
+        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+        boolean flag = player != null && player.abilities.isCreativeMode;
 
         if (bookHovered(mouseX, mouseY) && !flag) {
-            final int currentLevel = (this.menu).currentLevel[0];
-            final int levelCost = (this.menu).levelCosts[currentLevel];
+            final int currentLevel = (this.container).currentLevel[0];
+            final int levelCost = (this.container).levelCosts[currentLevel];
 
             List<ITextComponent> list = Lists.newArrayList();
             boolean noXP = (player == null ? 0 : player.experienceLevel) < levelCost;
@@ -217,32 +217,32 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
             }
 
             if(SpelledConfig.COMMON.requireItems.get()) {
-                int stackCount = this.menu.getCostStackCount();
-                final Item itemCost = (this.menu).itemCosts[currentLevel];
-                final int itemAmountCost = (this.menu).itemAmountCosts[currentLevel];
+                int stackCount = this.container.getCostStackCount();
+                final Item itemCost = (this.container).itemCosts[currentLevel];
+                final int itemAmountCost = (this.container).itemAmountCosts[currentLevel];
                 boolean noItems = stackCount <= itemAmountCost;
 
-                list.add(iformattabletextcomponent.withStyle(noXP ? TextFormatting.RED :  TextFormatting.GREEN));
+                list.add(iformattabletextcomponent.mergeStyle(noXP ? TextFormatting.RED :  TextFormatting.GREEN));
                 IFormattableTextComponent iformattabletextcomponent1;
                 if(noItems) {
-                    iformattabletextcomponent1 = new TranslationTextComponent(Reference.MOD_PREFIX + "container.altar.item.requirement", itemAmountCost, itemCost.getDescription());
+                    iformattabletextcomponent1 = new TranslationTextComponent(Reference.MOD_PREFIX + "container.altar.item.requirement", itemAmountCost, itemCost.getName());
                 } else {
-                    iformattabletextcomponent1 = new TranslationTextComponent(Reference.MOD_PREFIX + "container.altar.item", itemAmountCost, itemCost.getDescription());
+                    iformattabletextcomponent1 = new TranslationTextComponent(Reference.MOD_PREFIX + "container.altar.item", itemAmountCost, itemCost.getName());
                 }
 
-                list.add(iformattabletextcomponent1.withStyle(noItems ? TextFormatting.RED : TextFormatting.GREEN));
+                list.add(iformattabletextcomponent1.mergeStyle(noItems ? TextFormatting.RED : TextFormatting.GREEN));
             }
 
-            this.renderComponentTooltip(matrixStack, list, mouseX, mouseY);
+            this.func_243308_b(matrixStack, list, mouseX, mouseY);
         }
 
     }
 
     public void tickBook() {
         if(SpelledConfig.COMMON.requireItems.get()) {
-            ItemStack itemstack = this.menu.getSlot(0).getItem();
+            ItemStack itemstack = this.container.getSlot(0).getStack();
 
-            if (!ItemStack.matches(itemstack, this.last)) {
+            if (!ItemStack.areItemStacksEqual(itemstack, this.last)) {
                 this.last = itemstack;
 
                 do {
@@ -256,8 +256,8 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
         this.oOpen = this.open;
         boolean flag = false;
 
-        int currentLevel = (this.menu).currentLevel[0];
-        if ((this.menu).levelCosts.length > currentLevel && (this.menu).levelCosts[currentLevel] != 0) {
+        int currentLevel = (this.container).currentLevel[0];
+        if ((this.container).levelCosts.length > currentLevel && (this.container).levelCosts[currentLevel] != 0) {
             flag = true;
         }
 

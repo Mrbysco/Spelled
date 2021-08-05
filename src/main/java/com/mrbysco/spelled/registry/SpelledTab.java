@@ -12,13 +12,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class SpelledTab {
     public static final ItemGroup TAB = new ItemGroup(Reference.MOD_ID) {
         @OnlyIn(Dist.CLIENT)
-        public ItemStack makeIcon() {
+        public ItemStack createIcon() {
             return new ItemStack(SpelledRegistry.LEVELING_ALTAR.get());
         }
 
         @Override
-        public void fillItemList(NonNullList<ItemStack> items) {
-            super.fillItemList(items);
+        public void fill(NonNullList<ItemStack> items) {
+            super.fill(items);
             for(String adjective : KeywordRegistry.instance().getAdjectives()) {
                 CompoundNBT nbt = new CompoundNBT();
                 nbt.putString(Reference.tomeUnlock, adjective);

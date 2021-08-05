@@ -27,10 +27,10 @@ public class LevelHelper {
     }
 
     public static void levelUpFailItems(PlayerEntity player) {
-        player.displayClientMessage(new TranslationTextComponent("spelled.level_up.fail_item").withStyle(TextFormatting.GOLD), true);
+        player.sendStatusMessage(new TranslationTextComponent("spelled.level_up.fail_item").mergeStyle(TextFormatting.GOLD), true);
     }
 
     public static void levelUpFailXP(PlayerEntity player) {
-        player.displayClientMessage(new TranslationTextComponent("spelled.level_up.fail_xp").withStyle(TextFormatting.GOLD), true);
+        player.sendStatusMessage(new TranslationTextComponent("spelled.level_up.fail_xp").mergeStyle(TextFormatting.GOLD), true);
     }
 }

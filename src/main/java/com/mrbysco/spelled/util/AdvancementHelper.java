@@ -25,12 +25,12 @@ public class AdvancementHelper {
     }
 
     public static void unlockAdvancement(ServerPlayerEntity player, String name) {
-        Advancement advancementIn = player.getServer().getAdvancements().getAdvancement(new ResourceLocation("spelled:" + name));
+        Advancement advancementIn = player.getServer().getAdvancementManager().getAdvancement(new ResourceLocation("spelled:" + name));
         if(advancementIn != null) {
-            AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementIn);
+            AdvancementProgress advancementprogress = player.getAdvancements().getProgress(advancementIn);
             if (!advancementprogress.isDone()) {
-                for(String s : advancementprogress.getRemainingCriteria()) {
-                    player.getAdvancements().award(advancementIn, s);
+                for(String s : advancementprogress.getRemaningCriteria()) {
+                    player.getAdvancements().grantCriterion(advancementIn, s);
                 }
             }
         }
@@ -41,12 +41,12 @@ public class AdvancementHelper {
     }
 
     public static void lockAdvancement(ServerPlayerEntity player, String name) {
-        Advancement advancementIn = player.getServer().getAdvancements().getAdvancement(new ResourceLocation("spelled:" + name));
+        Advancement advancementIn = player.getServer().getAdvancementManager().getAdvancement(new ResourceLocation("spelled:" + name));
         if(advancementIn != null) {
-            AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementIn);
+            AdvancementProgress advancementprogress = player.getAdvancements().getProgress(advancementIn);
             if (advancementprogress.hasProgress()) {
                 for(String s : advancementprogress.getCompletedCriteria()) {
-                    player.getAdvancements().revoke(advancementIn, s);
+                    player.getAdvancements().revokeCriterion(advancementIn, s);
                 }
             }
         }
@@ -56,8 +56,8 @@ public class AdvancementHelper {
         KeywordRegistry registry = KeywordRegistry.instance();
         boolean flag = true;
         for(String color : registry.getColors()) {
-            Advancement advancementIn = player.getServer().getAdvancements().getAdvancement(new ResourceLocation("spelled:adjective_" + color));
-            AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementIn);
+            Advancement advancementIn = player.getServer().getAdvancementManager().getAdvancement(new ResourceLocation("spelled:adjective_" + color));
+            AdvancementProgress advancementprogress = player.getAdvancements().getProgress(advancementIn);
             if (!advancementprogress.isDone()) {
                 flag = false;
                 break;

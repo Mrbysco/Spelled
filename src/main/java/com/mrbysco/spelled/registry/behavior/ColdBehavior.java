@@ -22,17 +22,17 @@ public class ColdBehavior extends BaseBehavior {
 
     @Override
     public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
-        BlockState hitState = spell.level.getBlockState(pos);
+        BlockState hitState = spell.world.getBlockState(pos);
         if(hitState.getBlock() instanceof FlowingFluidBlock && ((FlowingFluidBlock)hitState.getBlock()).getFluid() == Fluids.WATER)
-            spell.level.setBlockAndUpdate(pos, Blocks.ICE.defaultBlockState());
+            spell.world.setBlockState(pos, Blocks.ICE.getDefaultState());
         if(hitState.getBlock() instanceof IceBlock)
-            spell.level.setBlockAndUpdate(pos, Blocks.PACKED_ICE.defaultBlockState());
+            spell.world.setBlockState(pos, Blocks.PACKED_ICE.getDefaultState());
     }
 
     @Override
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
         if(entity instanceof LivingEntity) {
-            ((LivingEntity)entity).addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 4*20));
+            ((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.SLOWNESS, 4*20));
         }
     }
 }
