@@ -14,6 +14,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.IntReferenceHolder;
 import net.minecraft.util.SoundCategory;
@@ -82,6 +83,34 @@ public class AltarContainer extends Container {
     private boolean hasXP(PlayerEntity playerIn, int level) {
         int XPCost = this.levelCosts[level];
         return SpelledConfig.COMMON.individualLevels.get() ? playerIn.experienceLevel >= XPCost : playerIn.experienceTotal >= XPCost;
+    }
+
+    public int getCurrentLevel() {
+        return currentLevel[0];
+    }
+
+    public int getCurrentLevelCost() {
+        int currentLevel = getCurrentLevel();
+        if(currentLevel < levelCosts.length) {
+            return levelCosts[currentLevel];
+        }
+        return -1;
+    }
+
+    public int getItemCostAmount() {
+        int currentLevel = getCurrentLevel();
+        if(currentLevel < itemAmountCosts.length) {
+            return itemAmountCosts[currentLevel];
+        }
+        return -1;
+    }
+
+    public Item getItemCost() {
+        int currentLevel = getCurrentLevel();
+        if(currentLevel < itemCosts.length) {
+            return itemCosts[currentLevel];
+        }
+        return Items.AIR;
     }
 
     /**

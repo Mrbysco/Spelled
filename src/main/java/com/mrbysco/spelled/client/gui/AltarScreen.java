@@ -18,6 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
@@ -69,8 +70,7 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
     }
 
     public boolean bookHovered(double mouseX, double mouseY) {
-        int currentLevel = (this.container).currentLevel[0];
-        int levelCost = (this.container).levelCosts[currentLevel];
+        int levelCost = (this.container).getCurrentLevelCost();
         return this.isPointInRegion(74, 20, 28, 22, (double) mouseX, (double) mouseY) && levelCost > 0;
     }
 
@@ -124,14 +124,13 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
             f4 = 1.0F;
         }
 
-        int currentLevel = (this.container).currentLevel[0];
-        int l1 = (this.container).levelCosts[currentLevel];
+        int levelCost = container.getCurrentLevelCost();
 
-        int itemAmountCost = (this.container).itemAmountCosts[currentLevel];
-        boolean itemFlag = SpelledConfig.COMMON.requireItems.get() && this.container.getCostStackCount() < itemAmountCost;
+        int itemAmountCost = (this.container).getItemCostAmount();
+        boolean itemFlag = SpelledConfig.COMMON.requireItems.get() && itemAmountCost > 0 && this.container.getCostStackCount() < itemAmountCost;
         boolean flag = true;
         if(player != null) {
-            flag = ((itemFlag || player.experienceLevel < l1) && !player.abilities.isCreativeMode);
+            flag = levelCost > 0 && ((itemFlag || player.experienceLevel < levelCost) && !player.abilities.isCreativeMode);
         }
         boolean bookHovered = bookHovered(x, y);
 
@@ -177,15 +176,23 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
         this.minecraft.getTextureManager().bindTexture(ALTAR_GUI_TEXTURE);
 
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        String s = "" + l1;
+        String s = "";
+        if(levelCost > 0) {
+            s += levelCost;
+        } else {
+            s += "∞";
+        }
         int j2;
-        if (player != null && ((itemFlag || player.experienceLevel < l1) && !player.abilities.isCreativeMode)) {
+        if (player != null && ((itemFlag || player.experienceLevel < levelCost) && !player.abilities.isCreativeMode)) {
             j2 = 4226832;
         } else {
             j2 = 8453920;
         }
+        if(levelCost == -1) {
+            j2 = 16755200;
+        }
 
-        drawCenteredString(matrixStack, this.font, s, (k1 + 8), (j + 44), j2 );
+        drawCenteredString(matrixStack, this.font, s, (k1 + 8), (j + 44), j2);
     }
 
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
@@ -199,11 +206,10 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
         boolean flag = player != null && player.abilities.isCreativeMode;
 
         if (bookHovered(mouseX, mouseY) && !flag) {
-            final int currentLevel = (this.container).currentLevel[0];
-            final int levelCost = (this.container).levelCosts[currentLevel];
+            final int levelCost = (this.container).getCurrentLevelCost();
 
             List<ITextComponent> list = Lists.newArrayList();
-            boolean noXP = (player == null ? 0 : player.experienceLevel) < levelCost;
+            boolean noXP = levelCost > 0 &&  (player == null ? 0 : player.experienceLevel) < levelCost;
 
             IFormattableTextComponent iformattabletextcomponent;
             if(noXP) {
@@ -218,9 +224,9 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
 
             if(SpelledConfig.COMMON.requireItems.get()) {
                 int stackCount = this.container.getCostStackCount();
-                final Item itemCost = (this.container).itemCosts[currentLevel];
-                final int itemAmountCost = (this.container).itemAmountCosts[currentLevel];
-                boolean noItems = stackCount <= itemAmountCost;
+                final Item itemCost = (this.container).getItemCost();
+                final int itemAmountCost = (this.container).getItemCostAmount();
+                boolean noItems = itemAmountCost > 0 && itemCost != Items.AIR && stackCount <= itemAmountCost;
 
                 list.add(iformattabletextcomponent.mergeStyle(noXP ? TextFormatting.RED :  TextFormatting.GREEN));
                 IFormattableTextComponent iformattabletextcomponent1;
@@ -256,8 +262,8 @@ public class AltarScreen extends ContainerScreen<AltarContainer> {
         this.oOpen = this.open;
         boolean flag = false;
 
-        int currentLevel = (this.container).currentLevel[0];
-        if ((this.container).levelCosts.length > currentLevel && (this.container).levelCosts[currentLevel] != 0) {
+        int currentLevel = (this.container).getCurrentLevel();
+        if ((this.container).levelCosts.length > currentLevel && (this.container).getCurrentLevelCost() > 0) {
             flag = true;
         }
 
