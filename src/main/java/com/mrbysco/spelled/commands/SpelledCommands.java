@@ -29,7 +29,7 @@ public class SpelledCommands {
         ArrayList<String> adjectives = KeywordRegistry.instance().getAdjectives();
         adjectives.add("all");
 
-        root.requires((source) -> source.hasPermissionLevel(2))
+        root.requires((source) -> source.hasPermission(2))
                 .then(Commands.literal("level")
                         .then(Commands.argument("player", EntityArgument.players())
                 .then(Commands.literal("get").executes(SpelledCommands::getLevel))
@@ -60,10 +60,10 @@ public class SpelledCommands {
         for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
             int level = SpelledAPI.getLevel(player);
             if(level >= 0) {
-                ITextComponent levelText = new StringTextComponent(String.valueOf(level)).mergeStyle(TextFormatting.GOLD);
+                ITextComponent levelText = new StringTextComponent(String.valueOf(level)).withStyle(TextFormatting.GOLD);
                 ITextComponent text = new TranslationTextComponent("spelled.commands.level.get.message",
                         player.getDisplayName(), levelText);
-                ctx.getSource().sendFeedback(text, false);
+                ctx.getSource().sendSuccess(text, false);
             }
         }
 
@@ -75,15 +75,15 @@ public class SpelledCommands {
         if(level >= 0 && level <= SpelledConfig.COMMON.maxLevel.get()) {
             for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
                 SpelledAPI.forceSetLevel(player, level);
-                ITextComponent levelText = new StringTextComponent(String.valueOf(level)).mergeStyle(TextFormatting.GOLD);
+                ITextComponent levelText = new StringTextComponent(String.valueOf(level)).withStyle(TextFormatting.GOLD);
                 ITextComponent text = new TranslationTextComponent("spelled.commands.level.set.message",
                         player.getDisplayName(), levelText);
-                ctx.getSource().sendFeedback(text, true);
+                ctx.getSource().sendSuccess(text, true);
             }
         } else {
             ITextComponent text = new TranslationTextComponent("spelled.commands.level.set.invalid", level, SpelledConfig.COMMON.maxLevel)
-                    .mergeStyle(TextFormatting.RED);
-            ctx.getSource().sendFeedback(text, true);
+                    .withStyle(TextFormatting.RED);
+            ctx.getSource().sendSuccess(text, true);
         }
 
         return 0;
@@ -100,21 +100,21 @@ public class SpelledCommands {
                     }
 
                     ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.unlock.all", player.getDisplayName());
-                    ctx.getSource().sendFeedback(text, true);
+                    ctx.getSource().sendSuccess(text, true);
                 }
             } else if(KeywordRegistry.instance().containsKey(word)) {
                 for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
                     SpelledAPI.unlockKeyword(player, word);
 
-                    ITextComponent wordComponent = new StringTextComponent(word).mergeStyle(TextFormatting.GOLD);
+                    ITextComponent wordComponent = new StringTextComponent(word).withStyle(TextFormatting.GOLD);
                     ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.unlock.message", wordComponent, player.getDisplayName());
-                    ctx.getSource().sendFeedback(text, true);
+                    ctx.getSource().sendSuccess(text, true);
                 }
             }
         } else {
             ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.unlock.invalid", word)
-                    .mergeStyle(TextFormatting.RED);
-            ctx.getSource().sendFeedback(text, true);
+                    .withStyle(TextFormatting.RED);
+            ctx.getSource().sendSuccess(text, true);
         }
 
         return 0;
@@ -128,21 +128,21 @@ public class SpelledCommands {
                     SpelledAPI.resetUnlocks(player);
 
                     ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.reset.message", player.getDisplayName());
-                    ctx.getSource().sendFeedback(text, true);
+                    ctx.getSource().sendSuccess(text, true);
                 }
             } else if(KeywordRegistry.instance().containsKey(word)) {
                 for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
                     SpelledAPI.lockKeyword(player, word);
 
-                    ITextComponent wordComponent = new StringTextComponent(word).mergeStyle(TextFormatting.GOLD);
+                    ITextComponent wordComponent = new StringTextComponent(word).withStyle(TextFormatting.GOLD);
                     ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.lock.message", wordComponent, player.getDisplayName());
-                    ctx.getSource().sendFeedback(text, true);
+                    ctx.getSource().sendSuccess(text, true);
                 }
             }
         } else {
             ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.lock.invalid", word)
-                    .mergeStyle(TextFormatting.RED);
-            ctx.getSource().sendFeedback(text, true);
+                    .withStyle(TextFormatting.RED);
+            ctx.getSource().sendSuccess(text, true);
         }
 
         return 0;
@@ -153,7 +153,7 @@ public class SpelledCommands {
             SpelledAPI.resetUnlocks(player);
 
             ITextComponent text = new TranslationTextComponent("spelled.commands.knowledge.reset.message", player.getDisplayName());
-            ctx.getSource().sendFeedback(text, true);
+            ctx.getSource().sendSuccess(text, true);
         }
 
         return 0;

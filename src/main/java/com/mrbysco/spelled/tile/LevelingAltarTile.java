@@ -19,8 +19,8 @@ public class LevelingAltarTile extends TileEntity implements INameable {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
-        super.write(compound);
+    public CompoundNBT save(CompoundNBT compound) {
+        super.save(compound);
         if (this.hasCustomName())
             compound.putString("CustomName", ITextComponent.Serializer.toJson(this.customName));
 
@@ -28,10 +28,10 @@ public class LevelingAltarTile extends TileEntity implements INameable {
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
-        super.read(state, nbt);
+    public void load(BlockState state, CompoundNBT nbt) {
+        super.load(state, nbt);
         if (nbt.contains("CustomName", 8))
-            this.customName = ITextComponent.Serializer.getComponentFromJson(nbt.getString("CustomName"));
+            this.customName = ITextComponent.Serializer.fromJson(nbt.getString("CustomName"));
     }
 
     @Override

@@ -51,7 +51,7 @@ public class SpelledAPI {
 
     public static void resetUnlocks(PlayerEntity player) {
         SpelledAPI.getSpellDataCap(player).ifPresent(ISpellData::resetUnlocks);
-        if(!player.world.isRemote) {
+        if(!player.level.isClientSide) {
             AdvancementHelper.removeAllAdjectiveAdvancements((ServerPlayerEntity) player);
         }
     }
@@ -60,7 +60,7 @@ public class SpelledAPI {
         LazyOptional<ISpellData> cap = SpelledAPI.getSpellDataCap(player);
         if(cap.isPresent()) {
             ISpellData data = cap.orElse(null);
-            List<String> unlocks = new ArrayList<>(data.getUnlocked().keySet());
+            List<String> unlocks = new ArrayList<>(data.getUnlocked().getAllKeys());
             unlocks.removeAll(KeywordRegistry.instance().getTypes());
             return unlocks;
         }
@@ -69,14 +69,14 @@ public class SpelledAPI {
 
     public static void unlockKeyword(PlayerEntity player, String keyword) {
         SpelledAPI.getSpellDataCap(player).ifPresent(cap -> cap.unlockKeyword(keyword));
-        if(!player.world.isRemote) {
+        if(!player.level.isClientSide) {
             AdvancementHelper.unlockAdjectiveAdvancement((ServerPlayerEntity) player, keyword);
         }
     }
 
     public static void lockKeyword(PlayerEntity player, String keyword) {
         SpelledAPI.getSpellDataCap(player).ifPresent(cap -> cap.lockKeyword(keyword));
-        if(!player.world.isRemote) {
+        if(!player.level.isClientSide) {
             AdvancementHelper.lockAdjectiveAdvancement((ServerPlayerEntity) player, keyword);
         }
     }

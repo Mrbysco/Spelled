@@ -25,7 +25,7 @@ public class CapabilityHandler {
     @SubscribeEvent
     public void playerLoggedInEvent(PlayerLoggedInEvent event) {
         PlayerEntity player = event.getPlayer();
-        if(!player.world.isRemote) {
+        if(!player.level.isClientSide) {
             SpelledAPI.syncCap((ServerPlayerEntity) player);
         }
     }

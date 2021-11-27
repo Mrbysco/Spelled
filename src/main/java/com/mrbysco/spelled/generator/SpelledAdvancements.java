@@ -68,12 +68,12 @@ public class SpelledAdvancements extends AdvancementProvider {
     }
 
     @Override
-    public void act(DirectoryCache cache) {
+    public void run(DirectoryCache cache) {
         Path outputFolder = this.dataGenerator.getOutputFolder();
         Consumer<Advancement> consumer = advancement -> {
             Path path = outputFolder.resolve("data/" + advancement.getId().getNamespace() + "/advancements/" + advancement.getId().getPath() + ".json");
             try {
-                IDataProvider.save(GSON, cache, advancement.copy().serialize(), path);
+                IDataProvider.save(GSON, cache, advancement.deconstruct().serializeToJson(), path);
             } catch (IOException e) {
                 System.out.println(e);
             }
@@ -82,23 +82,23 @@ public class SpelledAdvancements extends AdvancementProvider {
     }
 
     private void registerAdvancements(Consumer<Advancement> consumer) {
-        root = Advancement.Builder.builder()
-                .withDisplay(SpelledRegistry.KNOWLEDGE_TOME.get(),
+        root = Advancement.Builder.advancement()
+                .display(SpelledRegistry.KNOWLEDGE_TOME.get(),
                         new TranslationTextComponent("advancement.spelled.root"),
                         new TranslationTextComponent("advancement.spelled.root.desc"),
                         new ResourceLocation("minecraft:textures/block/bookshelf.png"), FrameType.TASK, true, false, false)
-                .withCriterion("air", EnterBlockTrigger.Instance.forBlock(Blocks.AIR))
-                .withRewards(withLoot(new ResourceLocation(Reference.MOD_ID, "advancements/manual")))
-                .register(consumer, "spelled:root");
+                .addCriterion("air", EnterBlockTrigger.Instance.entersBlock(Blocks.AIR))
+                .rewards(withLoot(new ResourceLocation(Reference.MOD_ID, "advancements/manual")))
+                .save(consumer, "spelled:root");
 
-        color_lore = Advancement.Builder.builder()
-                .withDisplay(SpelledRegistry.KNOWLEDGE_TOME.get(),
+        color_lore = Advancement.Builder.advancement()
+                .display(SpelledRegistry.KNOWLEDGE_TOME.get(),
                         new TranslationTextComponent("advancement.spelled.color_lore"),
                         new TranslationTextComponent("advancement.spelled.color_lore.desc"),
                         null, FrameType.TASK, false, false, false)
-                .withParent(root)
-                .withCriterion("impossible", new ImpossibleTrigger.Instance())
-                .register(consumer, "spelled:color_lore");
+                .parent(root)
+                .addCriterion("impossible", new ImpossibleTrigger.Instance())
+                .save(consumer, "spelled:color_lore");
 
         ater = generateAdjectiveAdvancement("ater", color_lore, consumer);
         aureus = generateAdjectiveAdvancement("aureus", ater, consumer);
@@ -134,13 +134,13 @@ public class SpelledAdvancements extends AdvancementProvider {
     }
 
     private Advancement generateAdjectiveAdvancement(String adjective, Advancement parent, Consumer<Advancement> consumer) {
-        return Advancement.Builder.builder()
-                .withDisplay(SpelledRegistry.KNOWLEDGE_TOME.get(),
+        return Advancement.Builder.advancement()
+                .display(SpelledRegistry.KNOWLEDGE_TOME.get(),
                         new TranslationTextComponent(String.format("advancement.spelled.%s", adjective)),
                         new TranslationTextComponent(String.format("advancement.spelled.%s.desc", adjective)),
                         null, FrameType.TASK, false, false, false)
-                .withParent(parent)
-                .withCriterion("impossible", new ImpossibleTrigger.Instance())
-                .register(consumer, "spelled:adjective_" + adjective);
+                .parent(parent)
+                .addCriterion("impossible", new ImpossibleTrigger.Instance())
+                .save(consumer, "spelled:adjective_" + adjective);
     }
 }

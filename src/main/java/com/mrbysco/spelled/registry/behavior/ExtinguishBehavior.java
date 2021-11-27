@@ -20,27 +20,27 @@ public class ExtinguishBehavior extends BaseBehavior {
 
     @Override
     public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
-        World world = spell.world;
+        World world = spell.level;
         extinguishFires(world, pos);
         extinguishFires(world, offPos);
     }
 
     private void extinguishFires(World world, BlockPos pos) {
         BlockState blockstate = world.getBlockState(pos);
-        if (blockstate.isIn(BlockTags.FIRE)) {
-            world.playEvent((PlayerEntity)null, 1009, pos, 0);
+        if (blockstate.is(BlockTags.FIRE)) {
+            world.levelEvent((PlayerEntity)null, 1009, pos, 0);
             world.removeBlock(pos, false);
-        } else if (CampfireBlock.isLit(blockstate)) {
-            world.playEvent((PlayerEntity)null, 1009, pos, 0);
-            CampfireBlock.extinguish(world, pos, blockstate);
-            world.setBlockState(pos, blockstate.with(CampfireBlock.LIT, Boolean.valueOf(false)));
+        } else if (CampfireBlock.isLitCampfire(blockstate)) {
+            world.levelEvent((PlayerEntity)null, 1009, pos, 0);
+            CampfireBlock.dowse(world, pos, blockstate);
+            world.setBlockAndUpdate(pos, blockstate.setValue(CampfireBlock.LIT, Boolean.valueOf(false)));
         }
     }
 
     @Override
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        World world = entity.world;
-        world.playSound((PlayerEntity) null, entity.getPosition(), SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, entity.getSoundCategory(),0.7F,1.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.4F);
-        entity.extinguish();
+        World world = entity.level;
+        world.playSound((PlayerEntity) null, entity.blockPosition(), SoundEvents.GENERIC_EXTINGUISH_FIRE, entity.getSoundSource(),0.7F,1.6F + (world.random.nextFloat() - world.random.nextFloat()) * 0.4F);
+        entity.clearFire();
     }
 }

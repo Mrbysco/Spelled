@@ -16,15 +16,15 @@ public class KnockbackBehavior extends BaseBehavior {
 
     @Override
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        float rotationYaw = spell.rotationYaw;
-        if (spell.getMotion() == Vector3d.ZERO) {
-            rotationYaw = entity.rotationYaw;
+        float rotationYaw = spell.yRot;
+        if (spell.getDeltaMovement() == Vector3d.ZERO) {
+            rotationYaw = entity.yRot;
         }
         if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).applyKnockback((float)1 * 0.5F, (double)MathHelper.sin(rotationYaw * ((float)Math.PI / 180F)), (double)(-MathHelper.cos(rotationYaw * ((float)Math.PI / 180F))));
+            ((LivingEntity)entity).knockback((float)1 * 0.5F, (double)MathHelper.sin(rotationYaw * ((float)Math.PI / 180F)), (double)(-MathHelper.cos(rotationYaw * ((float)Math.PI / 180F))));
         } else {
-            entity.addVelocity((double)(-MathHelper.sin(rotationYaw * ((float)Math.PI / 180F)) * (float)1 * 0.5F), 0.1D, (double)(MathHelper.cos(rotationYaw * ((float)Math.PI / 180F)) * (float)1 * 0.5F));
+            entity.push((double)(-MathHelper.sin(rotationYaw * ((float)Math.PI / 180F)) * (float)1 * 0.5F), 0.1D, (double)(MathHelper.cos(rotationYaw * ((float)Math.PI / 180F)) * (float)1 * 0.5F));
         }
-        entity.velocityChanged = true;
+        entity.hurtMarked = true;
     }
 }

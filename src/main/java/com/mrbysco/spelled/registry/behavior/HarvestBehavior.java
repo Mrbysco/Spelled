@@ -19,11 +19,11 @@ public class HarvestBehavior extends BaseBehavior {
 
     @Override
     public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
-        World world = spell.world;
+        World world = spell.level;
         BlockState hitState = world.getBlockState(pos);
-        float hardness = hitState.getBlockHardness(world, pos);
+        float hardness = hitState.getDestroySpeed(world, pos);
         if(hardness > 0.0F && hitState.getHarvestLevel() <= 2) {
-            spell.world.destroyBlock(pos, true);
+            spell.level.destroyBlock(pos, true);
         }
     }
 
@@ -32,10 +32,10 @@ public class HarvestBehavior extends BaseBehavior {
         if(entity instanceof LivingEntity) {
             LivingEntity livingEntity = (LivingEntity) entity;
             for(EquipmentSlotType slotType : EquipmentSlotType.values()) {
-                ItemStack stack = livingEntity.getItemStackFromSlot(slotType);
-                if(livingEntity.getRNG().nextBoolean() && !stack.isEmpty()) {
-                    stack.damageItem(1, livingEntity, (playerIn) -> {
-                        playerIn.sendBreakAnimation(slotType);
+                ItemStack stack = livingEntity.getItemBySlot(slotType);
+                if(livingEntity.getRandom().nextBoolean() && !stack.isEmpty()) {
+                    stack.hurtAndBreak(1, livingEntity, (playerIn) -> {
+                        playerIn.broadcastBreakEvent(slotType);
                     });
                     break;
                 }

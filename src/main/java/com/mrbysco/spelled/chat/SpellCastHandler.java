@@ -36,8 +36,8 @@ public class SpellCastHandler {
         if(event.phase == TickEvent.Phase.START)
             return;
 
-        World world = event.player.world;
-        if(!world.isRemote && world.getGameTime() % 20 == 0) {
+        World world = event.player.level;
+        if(!world.isClientSide && world.getGameTime() % 20 == 0) {
             ServerPlayerEntity player = (ServerPlayerEntity) event.player;
             int cooldown = SpelledAPI.getCooldown(player);
             if(cooldown > 0) {
@@ -68,7 +68,7 @@ public class SpellCastHandler {
 
                             //Do our stuff
                             IKeyword lastKeyword = registry.getKeywordFromName(words[words.length - 1]);
-                            World world = player.world;
+                            World world = player.level;
 
                             if(lastKeyword instanceof TypeKeyword) {
                                 TypeKeyword typeKeyword = (TypeKeyword) lastKeyword;
@@ -82,7 +82,7 @@ public class SpellCastHandler {
                                     if(keyword != null) {
                                         cooldown += keyword.getSlots();
                                         castText.append(keyword.getKeyword()).append(" ");
-                                        descriptionComponent.appendSibling(keyword.getDescription()).appendSibling(new StringTextComponent(" "));
+                                        descriptionComponent.append(keyword.getDescription()).append(new StringTextComponent(" "));
                                         int previous = i - 1;
                                         if(previous >= 0 && previous < (words.length - 1))
                                             keyword.cast(world, player, spell, registry.getKeywordFromName(words[previous]));
@@ -93,20 +93,20 @@ public class SpellCastHandler {
                                 cooldown = MathHelper.clamp(cooldown, 1, Integer.MAX_VALUE);
                                 castText.append(lastKeyword.getKeyword());
                                 StringTextComponent castComponent = new StringTextComponent(castText.toString());
-                                descriptionComponent.appendSibling(typeKeyword.getDescription());
-                                descriptionComponent.mergeStyle(TextFormatting.GOLD);
-                                castComponent.setStyle(event.getComponent().getStyle().setHoverEvent(
-                                        new HoverEvent(Action.SHOW_TEXT, descriptionComponent))).mergeStyle(TextFormatting.GOLD);
+                                descriptionComponent.append(typeKeyword.getDescription());
+                                descriptionComponent.withStyle(TextFormatting.GOLD);
+                                castComponent.setStyle(event.getComponent().getStyle().withHoverEvent(
+                                        new HoverEvent(Action.SHOW_TEXT, descriptionComponent))).withStyle(TextFormatting.GOLD);
 
                                 IFormattableTextComponent finalMessage = new TranslationTextComponent("spelled.spell.cast", player.getDisplayName(), castComponent);
                                 if(spell != null) {
-                                    if(!player.abilities.isCreativeMode) {
+                                    if(!player.abilities.instabuild) {
                                         SpelledAPI.setCooldown(player, cooldown);
                                         SpelledAPI.syncCap(player);
                                     }
                                     if(typeKeyword.getType() != Type.SELF) {
                                         shootSpell(player, spell);
-                                        world.addEntity(spell);
+                                        world.addFreshEntity(spell);
                                     } else {
                                         spell.handleEntityHit(player);
                                         spell.remove(false);
@@ -115,11 +115,11 @@ public class SpellCastHandler {
 
                                 if(SpelledConfig.COMMON.proximity.get() > 0) {
                                     event.setCanceled(true);
-                                    List<? extends PlayerEntity> playerEntities = world.getPlayers();
+                                    List<? extends PlayerEntity> playerEntities = world.players();
                                     for(PlayerEntity nearbyPlayer : playerEntities) {
-                                        if(nearbyPlayer.getUniqueID().equals(player.getUniqueID()) ||
-                                                (nearbyPlayer.world.getDimensionKey() == world.getDimensionKey() && player.getDistanceSq(nearbyPlayer) <= SpelledConfig.COMMON.proximity.get())) {
-                                            player.sendMessage(finalMessage, player.getUniqueID());
+                                        if(nearbyPlayer.getUUID().equals(player.getUUID()) ||
+                                                (nearbyPlayer.level.dimension() == world.dimension() && player.distanceToSqr(nearbyPlayer) <= SpelledConfig.COMMON.proximity.get())) {
+                                            player.sendMessage(finalMessage, player.getUUID());
                                         }
                                     }
                                 } else {
@@ -152,7 +152,7 @@ public class SpellCastHandler {
         }
 
         //If creative just return true if the chat message was a valid spell
-        if(player.abilities.isCreativeMode)
+        if(player.abilities.instabuild)
             return true;
 
         int maxLevelWord = 0;
@@ -175,28 +175,28 @@ public class SpellCastHandler {
         int cooldown = data.getCastCooldown();
         if(cooldown > 0) {
             IFormattableTextComponent finalMessage = new TranslationTextComponent("spelled.spell.cooldown", player.getDisplayName(), cooldown);
-            player.sendMessage(finalMessage, Util.DUMMY_UUID);
+            player.sendMessage(finalMessage, Util.NIL_UUID);
             return true;
         }
         return false;
     }
 
     public SpellEntity constructEntity(ServerPlayerEntity player, @Nonnull Type type) {
-        SpellEntity spell = new SpellEntity(player, player.world);
+        SpellEntity spell = new SpellEntity(player, player.level);
         spell.setSpellType(type.getId());
 
         return spell;
     }
 
     public SpellEntity shootSpell(ServerPlayerEntity player, SpellEntity spell) {
-        spell.setShooter(player);
-        spell.setPosition(player.getPosX(), player.getPosYEye() - (double)0.1F, player.getPosZ());
+        spell.setOwner(player);
+        spell.setPos(player.getX(), player.getEyeY() - (double)0.1F, player.getZ());
         switch(spell.getSpellType()) {
             default: //Ball (Self is handled elsewhere)
-                spell.setDirectionAndMovement(player, player.rotationPitch, player.rotationYaw, 0.0F, 2.0F, 0.0F);
+                spell.shootFromRotation(player, player.xRot, player.yRot, 0.0F, 2.0F, 0.0F);
                 break;
             case 1: //Projectile
-                spell.setDirectionAndMovement(player, player.rotationPitch, player.rotationYaw, 0.0F, 4.0F, 0.0F);
+                spell.shootFromRotation(player, player.xRot, player.yRot, 0.0F, 4.0F, 0.0F);
                 break;
         }
 

@@ -17,7 +17,7 @@ public class GlowBehavior extends BaseBehavior {
     @Override
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
         if(entity instanceof LivingEntity) {
-            ((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.GLOWING, 5*20, 0,  false, false));
+            ((LivingEntity)entity).addEffect(new EffectInstance(Effects.GLOWING, 5*20, 0,  false, false));
         }
     }
 }

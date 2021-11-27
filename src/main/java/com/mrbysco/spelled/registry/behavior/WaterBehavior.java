@@ -23,21 +23,21 @@ public class WaterBehavior extends BaseBehavior {
 
     @Override
     public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
-        BlockState hitState = spell.world.getBlockState(pos);
-        BlockState offState = spell.world.getBlockState(offPos);
+        BlockState hitState = spell.level.getBlockState(pos);
+        BlockState offState = spell.level.getBlockState(offPos);
 
         Block block = hitState.getBlock();
-        if (block instanceof ILiquidContainer && ((ILiquidContainer)block).canContainFluid(spell.world, pos, hitState, Fluids.WATER)) {
-            ((ILiquidContainer) block).receiveFluid(spell.world, pos, hitState, Fluids.WATER.getStillFluidState(false));
+        if (block instanceof ILiquidContainer && ((ILiquidContainer)block).canPlaceLiquid(spell.level, pos, hitState, Fluids.WATER)) {
+            ((ILiquidContainer) block).placeLiquid(spell.level, pos, hitState, Fluids.WATER.getSource(false));
         } else {
             if(hitState.getBlock() instanceof FlowingFluidBlock && ((FlowingFluidBlock)hitState.getBlock()).getFluid() == Fluids.LAVA) {
-                Block fluidBlock = spell.world.getFluidState(pos).isSource() ? Blocks.OBSIDIAN : Blocks.COBBLESTONE;
-                spell.world.setBlockState(pos, net.minecraftforge.event.ForgeEventFactory.fireFluidPlaceBlockEvent(spell.world, pos, pos, fluidBlock.getDefaultState()));
+                Block fluidBlock = spell.level.getFluidState(pos).isSource() ? Blocks.OBSIDIAN : Blocks.COBBLESTONE;
+                spell.level.setBlockAndUpdate(pos, net.minecraftforge.event.ForgeEventFactory.fireFluidPlaceBlockEvent(spell.level, pos, pos, fluidBlock.defaultBlockState()));
             } else {
-                if(hitState.isReplaceable(Fluids.WATER)) {
-                    spell.world.setBlockState(pos, Blocks.WATER.getDefaultState());
-                } else if (offState.isReplaceable(Fluids.WATER) ) {
-                    spell.world.setBlockState(offPos, Blocks.WATER.getDefaultState());
+                if(hitState.canBeReplaced(Fluids.WATER)) {
+                    spell.level.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());
+                } else if (offState.canBeReplaced(Fluids.WATER) ) {
+                    spell.level.setBlockAndUpdate(offPos, Blocks.WATER.defaultBlockState());
                 }
             }
         }
@@ -45,8 +45,8 @@ public class WaterBehavior extends BaseBehavior {
 
     @Override
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        World world = entity.world;
-        world.playSound((PlayerEntity) null, entity.getPosition(), SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, entity.getSoundCategory(),0.7F,1.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.4F);
-        entity.extinguish();
+        World world = entity.level;
+        world.playSound((PlayerEntity) null, entity.blockPosition(), SoundEvents.GENERIC_EXTINGUISH_FIRE, entity.getSoundSource(),0.7F,1.6F + (world.random.nextFloat() - world.random.nextFloat()) * 0.4F);
+        entity.clearFire();
     }
 }

@@ -12,8 +12,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class ClientHandler {
 
     public static void onClientSetupEvent(FMLClientSetupEvent event) {
-        RenderTypeLookup.setRenderLayer(SpelledRegistry.LEVELING_ALTAR.get(), RenderType.getCutout());
-        ScreenManager.registerFactory(SpelledRegistry.ALTAR_CONTAINER.get(), AltarScreen::new);
+        RenderTypeLookup.setRenderLayer(SpelledRegistry.LEVELING_ALTAR.get(), RenderType.cutout());
+        ScreenManager.register(SpelledRegistry.ALTAR_CONTAINER.get(), AltarScreen::new);
 
         RenderingRegistry.registerEntityRenderingHandler(SpelledRegistry.SPELL.get(), renderManager -> new SpellRenderer(renderManager));
     }

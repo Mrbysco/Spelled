@@ -19,13 +19,13 @@ public class ProtectBehavior extends BaseBehavior {
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
         if(entity instanceof LivingEntity) {
             LivingEntity livingEntity = (LivingEntity) entity;
-            if(livingEntity.getActivePotionEffect(Effects.RESISTANCE) == null) {
-                livingEntity.addPotionEffect(new EffectInstance(Effects.RESISTANCE, 200, 0, false, false));
+            if(livingEntity.getEffect(Effects.DAMAGE_RESISTANCE) == null) {
+                livingEntity.addEffect(new EffectInstance(Effects.DAMAGE_RESISTANCE, 200, 0, false, false));
             } else {
-                int amplifier = livingEntity.getActivePotionEffect(Effects.RESISTANCE).getAmplifier();
-                livingEntity.addPotionEffect(new EffectInstance(Effects.RESISTANCE, 200, MathHelper.clamp(amplifier + 1, 0, 4), false, false));
+                int amplifier = livingEntity.getEffect(Effects.DAMAGE_RESISTANCE).getAmplifier();
+                livingEntity.addEffect(new EffectInstance(Effects.DAMAGE_RESISTANCE, 200, MathHelper.clamp(amplifier + 1, 0, 4), false, false));
             }
-            livingEntity.addPotionEffect(new EffectInstance(Effects.FIRE_RESISTANCE, 200, 0, false, false));
+            livingEntity.addEffect(new EffectInstance(Effects.FIRE_RESISTANCE, 200, 0, false, false));
         }
     }
 }
