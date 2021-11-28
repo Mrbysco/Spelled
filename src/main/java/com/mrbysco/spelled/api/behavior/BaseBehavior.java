@@ -24,6 +24,11 @@ public class BaseBehavior implements ISpellBehavior {
     }
 
     @Override
+    public boolean appliedMultiple() {
+        return true;
+    }
+
+    @Override
     public String getName() {
         return this.name;
     }

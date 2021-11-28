@@ -8,8 +8,8 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class SpelledCapProvider implements ICapabilitySerializable<INBT> {
-    private LazyOptional<ISpellData> instance;
-    private ISpellData data;
+    private final LazyOptional<ISpellData> instance;
+    private final ISpellData data;
 
     public SpelledCapProvider() {
         this.data = SpelledAPI.SPELL_DATA_CAP.getDefaultInstance();

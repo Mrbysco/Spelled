@@ -32,9 +32,6 @@ public class CapabilityHandler {
 
     @SubscribeEvent
     public void onDeath(PlayerEvent.Clone event) {
-        // If not dead, player is returning from the End
-        if (!event.isWasDeath()) return;
-
         PlayerEntity original = event.getOriginal();
         PlayerEntity clone = event.getPlayer();
 
@@ -45,5 +42,8 @@ public class CapabilityHandler {
                 capability.getStorage().readNBT(capability, dataClone, null, nbt);
             })
         );
+        if(!clone.level.isClientSide) {
+            SpelledAPI.syncCap((ServerPlayerEntity) clone);
+        }
     }
 }

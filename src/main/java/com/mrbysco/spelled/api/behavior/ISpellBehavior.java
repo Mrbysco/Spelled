@@ -12,6 +12,8 @@ public interface ISpellBehavior {
 
     void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos);
 
+    boolean appliedMultiple();
+
     /*
      * @return behavior
      */

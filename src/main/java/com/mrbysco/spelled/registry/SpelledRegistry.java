@@ -4,6 +4,8 @@ import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.block.LevelingAltarBlock;
 import com.mrbysco.spelled.container.AltarContainer;
 import com.mrbysco.spelled.entity.SpellEntity;
+import com.mrbysco.spelled.item.CreativeTomeItem;
+import com.mrbysco.spelled.item.SpellbookItem;
 import com.mrbysco.spelled.item.TomeItem;
 import com.mrbysco.spelled.tile.LevelingAltarTile;
 import net.minecraft.block.Block;
@@ -34,6 +36,8 @@ public class SpelledRegistry {
     public static final RegistryObject<Item> LEVELING_ALTAR_ITEM  = ITEMS.register("leveling_altar", () -> new BlockItem(LEVELING_ALTAR.get(), itemBuilder().tab(SpelledTab.TAB)));
 
     public static final RegistryObject<Item> KNOWLEDGE_TOME = ITEMS.register("ancient_knowledge_tome" , () -> new TomeItem(itemBuilder().tab(ItemGroup.TAB_MISC)));
+    public static final RegistryObject<Item> CREATIVE_TOME = ITEMS.register("creative_tome" , () -> new CreativeTomeItem(itemBuilder().tab(ItemGroup.TAB_MISC)));
+    public static final RegistryObject<Item> SPELL_BOOK = ITEMS.register("spell_book" , () -> new SpellbookItem(itemBuilder().stacksTo(1).tab(ItemGroup.TAB_MISC)));
 
     public static final RegistryObject<TileEntityType<LevelingAltarTile>> LEVELING_ALTAR_TILE = TILES.register("leveling_altar_tile", () -> TileEntityType.Builder.of(() -> new LevelingAltarTile(), LEVELING_ALTAR.get()).build(null));
     public static final RegistryObject<ContainerType<AltarContainer>> ALTAR_CONTAINER = CONTAINERS.register("leveling_altar", () -> IForgeContainerType.create((windowId, inv, data) -> new AltarContainer(windowId, inv)));

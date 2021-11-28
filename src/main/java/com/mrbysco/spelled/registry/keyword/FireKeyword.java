@@ -16,7 +16,7 @@ public class FireKeyword extends BaseKeyword {
     @Override
     public void cast(World worldIn, ServerPlayerEntity caster, SpellEntity spell, @Nullable IKeyword adjective) {
         if(spell != null) {
-            if(adjective != null && adjective instanceof LiquidKeyword) {
+            if(adjective instanceof LiquidKeyword) {
                 spell.setLava(true);
                 spell.insertAction("lava");
             } else {

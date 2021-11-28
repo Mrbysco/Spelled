@@ -23,8 +23,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import net.minecraft.item.Item.Properties;
-
 public class TomeItem extends Item {
     public TomeItem(Properties builder) {
         super(builder);
@@ -54,8 +52,11 @@ public class TomeItem extends Item {
                 }
             } else {
                 CompoundNBT tag = new CompoundNBT();
-                tag.putString(Reference.tomeUnlock, KeywordRegistry.instance().getRandomAdjective());
-                itemstack.setTag(tag);
+                String adjective = KeywordRegistry.instance().getRandomAdjective();
+                if(!adjective.isEmpty()) {
+                    tag.putString(Reference.tomeUnlock, KeywordRegistry.instance().getRandomAdjective());
+                    itemstack.setTag(tag);
+                }
             }
         }
         return super.use(worldIn, playerIn, handIn);

@@ -12,8 +12,8 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public class SpellDataSyncMessage {
-    private CompoundNBT data;
-    private UUID playerUUID;
+    private final CompoundNBT data;
+    private final UUID playerUUID;
 
     public SpellDataSyncMessage(ISpellData data, UUID playerUUID) {
         this.data = (CompoundNBT) SpelledAPI.SPELL_DATA_CAP.writeNBT(data, null);

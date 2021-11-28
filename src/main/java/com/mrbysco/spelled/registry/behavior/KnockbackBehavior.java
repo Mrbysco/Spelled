@@ -21,7 +21,7 @@ public class KnockbackBehavior extends BaseBehavior {
             rotationYaw = entity.yRot;
         }
         if (entity instanceof LivingEntity) {
-            ((LivingEntity)entity).knockback((float)1 * 0.5F, (double)MathHelper.sin(rotationYaw * ((float)Math.PI / 180F)), (double)(-MathHelper.cos(rotationYaw * ((float)Math.PI / 180F))));
+            ((LivingEntity)entity).knockback(0.5F, (double)MathHelper.sin(rotationYaw * ((float)Math.PI / 180F)), (double)(-MathHelper.cos(rotationYaw * ((float)Math.PI / 180F))));
         } else {
             entity.push((double)(-MathHelper.sin(rotationYaw * ((float)Math.PI / 180F)) * (float)1 * 0.5F), 0.1D, (double)(MathHelper.cos(rotationYaw * ((float)Math.PI / 180F)) * (float)1 * 0.5F));
         }

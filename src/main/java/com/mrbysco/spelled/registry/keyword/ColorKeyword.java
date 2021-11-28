@@ -28,7 +28,7 @@ public class ColorKeyword extends BaseKeyword {
             if(color == TextFormatting.AQUA && adjective instanceof LiquidKeyword) {
                 spell.setWater(true);
                 Color waterColor = new Color(0.2F, 0.3F, 1.0F);
-                Integer colorID = waterColor.getRGB();
+                int colorID = waterColor.getRGB();
                 if(spell.hasColor()) {
                     int currentColor = spell.getColor().getAsInt();
                     int combinedColor = (int)((currentColor * 0.5F) + (colorID * 0.5F)); //Combine colors

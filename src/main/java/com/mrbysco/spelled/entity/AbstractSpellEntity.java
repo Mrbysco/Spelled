@@ -23,7 +23,7 @@ import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.Explosion;
+import net.minecraft.world.Explosion.Mode;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -301,9 +301,9 @@ public abstract class AbstractSpellEntity extends DamagingProjectileEntity {
     }
 
     public void explode() {
-        boolean flag = isSnow() || isWater();
+        boolean flag = !(isSnow() || isWater()) && isFiery();
         int size = (int) Math.ceil(1 * getSizeMultiplier());
-        this.level.explode((Entity) null, this.getX(), this.getY(), this.getZ(), (float) size, !flag, !flag ? Explosion.Mode.DESTROY : Explosion.Mode.NONE);
+        this.level.explode(this, this.getX(), this.getY(), this.getZ(), (float) size, flag, flag ? Mode.DESTROY : Mode.BREAK);
     }
 
     public List<BlockPos> getSizedPos(BlockPos pos) {

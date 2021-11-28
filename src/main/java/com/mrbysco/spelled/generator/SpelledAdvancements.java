@@ -2,7 +2,7 @@ package com.mrbysco.spelled.generator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mrbysco.spelled.Reference;
+import com.mrbysco.spelled.Spelled;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
@@ -75,7 +75,7 @@ public class SpelledAdvancements extends AdvancementProvider {
             try {
                 IDataProvider.save(GSON, cache, advancement.deconstruct().serializeToJson(), path);
             } catch (IOException e) {
-                System.out.println(e);
+                Spelled.LOGGER.error(e);
             }
         };
         registerAdvancements(consumer);
@@ -88,7 +88,6 @@ public class SpelledAdvancements extends AdvancementProvider {
                         new TranslationTextComponent("advancement.spelled.root.desc"),
                         new ResourceLocation("minecraft:textures/block/bookshelf.png"), FrameType.TASK, true, false, false)
                 .addCriterion("air", EnterBlockTrigger.Instance.entersBlock(Blocks.AIR))
-                .rewards(withLoot(new ResourceLocation(Reference.MOD_ID, "advancements/manual")))
                 .save(consumer, "spelled:root");
 
         color_lore = Advancement.Builder.advancement()

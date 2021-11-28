@@ -54,8 +54,12 @@ public class SpellEntity extends AbstractSpellEntity {
             String action = getSpellOrder().getString(String.valueOf(i));
             ISpellBehavior behavior = behaviors.get(action);
             if(behavior != null) {
-                for(Entity entity : rangedEntities) {
-                    behavior.onEntityHit(this, entity);
+                if(behavior.appliedMultiple()) {
+                    for(Entity entity : rangedEntities) {
+                        behavior.onEntityHit(this, entity);
+                    }
+                } else {
+                    behavior.onEntityHit(this, hitEntity);
                 }
             }
         }
@@ -73,8 +77,12 @@ public class SpellEntity extends AbstractSpellEntity {
             String action = getSpellOrder().getString(String.valueOf(i));
             ISpellBehavior behavior = behaviors.get(action);
             if(behavior != null) {
-                for(BlockPos boxPos : multiplePos) {
-                    behavior.onBlockHit(this, boxPos, boxPos.relative(blockResult.getDirection()));
+                if(behavior.appliedMultiple()) {
+                    for(BlockPos boxPos : multiplePos) {
+                        behavior.onBlockHit(this, boxPos, boxPos.relative(blockResult.getDirection()));
+                    }
+                } else {
+                    behavior.onBlockHit(this, pos, pos.relative(blockResult.getDirection()));
                 }
             }
         }

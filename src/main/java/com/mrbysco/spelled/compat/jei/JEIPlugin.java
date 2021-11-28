@@ -4,7 +4,9 @@ import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -20,12 +22,12 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
-        registration.registerSubtypeInterpreter(SpelledRegistry.KNOWLEDGE_TOME.get(), new tomeSubTypes());
+        registration.registerSubtypeInterpreter(SpelledRegistry.KNOWLEDGE_TOME.get(), new TomeSubTypes());
     }
 
-    private class tomeSubTypes implements ISubtypeInterpreter {
+    private static class TomeSubTypes implements IIngredientSubtypeInterpreter<ItemStack> {
         @Override
-        public String apply(ItemStack stack) {
+        public String apply(ItemStack stack, UidContext context) {
             if (!stack.hasTag()) return ISubtypeInterpreter.NONE;
                 String tomeUnlock = stack.getTag().getString(Reference.tomeUnlock);
             if (tomeUnlock.isEmpty()) return ISubtypeInterpreter.NONE;

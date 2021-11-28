@@ -15,7 +15,6 @@ import com.mrbysco.spelled.handler.SpellHandler;
 import com.mrbysco.spelled.packets.PacketHandler;
 import com.mrbysco.spelled.registry.ReloadManager;
 import com.mrbysco.spelled.registry.SpelledRegistry;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -28,22 +27,12 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(Reference.MOD_ID)
 public class Spelled {
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
-
-    private static final String PROTOCOL_VERSION = "1";
-    public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(Reference.MOD_ID, "main"),
-            () -> PROTOCOL_VERSION,
-            PROTOCOL_VERSION::equals,
-            PROTOCOL_VERSION::equals
-    );
 
     public Spelled() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();

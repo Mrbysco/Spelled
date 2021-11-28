@@ -21,4 +21,9 @@ public class ExplodeBehavior extends BaseBehavior {
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
         spell.explode();
     }
+
+    @Override
+    public boolean appliedMultiple() {
+        return false;
+    }
 }

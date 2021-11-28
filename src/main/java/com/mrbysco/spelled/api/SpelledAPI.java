@@ -1,8 +1,8 @@
 package com.mrbysco.spelled.api;
 
-import com.mrbysco.spelled.Spelled;
 import com.mrbysco.spelled.api.capability.ISpellData;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
+import com.mrbysco.spelled.packets.PacketHandler;
 import com.mrbysco.spelled.packets.SpellDataSyncMessage;
 import com.mrbysco.spelled.util.AdvancementHelper;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,6 +15,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SpelledAPI {
     @CapabilityInject(ISpellData.class)
@@ -67,6 +68,11 @@ public class SpelledAPI {
         return new ArrayList<>();
     }
 
+    public static boolean isUnlocked(PlayerEntity player, String adjective) {
+        List<String> unlocks = getUnlocks(player);
+        return unlocks.contains(adjective.toLowerCase(Locale.ROOT));
+    }
+
     public static void unlockKeyword(PlayerEntity player, String keyword) {
         SpelledAPI.getSpellDataCap(player).ifPresent(cap -> cap.unlockKeyword(keyword));
         if(!player.level.isClientSide) {
@@ -99,6 +105,6 @@ public class SpelledAPI {
     }
 
     public static void syncCap(ServerPlayerEntity player) {
-        SpelledAPI.getSpellDataCap(player).ifPresent(cap -> Spelled.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new SpellDataSyncMessage(cap, player.getGameProfile().getId())));
+        SpelledAPI.getSpellDataCap(player).ifPresent(cap -> PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new SpellDataSyncMessage(cap, player.getGameProfile().getId())));
     }
 }
