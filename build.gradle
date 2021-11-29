@@ -99,16 +99,21 @@ repositories {
         }
     }
     maven {
+        name = 'Patchouli maven'
         url = 'https://maven.blamejared.com'
+        content {
+            includeGroup "vazkii.patchouli"
+        }
     }
     maven {
-        name = "brassgoggledcoders"
+        name = "PatchouliProvider Maven"
         url = "https://maven.teamacronymcoders.com/"
         content {
             includeGroup "xyz.brassgoggledcoders"
         }
     }
     maven {
+        name = 'Curse maven'
         url = "https://www.cursemaven.com"
         content {
             includeGroup "curse.maven"
