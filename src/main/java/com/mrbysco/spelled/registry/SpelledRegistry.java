@@ -4,28 +4,30 @@ import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.block.LevelingAltarBlock;
 import com.mrbysco.spelled.container.AltarContainer;
 import com.mrbysco.spelled.entity.SpellEntity;
+import com.mrbysco.spelled.item.CreativeTomeItem;
+import com.mrbysco.spelled.item.SpellbookItem;
 import com.mrbysco.spelled.item.TomeItem;
 import com.mrbysco.spelled.tile.LevelingAltarTile;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class SpelledRegistry {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MOD_ID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
-    public static final DeferredRegister<BlockEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, Reference.MOD_ID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, Reference.MOD_ID);
     public static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Reference.MOD_ID);
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Reference.MOD_ID);
 
@@ -34,8 +36,10 @@ public class SpelledRegistry {
     public static final RegistryObject<Item> LEVELING_ALTAR_ITEM  = ITEMS.register("leveling_altar", () -> new BlockItem(LEVELING_ALTAR.get(), itemBuilder().tab(SpelledTab.TAB)));
 
     public static final RegistryObject<Item> KNOWLEDGE_TOME = ITEMS.register("ancient_knowledge_tome" , () -> new TomeItem(itemBuilder().tab(CreativeModeTab.TAB_MISC)));
+    public static final RegistryObject<Item> CREATIVE_TOME = ITEMS.register("creative_tome" , () -> new CreativeTomeItem(itemBuilder().tab(CreativeModeTab.TAB_MISC)));
+    public static final RegistryObject<Item> SPELL_BOOK = ITEMS.register("spell_book" , () -> new SpellbookItem(itemBuilder().stacksTo(1).tab(CreativeModeTab.TAB_MISC)));
 
-    public static final RegistryObject<BlockEntityType<LevelingAltarTile>> LEVELING_ALTAR_TILE = TILES.register("leveling_altar_tile", () -> BlockEntityType.Builder.of(() -> new LevelingAltarTile(), LEVELING_ALTAR.get()).build(null));
+    public static final RegistryObject<BlockEntityType<LevelingAltarTile>> LEVELING_ALTAR_TILE = BLOCK_ENTITIES.register("leveling_altar_tile", () -> BlockEntityType.Builder.of(LevelingAltarTile::new, LEVELING_ALTAR.get()).build(null));
     public static final RegistryObject<MenuType<AltarContainer>> ALTAR_CONTAINER = CONTAINERS.register("leveling_altar", () -> IForgeContainerType.create((windowId, inv, data) -> new AltarContainer(windowId, inv)));
 
     public static final RegistryObject<EntityType<SpellEntity>> SPELL = ENTITIES.register("spell", () ->

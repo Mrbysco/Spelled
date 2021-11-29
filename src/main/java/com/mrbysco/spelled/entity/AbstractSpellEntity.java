@@ -1,7 +1,15 @@
 package com.mrbysco.spelled.entity;
 
 import com.mrbysco.spelled.registry.SpelledRegistry;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -9,23 +17,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.ClipContext.Fluid;
+import net.minecraft.world.level.Explosion.BlockInteraction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +37,6 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
     private static final EntityDataAccessor<CompoundTag> SPELL_ORDER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.COMPOUND_TAG);
     private static final EntityDataAccessor<Integer> SPELL_TYPE = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<OptionalInt> COLOR = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.OPTIONAL_UNSIGNED_INT);
-    private static final EntityDataAccessor<Boolean> EXPLODING = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> FIERY = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> LAVA = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> WATER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
@@ -68,7 +67,6 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
         this.entityData.define(WATER, false);
         this.entityData.define(COLD, false);
         this.entityData.define(SNOW, false);
-        this.entityData.define(EXPLODING, false);
         this.entityData.define(SMOKY, false);
         this.entityData.define(INKY, false);
         this.entityData.define(SIZE_MULTIPLIER, 1.0F);
@@ -136,13 +134,6 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
         return this.getEntityData().get(SNOW);
     }
 
-    public void setExploding(boolean explodes) {
-        this.getEntityData().set(EXPLODING, explodes);
-    }
-    public boolean doesExplode() {
-        return this.getEntityData().get(EXPLODING);
-    }
-
     public void setSmoky(boolean smoky) {
         this.getEntityData().set(SMOKY, smoky);
     }
@@ -202,7 +193,6 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
         setWater(compound.getBoolean("Water"));
         setCold(compound.getBoolean("Cold"));
         setSnow(compound.getBoolean("Snow"));
-        setExploding(compound.getBoolean("Exploding"));
         setSmoky(compound.getBoolean("Smoky"));
         setInky(compound.getBoolean("Inky"));
 
@@ -225,7 +215,6 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
         compound.putBoolean("Water", isWater());
         compound.putBoolean("Cold", isCold());
         compound.putBoolean("Snow", isSnow());
-        compound.putBoolean("Exploding", doesExplode());
         compound.putBoolean("Smoky", isSmoky());
         compound.putBoolean("Inky", isInky());
 
@@ -270,7 +259,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
     @Override
     public void tick() {
         if (tickCount > 200) {
-            this.remove();
+            this.discard();
         }
 
         if(isCold() || isWater()) {
@@ -312,11 +301,9 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
     }
 
     public void explode() {
-        if (doesExplode()) {
-            boolean flag = isSnow() || isWater();
-            int size = (int) Math.ceil(1 * getSizeMultiplier());
-            this.level.explode((Entity) null, this.getX(), this.getY(), this.getZ(), (float) size, !flag, !flag ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
-        }
+        boolean flag = !(isSnow() || isWater()) && isFiery();
+        int size = (int) Math.ceil(1 * getSizeMultiplier());
+        this.level.explode(this, this.getX(), this.getY(), this.getZ(), (float) size, flag, flag ? BlockInteraction.DESTROY : BlockInteraction.BREAK);
     }
 
     public List<BlockPos> getSizedPos(BlockPos pos) {

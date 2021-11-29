@@ -1,14 +1,14 @@
 {
   "name": "info.spelled.book.leveling.entry.name",
-  "category": "leveling",
+  "category": "spelled:leveling",
   "icon": "spelled:leveling_altar",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "info.spelled.book.leveling_info.text"
     },
     {
-      "type": "crafting",
+      "type": "patchouli:crafting",
       "recipe": "spelled:leveling_altar",
       "text": "info.spelled.book.leveling_recipe.text"
     }

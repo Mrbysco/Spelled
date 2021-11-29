@@ -3,11 +3,10 @@ package com.mrbysco.spelled.util;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 
 public class AdvancementHelper {
-
     public static void removeAllAdjectiveAdvancements(ServerPlayer player) {
         KeywordRegistry registry = KeywordRegistry.instance();
         for(String adjective : registry.getAdjectives()) {

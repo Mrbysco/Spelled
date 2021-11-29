@@ -3,12 +3,11 @@ package com.mrbysco.spelled.util;
 import com.mrbysco.spelled.config.ConfigCache;
 import com.mrbysco.spelled.config.ConfigCache.ItemCost;
 import com.mrbysco.spelled.config.SpelledConfig;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
 
 public class LevelHelper {
-
     public static int getAllowedWordCount(int level) {
         return level > 0 ? level + 1 : 0;
     }

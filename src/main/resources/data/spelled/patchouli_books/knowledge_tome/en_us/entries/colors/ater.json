@@ -1,10 +1,10 @@
 {
   "name": "info.spelled.book.colors.ater.name",
-  "category": "colors",
+  "category": "spelled:colors",
   "icon": "spelled:ancient_knowledge_tome",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "info.spelled.book.colors.ater.text"
     }
   ],

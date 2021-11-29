@@ -1,10 +1,10 @@
 {
   "name": "info.spelled.book.size.magnum.name",
-  "category": "size",
+  "category": "spelled:size",
   "icon": "spelled:ancient_knowledge_tome",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "info.spelled.book.size.magnum.text"
     }
   ],

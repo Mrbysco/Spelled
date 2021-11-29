@@ -6,7 +6,7 @@ import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Arrays;
@@ -138,17 +138,17 @@ public class SpelledConfig {
     }
 
     @SubscribeEvent
-    public static void onLoad(final ModConfig.Loading configEvent) {
+    public static void onLoad(final ModConfigEvent.Loading configEvent) {
         Spelled.LOGGER.debug("Loaded Spelled's config file {}", configEvent.getConfig().getFileName());
     }
 
     @SubscribeEvent
-    public static void onFileChange(final ModConfig.Reloading configEvent) {
+    public static void onFileChange(final ModConfigEvent.Reloading configEvent) {
         Spelled.LOGGER.debug("Spelled's config just got changed on the file system!");
     }
 
     @SubscribeEvent
-    public static void onReload(final ModConfig.ModConfigEvent configEvent) {
+    public static void onReload(final ModConfigEvent configEvent) {
         ConfigCache.refreshCache();
     }
 }

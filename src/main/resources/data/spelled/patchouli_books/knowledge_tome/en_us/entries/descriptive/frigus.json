@@ -1,10 +1,10 @@
 {
   "name": "info.spelled.book.descriptive.frigus.name",
-  "category": "descriptions",
+  "category": "spelled:descriptions",
   "icon": "spelled:ancient_knowledge_tome",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "info.spelled.book.descriptive.frigus.text"
     }
   ],

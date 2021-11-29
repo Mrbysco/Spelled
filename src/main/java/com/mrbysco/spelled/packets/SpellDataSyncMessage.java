@@ -3,20 +3,20 @@ package com.mrbysco.spelled.packets;
 import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.api.capability.ISpellData;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
 
 import java.util.UUID;
 import java.util.function.Supplier;
 
 public class SpellDataSyncMessage {
-    private CompoundTag data;
-    private UUID playerUUID;
+    private final CompoundTag data;
+    private final UUID playerUUID;
 
     public SpellDataSyncMessage(ISpellData data, UUID playerUUID) {
-        this.data = (CompoundTag) SpelledAPI.SPELL_DATA_CAP.writeNBT(data, null);
+        this.data = data.serializeNBT();
         this.playerUUID = playerUUID;
     }
 
@@ -41,7 +41,7 @@ public class SpellDataSyncMessage {
                 Player player = Minecraft.getInstance().level.getPlayerByUUID(this.playerUUID);
                 if(player != null) {
                     player.getCapability(SpelledAPI.SPELL_DATA_CAP).ifPresent(sanityCap -> {
-                        SpelledAPI.SPELL_DATA_CAP.readNBT(sanityCap, null, data);
+                        sanityCap.deserializeNBT(data);
                     });
                 }
             }

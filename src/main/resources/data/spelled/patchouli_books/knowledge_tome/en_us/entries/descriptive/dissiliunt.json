@@ -1,14 +1,14 @@
 {
   "name": "info.spelled.book.descriptive.dissiliunt.name",
-  "category": "descriptions",
+  "category": "spelled:descriptions",
   "icon": "spelled:ancient_knowledge_tome",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "info.spelled.book.descriptive.dissiliunt.text"
     },
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "info.spelled.book.descriptive.dissiliunt.text2"
     }
   ],

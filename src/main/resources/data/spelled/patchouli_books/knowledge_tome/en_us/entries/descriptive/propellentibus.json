@@ -1,14 +1,14 @@
 {
   "name": "info.spelled.book.descriptive.propellentibus.name",
-  "category": "descriptions",
+  "category": "spelled:descriptions",
   "icon": "spelled:ancient_knowledge_tome",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "info.spelled.book.descriptive.propellentibus.text"
     },
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "info.spelled.book.descriptive.propellentibus.text2"
     }
   ],

@@ -1,14 +1,14 @@
 {
   "name": "info.spelled.book.size.parvus.name",
-  "category": "size",
+  "category": "spelled:size",
   "icon": "spelled:ancient_knowledge_tome",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "info.spelled.book.size.parvus.text"
     },
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "info.spelled.book.size.parvus.text2"
     }
   ],

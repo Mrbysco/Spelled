@@ -2,7 +2,7 @@ package com.mrbysco.spelled.generator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mrbysco.spelled.Reference;
+import com.mrbysco.spelled.Spelled;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
@@ -10,13 +10,13 @@ import net.minecraft.advancements.AdvancementRewards.Builder;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.EnterBlockTrigger;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.HashCache;
 import net.minecraft.data.DataProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.data.HashCache;
+import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Blocks;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -75,7 +75,7 @@ public class SpelledAdvancements extends AdvancementProvider {
             try {
                 DataProvider.save(GSON, cache, advancement.deconstruct().serializeToJson(), path);
             } catch (IOException e) {
-                System.out.println(e);
+                Spelled.LOGGER.error(e);
             }
         };
         registerAdvancements(consumer);
@@ -88,7 +88,6 @@ public class SpelledAdvancements extends AdvancementProvider {
                         new TranslatableComponent("advancement.spelled.root.desc"),
                         new ResourceLocation("minecraft:textures/block/bookshelf.png"), FrameType.TASK, true, false, false)
                 .addCriterion("air", EnterBlockTrigger.TriggerInstance.entersBlock(Blocks.AIR))
-                .rewards(withLoot(new ResourceLocation(Reference.MOD_ID, "advancements/manual")))
                 .save(consumer, "spelled:root");
 
         color_lore = Advancement.Builder.advancement()

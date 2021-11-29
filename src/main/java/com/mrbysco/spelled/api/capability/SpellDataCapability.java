@@ -1,8 +1,16 @@
 package com.mrbysco.spelled.api.capability;
 
+import com.mrbysco.spelled.Reference;
+import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.LazyOptional;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Locale;
 
 public class SpellDataCapability implements ISpellData {
@@ -74,5 +82,32 @@ public class SpellDataCapability implements ISpellData {
         CompoundTag tag = new CompoundTag();
         registry.getTypes().forEach(type -> tag.putBoolean(type, true));
         return tag;
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt(Reference.characterLevel, getLevel());
+        tag.put(Reference.characterUnlocks, getUnlocked());
+        tag.putInt(Reference.characterCooldown, getCastCooldown());
+
+        return tag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag tag) {
+        int level = tag.getInt(Reference.characterLevel);
+        CompoundTag characterUnlocks = tag.getCompound(Reference.characterUnlocks);
+        int castCooldown = tag.getInt(Reference.characterCooldown);
+
+        setLevel(level);
+        setUnlocked(characterUnlocks);
+        setCastCooldown(castCooldown);
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        return SpelledAPI.SPELL_DATA_CAP.orEmpty(cap, LazyOptional.of(() -> this));
     }
 }

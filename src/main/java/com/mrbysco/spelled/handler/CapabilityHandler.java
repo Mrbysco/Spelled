@@ -3,11 +3,10 @@ package com.mrbysco.spelled.handler;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.api.capability.ISpellData;
-import com.mrbysco.spelled.api.capability.SpelledCapProvider;
+import com.mrbysco.spelled.api.capability.SpellDataCapability;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -18,7 +17,7 @@ public class CapabilityHandler {
     @SubscribeEvent
     public void attachCapabilityEntity(AttachCapabilitiesEvent<Entity> event) {
         if(event.getObject() instanceof Player) {
-            event.addCapability(Reference.SPELL_DATA_CAP, new SpelledCapProvider());
+            event.addCapability(Reference.SPELL_DATA_CAP, new SpellDataCapability());
         }
     }
 
@@ -32,18 +31,18 @@ public class CapabilityHandler {
 
     @SubscribeEvent
     public void onDeath(PlayerEvent.Clone event) {
-        // If not dead, player is returning from the End
-        if (!event.isWasDeath()) return;
-
         Player original = event.getOriginal();
-        Player clone = event.getPlayer();
+        Player newPlayer = event.getPlayer();
 
         final Capability<ISpellData> capability = SpelledAPI.SPELL_DATA_CAP;
-        original.getCapability(capability).ifPresent(dataOriginal ->
-            clone.getCapability(capability).ifPresent(dataClone -> {
-                Tag nbt = capability.getStorage().writeNBT(capability, dataOriginal, null);
-                capability.getStorage().readNBT(capability, dataClone, null, nbt);
-            })
-        );
+        original.getCapability(capability).ifPresent(originalData -> {
+            newPlayer.getCapability(capability).ifPresent(futureData -> {
+                futureData.deserializeNBT(originalData.serializeNBT());
+            });
+        });
+
+        if(!newPlayer.level.isClientSide) {
+            SpelledAPI.syncCap((ServerPlayer) newPlayer);
+        }
     }
 }

@@ -1,14 +1,14 @@
 {
   "name": "info.spelled.book.types.projectilis.name",
-  "category": "types",
+  "category": "spelled:types",
   "icon": "spelled:ancient_knowledge_tome",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "info.spelled.book.types.projectilis.text"
     },
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "info.spelled.book.types.projectilis.text2"
     }
   ]

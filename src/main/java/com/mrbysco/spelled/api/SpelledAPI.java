@@ -1,24 +1,26 @@
 package com.mrbysco.spelled.api;
 
-import com.mrbysco.spelled.Spelled;
 import com.mrbysco.spelled.api.capability.ISpellData;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
+import com.mrbysco.spelled.packets.PacketHandler;
 import com.mrbysco.spelled.packets.SpellDataSyncMessage;
 import com.mrbysco.spelled.util.AdvancementHelper;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SpelledAPI {
-    @CapabilityInject(ISpellData.class)
-    public static final Capability<ISpellData> SPELL_DATA_CAP = null;
+    public static final Capability<ISpellData> SPELL_DATA_CAP = CapabilityManager.get(new CapabilityToken<>() {
+    });
 
     public static LazyOptional<ISpellData> getSpellDataCap(@Nonnull final Player player) {
         return player.getCapability(SpelledAPI.SPELL_DATA_CAP);
@@ -67,6 +69,11 @@ public class SpelledAPI {
         return new ArrayList<>();
     }
 
+    public static boolean isUnlocked(Player player, String adjective) {
+        List<String> unlocks = getUnlocks(player);
+        return unlocks.contains(adjective.toLowerCase(Locale.ROOT));
+    }
+
     public static void unlockKeyword(Player player, String keyword) {
         SpelledAPI.getSpellDataCap(player).ifPresent(cap -> cap.unlockKeyword(keyword));
         if(!player.level.isClientSide) {
@@ -99,6 +106,6 @@ public class SpelledAPI {
     }
 
     public static void syncCap(ServerPlayer player) {
-        SpelledAPI.getSpellDataCap(player).ifPresent(cap -> Spelled.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new SpellDataSyncMessage(cap, player.getGameProfile().getId())));
+        SpelledAPI.getSpellDataCap(player).ifPresent(cap -> PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new SpellDataSyncMessage(cap, player.getGameProfile().getId())));
     }
 }

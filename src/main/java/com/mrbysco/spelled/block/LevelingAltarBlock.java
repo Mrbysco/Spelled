@@ -3,46 +3,46 @@ package com.mrbysco.spelled.block;
 import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.container.AltarContainer;
 import com.mrbysco.spelled.tile.LevelingAltarTile;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.BucketPickup;
-import net.minecraft.world.level.block.LiquidBlockContainer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.Nameable;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.pathfinder.PathComputationType;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.Nameable;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -51,14 +51,12 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
-public class LevelingAltarBlock extends BaseEntityBlock implements BucketPickup, LiquidBlockContainer {
+public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
     public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     protected static final VoxelShape FALLBACK = Block.box(0.0D, 0.0D, 0.0D, 12.0D, 12.0D, 12.0D);
-    protected static final Optional<VoxelShape> SHAPE = Stream.of(
+    protected static final VoxelShape SHAPE = Stream.of(
             Block.box(8.08182, 0.75, 7.423660000000002, 15.08182, 12.75, 8.423660000000002),
             Block.box(13.33182, 12, 7.173660000000002, 15.33182, 13, 8.673660000000002),
             Block.box(14.33182, 1.5, 7.173660000000002, 15.33182, 2.5, 8.673660000000002),
@@ -71,8 +69,8 @@ public class LevelingAltarBlock extends BaseEntityBlock implements BucketPickup,
             Block.box(0.68804, 12, 7.273510000000002, 2.68804, 13, 8.773510000000002),
             Block.box(0.93804, 0.75, 7.523510000000002, 7.93804, 12.75, 8.523510000000002),
             Block.box(7.75, 1.5, 7.250000000000002, 8.25, 12, 7.500000000000002)
-    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR));
-    protected static final Optional<VoxelShape> SHAPE_2 = Stream.of(
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+    protected static final VoxelShape SHAPE_2 = Stream.of(
             Block.box(7.492089999999999, 0.75, 0.9899700000000013, 8.49209, 12.75, 7.989970000000001),
             Block.box(7.242089999999999, 12, 0.7399700000000013, 8.74209, 13, 2.7399700000000013),
             Block.box(7.242089999999999, 1.5, 0.7399700000000013, 8.74209, 2.5, 1.7399700000000013),
@@ -85,7 +83,7 @@ public class LevelingAltarBlock extends BaseEntityBlock implements BucketPickup,
             Block.box(7.341939999999999, 12, 13.383750000000001, 8.84194, 13, 15.383750000000001),
             Block.box(7.591939999999999, 0.75, 8.133750000000001, 8.59194, 12.75, 15.133750000000001),
             Block.box(7.318429999999999, 1.5, 7.821790000000002, 7.568429999999999, 12, 8.321790000000002)
-    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR));
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
     public LevelingAltarBlock(Properties properties) {
         super(properties);
@@ -97,24 +95,9 @@ public class LevelingAltarBlock extends BaseEntityBlock implements BucketPickup,
         return RenderShape.MODEL;
     }
 
-    public static VoxelShape rotateShape(Direction from, Direction to, VoxelShape shape) {
-        VoxelShape[] buffer = new VoxelShape[]{ shape, Shapes.empty() };
-
-        int times = (to.get2DDataValue() - from.get2DDataValue() + 4) % 4;
-        for (int i = 0; i < times; i++) {
-            buffer[0].forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> buffer[1] = Shapes.or(buffer[1], Shapes.box(1-maxZ, minY, minX, 1-minZ, maxY, maxX)));
-            buffer[0] = buffer[1];
-            buffer[1] = Shapes.empty();
-        }
-
-        return buffer[0];
-    }
-
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         Direction direction = state.getValue(HORIZONTAL_FACING);
-        if(SHAPE.isPresent() && SHAPE_2.isPresent()) {
-            return direction.getAxis() == Direction.Axis.X ? SHAPE_2.get() : SHAPE.get();
-        }
+        if(SHAPE != null && SHAPE_2 != null) return direction.getAxis() == Direction.Axis.X ? SHAPE_2 : SHAPE;
 
         return FALLBACK;
     }
@@ -146,8 +129,10 @@ public class LevelingAltarBlock extends BaseEntityBlock implements BucketPickup,
 
     }
 
-    public BlockEntity newBlockEntity(BlockGetter worldIn) {
-        return new LevelingAltarTile();
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new LevelingAltarTile(pos, state);
     }
 
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
@@ -161,9 +146,9 @@ public class LevelingAltarBlock extends BaseEntityBlock implements BucketPickup,
 
     @Nullable
     public MenuProvider getMenuProvider(BlockState state, Level worldIn, BlockPos pos) {
-        BlockEntity tileentity = worldIn.getBlockEntity(pos);
-        if (tileentity instanceof LevelingAltarTile) {
-            Component itextcomponent = ((Nameable)tileentity).getDisplayName();
+        BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+        if (blockEntity instanceof LevelingAltarTile) {
+            Component itextcomponent = ((Nameable)blockEntity).getDisplayName();
             return new SimpleMenuProvider((id, inventory, player) -> {
                 int level = worldIn.isClientSide ? 0 : SpelledAPI.getLevel((ServerPlayer) player);
                 return new AltarContainer(id, inventory, ContainerLevelAccess.create(worldIn, pos), level);
@@ -178,9 +163,9 @@ public class LevelingAltarBlock extends BaseEntityBlock implements BucketPickup,
      */
     public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         if (stack.hasCustomHoverName()) {
-            BlockEntity tileentity = worldIn.getBlockEntity(pos);
-            if (tileentity instanceof LevelingAltarTile) {
-                ((LevelingAltarTile)tileentity).setCustomName(stack.getHoverName());
+            BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+            if (blockEntity instanceof LevelingAltarTile) {
+                ((LevelingAltarTile)blockEntity).setCustomName(stack.getHoverName());
             }
         }
 
@@ -210,35 +195,6 @@ public class LevelingAltarBlock extends BaseEntityBlock implements BucketPickup,
     }
 
     @Override
-    public Fluid takeLiquid(LevelAccessor worldIn, BlockPos pos, BlockState state) {
-        if (state.getValue(WATERLOGGED)) {
-            worldIn.setBlock(pos, state.setValue(WATERLOGGED, Boolean.valueOf(false)), 3);
-            return Fluids.WATER;
-        } else {
-            return Fluids.EMPTY;
-        }
-    }
-
-    @Override
-    public boolean canPlaceLiquid(BlockGetter worldIn, BlockPos pos, BlockState state, Fluid fluidIn) {
-        return !state.getValue(WATERLOGGED) && fluidIn == Fluids.WATER;
-    }
-
-    @Override
-    public boolean placeLiquid(LevelAccessor worldIn, BlockPos pos, BlockState state, FluidState fluidStateIn) {
-        if (!state.getValue(WATERLOGGED) && fluidStateIn.getType() == Fluids.WATER) {
-            if (!worldIn.isClientSide()) {
-                worldIn.setBlock(pos, state.setValue(WATERLOGGED, Boolean.valueOf(true)), 3);
-                worldIn.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
-            }
-
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
     public FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
@@ -246,5 +202,20 @@ public class LevelingAltarBlock extends BaseEntityBlock implements BucketPickup,
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         builder.add(HORIZONTAL_FACING, WATERLOGGED);
+    }
+
+    @Override
+    public Optional<SoundEvent> getPickupSound() {
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean canPlaceLiquid(BlockGetter p_54766_, BlockPos p_54767_, BlockState p_54768_, Fluid p_54769_) {
+        return false;
+    }
+
+    @Override
+    public boolean placeLiquid(LevelAccessor p_54770_, BlockPos p_54771_, BlockState p_54772_, FluidState p_54773_) {
+        return false;
     }
 }

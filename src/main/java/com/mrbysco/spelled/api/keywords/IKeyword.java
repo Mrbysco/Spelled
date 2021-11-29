@@ -1,8 +1,8 @@
 package com.mrbysco.spelled.api.keywords;
 
 import com.mrbysco.spelled.entity.SpellEntity;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;

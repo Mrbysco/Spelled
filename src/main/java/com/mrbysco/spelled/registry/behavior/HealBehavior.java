@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 
 public class HealBehavior extends BaseBehavior {
     public HealBehavior() {
-        super("heal");
+        super("healing");
     }
 
     @Override

@@ -1,14 +1,14 @@
 {
   "name": "info.spelled.book.colors.lore.name",
-  "category": "colors",
+  "category": "spelled:colors",
   "icon": "spelled:ancient_knowledge_tome",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "info.spelled.book.colors.lore.text"
     },
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "info.spelled.book.colors.lore.text2"
     }
   ],

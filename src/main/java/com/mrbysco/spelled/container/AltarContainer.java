@@ -5,19 +5,20 @@ import com.mrbysco.spelled.config.ConfigCache.ItemCost;
 import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import com.mrbysco.spelled.util.LevelHelper;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.DataSlot;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.Items;
 
 public class AltarContainer extends AbstractContainerMenu {
 
@@ -84,6 +85,34 @@ public class AltarContainer extends AbstractContainerMenu {
         return SpelledConfig.COMMON.individualLevels.get() ? playerIn.experienceLevel >= XPCost : playerIn.totalExperience >= XPCost;
     }
 
+    public int getCurrentLevel() {
+        return currentLevel[0];
+    }
+
+    public int getCurrentLevelCost() {
+        int currentLevel = getCurrentLevel();
+        if(currentLevel < levelCosts.length) {
+            return levelCosts[currentLevel];
+        }
+        return -1;
+    }
+
+    public int getItemCostAmount() {
+        int currentLevel = getCurrentLevel();
+        if(currentLevel < itemAmountCosts.length) {
+            return itemAmountCosts[currentLevel];
+        }
+        return -1;
+    }
+
+    public Item getItemCost() {
+        int currentLevel = getCurrentLevel();
+        if(currentLevel < itemCosts.length) {
+            return itemCosts[currentLevel];
+        }
+        return Items.AIR;
+    }
+
     /**
      * Handles the button-click for leveling (Name is due to it in the past only being used by the enchanting table)
      */
@@ -92,7 +121,7 @@ public class AltarContainer extends AbstractContainerMenu {
         final int newLevel = level + 1;
         final int XPCost = this.levelCosts[level];
 
-        if(level >= SpelledConfig.COMMON.maxLevel.get() || (!hasXP(playerIn, level)  && !playerIn.abilities.instabuild)) {
+        if(level >= SpelledConfig.COMMON.maxLevel.get() || (!hasXP(playerIn, level)  && !playerIn.getAbilities().instabuild)) {
             if(!hasXP(playerIn, level)) {
                 LevelHelper.levelUpFailXP(playerIn);
             }
@@ -108,7 +137,7 @@ public class AltarContainer extends AbstractContainerMenu {
                     this.worldPosCallable.execute((p_217003_6_, p_217003_7_) -> {
                         this.useLevels(playerIn, XPCost);
 
-                        if (!playerIn.abilities.instabuild) {
+                        if (!playerIn.getAbilities().instabuild) {
                             stack.shrink(itemCost.getCost());
                             if (stack.isEmpty()) {
                                 this.tableInventory.setItem(0, ItemStack.EMPTY);
@@ -153,8 +182,8 @@ public class AltarContainer extends AbstractContainerMenu {
      */
     public void removed(Player playerIn) {
         super.removed(playerIn);
-        this.worldPosCallable.execute((p_217004_2_, p_217004_3_) -> {
-            this.clearContainer(playerIn, playerIn.level, this.tableInventory);
+        this.worldPosCallable.execute((level, pos) -> {
+            this.clearContainer(playerIn, this.tableInventory);
         });
     }
 

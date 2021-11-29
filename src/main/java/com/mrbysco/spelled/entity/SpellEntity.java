@@ -3,16 +3,16 @@ package com.mrbysco.spelled.entity;
 import com.mrbysco.spelled.api.behavior.BehaviorRegistry;
 import com.mrbysco.spelled.api.behavior.ISpellBehavior;
 import com.mrbysco.spelled.registry.SpelledRegistry;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.FMLPlayMessages;
+import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,9 +34,8 @@ public class SpellEntity extends AbstractSpellEntity {
     protected void onHit(HitResult result) {
         if (!this.level.isClientSide) {
             super.onHit(result);
-            explode();
             this.level.addParticle(getTrailParticle(), this.getX(), this.getY(), this.getZ(), 1.0D, 0.0D, 0.0D);
-            this.remove();
+            this.discard();
         }
     }
 
@@ -55,8 +54,12 @@ public class SpellEntity extends AbstractSpellEntity {
             String action = getSpellOrder().getString(String.valueOf(i));
             ISpellBehavior behavior = behaviors.get(action);
             if(behavior != null) {
-                for(Entity entity : rangedEntities) {
-                    behavior.onEntityHit(this, entity);
+                if(behavior.appliedMultiple()) {
+                    for(Entity entity : rangedEntities) {
+                        behavior.onEntityHit(this, entity);
+                    }
+                } else {
+                    behavior.onEntityHit(this, hitEntity);
                 }
             }
         }
@@ -74,8 +77,12 @@ public class SpellEntity extends AbstractSpellEntity {
             String action = getSpellOrder().getString(String.valueOf(i));
             ISpellBehavior behavior = behaviors.get(action);
             if(behavior != null) {
-                for(BlockPos boxPos : multiplePos) {
-                    behavior.onBlockHit(this, boxPos, boxPos.relative(blockResult.getDirection()));
+                if(behavior.appliedMultiple()) {
+                    for(BlockPos boxPos : multiplePos) {
+                        behavior.onBlockHit(this, boxPos, boxPos.relative(blockResult.getDirection()));
+                    }
+                } else {
+                    behavior.onBlockHit(this, pos, pos.relative(blockResult.getDirection()));
                 }
             }
         }

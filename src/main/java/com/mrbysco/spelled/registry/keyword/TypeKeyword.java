@@ -35,7 +35,7 @@ public class TypeKeyword extends BaseKeyword {
         private final String name;
         private final int id;
 
-        private Type(int id, String name) {
+        Type(int id, String name) {
             this.id = id;
             this.name = name;
         }

@@ -1,8 +1,8 @@
 package com.mrbysco.spelled.api.behavior;
 
 import com.mrbysco.spelled.entity.SpellEntity;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 
 import javax.annotation.Nonnull;
 
@@ -21,6 +21,11 @@ public class BaseBehavior implements ISpellBehavior {
     @Override
     public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
 
+    }
+
+    @Override
+    public boolean appliedMultiple() {
+        return true;
     }
 
     @Override

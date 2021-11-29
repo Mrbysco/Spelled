@@ -1,8 +1,9 @@
 package com.mrbysco.spelled.api.capability;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
-public interface ISpellData {
+public interface ISpellData extends ICapabilitySerializable<CompoundTag> {
     CompoundTag getUnlocked();
 
     void setUnlocked(CompoundTag nbt);

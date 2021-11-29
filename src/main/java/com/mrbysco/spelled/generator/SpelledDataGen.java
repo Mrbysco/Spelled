@@ -4,23 +4,23 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.registry.SpelledRegistry;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.loot.BlockLoot;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.LootTable.Builder;
 import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.ValidationContext;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 import java.util.List;
 import java.util.Map;
@@ -99,24 +99,46 @@ public class SpelledDataGen {
             add("spelled:container.altar.item.requirement", "Item requirement: %s %s");
             add("spelled:container.altar.item", "%s %s");
 
+            //Screens
+            add("spelled.spell_book.screen", "Spell Book");
+            add("spelled.screen.selection.select", "Select");
+            add("spelled.screen.selection.remove", "Remove Last");
+            add("spelled.screen.search", "Search");
+            add("spelled.screen.search.a_to_z", "A-Z");
+            add("spelled.screen.search.z_to_a", "Z-A");
+
+            add("spelled.screen.missing_adjectives", "<Missing Adjective(s)>");
+            add("spelled.screen.missing_type", "<Missing Type>");
+            add("spelled.book.editTitle", "Enter Spell Name:");
+            add("spelled.book.finalizeButton", "Sign and Close");
+            add("spelled.book.finalizeWarning", "Note! When you sign the spell book, it will no longer be editable");
+
             add("spelled.level_up.fail_item", "You lack the required items to level up!");
             add("spelled.level_up.fail_xp", "You lack the required xp to level up!");
 
+            add("spelled.spell.cooldown", "* %s failed to cast. Try again in %s second(s)");
+
             addBlock(SpelledRegistry.LEVELING_ALTAR, "Leveling Altar");
             addItem(SpelledRegistry.KNOWLEDGE_TOME, "Tome Of Ancient Knowledge");
+            addItem(SpelledRegistry.CREATIVE_TOME, "Tome Of Creative Knowledge");
+            addItem(SpelledRegistry.SPELL_BOOK, "Spell Book");
 
             //Tome
             add("spelled.tome.description", "Contains knowledge about \"%s\"");
             add("spelled.tome.description.invalid", "Tome invalid! Right click to fix");
             add("spelled.tome.fail", "You already know the knowledge of the tome");
             add("spelled.tome.success", "You've obtained the knowledge the tome");
+            add("spelled.creative_tome.description", "Contains all the knowledge");
+
+            //Spell Book
+            add("spelled.spell_book.insufficient", "You do not know any adjectives");
 
             add("spelled.spell.cast", "* %s has cast \"%s\"");
 
             //Commands
             add("spelled.commands.level.get.message", "%s is currently level %s");
             add("spelled.commands.level.set.message", "%s's level has been set to %s");
-            add("spelled.commands.level.set.invalid", "Couldn't set level. Invalid number supplied: %s");
+            add("spelled.commands.level.set.invalid", "Couldn't set level. Invalid number supplied: %s, the max is %s");
             add("spelled.commands.knowledge.unlock.message", "Unlocked word \"%s\" for %s");
             add("spelled.commands.knowledge.unlock.all", "Unlocked all word(s) for %s");
             add("spelled.commands.knowledge.unlock.invalid", "Couldn't unlock word. Invalid word supplied: %s");
@@ -229,10 +251,10 @@ public class SpelledDataGen {
             add("info.spelled.book.types.self.text", "Using \"sui\" or \"sese\" you can apply the spell to yourself. You don't use spells on yourself? Why not?! It's time you started doing that. I recommend pairing this with the healing spell for some quick post creeper healing but the possibilities are endless. ");
             add("info.spelled.book.types.self.text2", "Just don't use it with the fireball spell unless you like to smell extra crispy for a week. This spell was originally called touch by the wielder who discovered it, but for reasons lost to time the power was transferred over to this word");
             add("info.spelled.book.types.ball.name", "Ball");
-            add("info.spelled.book.types.ball.text", "It's time to play ball, and I don't mean basketball! Or football! Or what you yanks call football, I mean actual spheres! Shaping your spells like a ball makes them easier to handle and aim, even though such a shape is considered heretical.");
+            add("info.spelled.book.types.ball.text", "Using \"sphaera\" you can formulate a ball. It's time to play ball, and I don't mean basketball! Or football! Or what you yanks call football, I mean actual spheres! Shaping your spells like a ball makes them easier to handle and aim, even though such a shape is considered heretical.");
             add("info.spelled.book.types.ball.text2", "This word was banned in the original community due to such shapes being considered unnatural and even now it's still a controversial use. That said I can keep a secret if you can");
             add("info.spelled.book.types.projectilis.name", "Projectile");
-            add("info.spelled.book.types.projectilis.text", "Humans have always had an affinity for throwing things, and having spells blow up in your face is never fun. Initially many word wielders used to stick to using their fists to actually fight, and using words to defend themselves, however upon the discovery of these words, word combat was changed forever.");
+            add("info.spelled.book.types.projectilis.text", "Using \"projectilis\" you can create a projectile. Humans have always had an affinity for throwing things, and having spells blow up in your face is never fun. Initially many word wielders used to stick to using their fists to actually fight, and using words to defend themselves, however upon the discovery of these words, word combat was changed forever.");
             add("info.spelled.book.types.projectilis.text2", "The origin is not yet known, though a common unproved myth states that the first wielder was inspired when an apple fell on their head, and they accused the guilty three of assaulting them by throwing an apple at them.");
 
             add("info.spelled.book.colors.name", "Colors");

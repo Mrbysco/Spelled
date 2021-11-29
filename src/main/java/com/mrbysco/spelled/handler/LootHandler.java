@@ -5,6 +5,8 @@ import com.mrbysco.spelled.api.keywords.IKeyword;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.registry.SpelledRegistry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades.ItemListing;
 import net.minecraft.world.entity.player.Player;
@@ -12,14 +14,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
-import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.functions.SetNbtFunction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.village.WandererTradesEvent;
@@ -46,7 +47,7 @@ public class LootHandler {
                     CompoundTag tag = new CompoundTag();
                     tag.putString("patchouli:book", "spelled:knowledge_tome");
                     guideStack.setTag(tag);
-                    player.inventory.add(guideStack);
+                    player.getInventory().add(guideStack);
                     playerData.putBoolean(hasBookTag, true);
                 }
             }
@@ -61,18 +62,10 @@ public class LootHandler {
         if (name.startsWith(prefix)) {
             String file = name.substring(name.indexOf(prefix) + prefix.length());
             switch (file) {
-                case "stronghold_library":
-                case "jungle_temple":
-                case "underwater_ruin_big":
-                case "end_city_treasure":
-                case "buried_treasure":
-                case "woodland_mansion":
-                case "bastion_treasure":
-                case "village_cartographer":
-                    event.getTable().addPool(getInjectPool());
-                    break;
-                default:
-                    break;
+                case "stronghold_library", "jungle_temple", "underwater_ruin_big", "end_city_treasure",
+                        "buried_treasure", "woodland_mansion", "bastion_treasure", "village_cartographer" -> event.getTable().addPool(getInjectPool());
+                default -> {
+                }
             }
         }
     }
@@ -88,7 +81,7 @@ public class LootHandler {
         }
         builder.add(EmptyLootItem.emptyItem().setWeight(1));
 
-       builder.bonusRolls(0, 1)
+       builder.setBonusRolls(UniformGenerator.between(0, 1))
                .name("spelled_inject");
 
         return builder.build();

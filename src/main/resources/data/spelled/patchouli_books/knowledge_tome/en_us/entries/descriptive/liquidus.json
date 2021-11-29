@@ -1,14 +1,14 @@
 {
   "name": "info.spelled.book.descriptive.liquidus.name",
-  "category": "descriptions",
+  "category": "spelled:descriptions",
   "icon": "spelled:ancient_knowledge_tome",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "info.spelled.book.descriptive.liquidus.text"
     },
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "info.spelled.book.descriptive.liquidus.text2"
     }
   ],

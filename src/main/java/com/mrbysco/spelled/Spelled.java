@@ -2,8 +2,6 @@ package com.mrbysco.spelled;
 
 import com.mrbysco.spelled.api.behavior.BehaviorRegistry;
 import com.mrbysco.spelled.api.capability.ISpellData;
-import com.mrbysco.spelled.api.capability.SpellDataCapability;
-import com.mrbysco.spelled.api.capability.SpellDataStorage;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.chat.SpellCastHandler;
 import com.mrbysco.spelled.client.ClientHandler;
@@ -15,10 +13,9 @@ import com.mrbysco.spelled.handler.SpellHandler;
 import com.mrbysco.spelled.packets.PacketHandler;
 import com.mrbysco.spelled.registry.ReloadManager;
 import com.mrbysco.spelled.registry.SpelledRegistry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -26,10 +23,8 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,26 +32,19 @@ import org.apache.logging.log4j.Logger;
 public class Spelled {
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
 
-    private static final String PROTOCOL_VERSION = "1";
-    public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(Reference.MOD_ID, "main"),
-            () -> PROTOCOL_VERSION,
-            PROTOCOL_VERSION::equals,
-            PROTOCOL_VERSION::equals
-    );
-
     public Spelled() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModLoadingContext.get().registerConfig(Type.COMMON, SpelledConfig.commonSpec);
         eventBus.register(SpelledConfig.class);
 
         SpelledRegistry.BLOCKS.register(eventBus);
-        SpelledRegistry.TILES.register(eventBus);
+        SpelledRegistry.BLOCK_ENTITIES.register(eventBus);
         SpelledRegistry.CONTAINERS.register(eventBus);
         SpelledRegistry.ITEMS.register(eventBus);
         SpelledRegistry.ENTITIES.register(eventBus);
 
         eventBus.addListener(this::setup);
+        eventBus.addListener(this::onCapabilityRegister);
 
         MinecraftForge.EVENT_BUS.register(new ReloadManager());
         MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
@@ -67,13 +55,18 @@ public class Spelled {
         MinecraftForge.EVENT_BUS.addListener(this::onCommandRegister);
         MinecraftForge.EVENT_BUS.addListener(this::serverStart);
 
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(ClientHandler::onClientSetupEvent));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            eventBus.addListener(ClientHandler::onClientSetupEvent);
+            eventBus.addListener(ClientHandler::registerEntityRenders);
+        });
     }
 
     private void setup(final FMLCommonSetupEvent event) {
         PacketHandler.registerPackets();
+    }
 
-        CapabilityManager.INSTANCE.register(ISpellData.class, new SpellDataStorage(), SpellDataCapability::new);
+    public void onCapabilityRegister(RegisterCapabilitiesEvent event) {
+        event.register(ISpellData.class);
     }
 
     public void onCommandRegister(RegisterCommandsEvent event) {

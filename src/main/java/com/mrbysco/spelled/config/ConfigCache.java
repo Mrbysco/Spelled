@@ -1,9 +1,9 @@
 package com.mrbysco.spelled.config;
 
 import com.mrbysco.spelled.Spelled;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -151,15 +151,7 @@ public class ConfigCache {
         individualLevelXPCosts = xpCostMap;
     }
 
-    public static class ItemCost {
-        private final Item item;
-        private final int cost;
-
-        public ItemCost(Item item, int cost) {
-            this.item = item;
-            this.cost = cost;
-        }
-
+    public record ItemCost(Item item, int cost) {
         public Item getItem() {
             return item;
         }
