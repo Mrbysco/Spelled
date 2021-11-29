@@ -92,18 +92,21 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven {
-        url = "https://maven.theillusivec4.top/"
-    }
-    maven {
-        url = 'https://maven.blamejared.com'
-    }
-    maven {
         name = 'JEI maven'
         url = "https://dvs1.progwml6.com/files/maven"
+        content {
+            includeGroup "mezz.jei"
+        }
     }
     maven {
         name = "brassgoggledcoders"
         url = "https://maven.teamacronymcoders.com/"
+        content {
+            includeGroup "xyz.brassgoggledcoders"
+        }
+    }
+    maven {
+        url = 'https://maven.blamejared.com'
         content {
             includeGroup "xyz.brassgoggledcoders"
         }
