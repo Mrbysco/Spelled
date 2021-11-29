@@ -92,10 +92,6 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven {
-        name = "local maven"
-        url = System.getenv("local_maven");
-    }
-    maven {
         url = "https://maven.theillusivec4.top/"
     }
     maven { url 'https://maven.blamejared.com' }
