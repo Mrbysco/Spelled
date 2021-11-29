@@ -99,14 +99,11 @@ repositories {
         }
     }
     maven {
-        name = "brassgoggledcoders"
-        url = "https://maven.teamacronymcoders.com/"
-        content {
-            includeGroup "xyz.brassgoggledcoders"
-        }
+        url = 'https://maven.blamejared.com'
     }
     maven {
-        url = 'https://maven.blamejared.com'
+        name = "brassgoggledcoders"
+        url = "https://maven.teamacronymcoders.com/"
         content {
             includeGroup "xyz.brassgoggledcoders"
         }
