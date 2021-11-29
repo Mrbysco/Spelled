@@ -36,8 +36,8 @@ public class SpelledRegistry {
     public static final RegistryObject<Item> LEVELING_ALTAR_ITEM  = ITEMS.register("leveling_altar", () -> new BlockItem(LEVELING_ALTAR.get(), itemBuilder().tab(SpelledTab.TAB)));
 
     public static final RegistryObject<Item> KNOWLEDGE_TOME = ITEMS.register("ancient_knowledge_tome" , () -> new TomeItem(itemBuilder().tab(CreativeModeTab.TAB_MISC)));
-    public static final RegistryObject<Item> CREATIVE_TOME = ITEMS.register("creative_tome" , () -> new CreativeTomeItem(itemBuilder().tab(CreativeModeTab.TAB_MISC)));
-    public static final RegistryObject<Item> SPELL_BOOK = ITEMS.register("spell_book" , () -> new SpellbookItem(itemBuilder().stacksTo(1).tab(CreativeModeTab.TAB_MISC)));
+    public static final RegistryObject<Item> CREATIVE_TOME = ITEMS.register("creative_tome" , () -> new CreativeTomeItem(itemBuilder().tab(SpelledTab.TAB)));
+    public static final RegistryObject<Item> SPELL_BOOK = ITEMS.register("spell_book" , () -> new SpellbookItem(itemBuilder().stacksTo(1).tab(SpelledTab.TAB)));
 
     public static final RegistryObject<BlockEntityType<LevelingAltarTile>> LEVELING_ALTAR_TILE = BLOCK_ENTITIES.register("leveling_altar_tile", () -> BlockEntityType.Builder.of(LevelingAltarTile::new, LEVELING_ALTAR.get()).build(null));
     public static final RegistryObject<MenuType<AltarContainer>> ALTAR_CONTAINER = CONTAINERS.register("leveling_altar", () -> IForgeContainerType.create((windowId, inv, data) -> new AltarContainer(windowId, inv)));
