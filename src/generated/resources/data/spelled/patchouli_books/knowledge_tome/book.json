@@ -9,6 +9,7 @@
   "creative_tab": "spelled",
   "advancements_tab": "spelled:root",
   "i18n": true,
+  "use_resource_pack": false,
   "macros": {
     "$(item)": "$(#94fcf5)",
     "$(thing)": "$(#94fcf5)"
