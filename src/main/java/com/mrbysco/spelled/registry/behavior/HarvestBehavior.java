@@ -29,8 +29,7 @@ public class HarvestBehavior extends BaseBehavior {
 
     @Override
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        if(entity instanceof LivingEntity) {
-            LivingEntity livingEntity = (LivingEntity) entity;
+        if(entity instanceof LivingEntity livingEntity) {
             for(EquipmentSlot slotType : EquipmentSlot.values()) {
                 ItemStack stack = livingEntity.getItemBySlot(slotType);
                 if(livingEntity.getRandom().nextBoolean() && !stack.isEmpty()) {

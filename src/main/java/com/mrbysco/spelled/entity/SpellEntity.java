@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
+import net.minecraftforge.network.PlayMessages.SpawnEntity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +26,7 @@ public class SpellEntity extends AbstractSpellEntity {
         super(SpelledRegistry.SPELL.get(), shooter, worldIn);
     }
 
-    public SpellEntity(FMLPlayMessages.SpawnEntity spawnEntity, Level worldIn) {
+    public SpellEntity(SpawnEntity spawnEntity, Level worldIn) {
         this(SpelledRegistry.SPELL.get(), worldIn);
     }
 

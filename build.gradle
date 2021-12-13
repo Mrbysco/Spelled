@@ -15,7 +15,7 @@ version = "${version}"
 group = 'com.mrbysco.spelled' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Spelled-${mc_version}"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16) // Mojang ships Java 8 to end users, so your mod should target Java 8.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17) // Mojang ships Java 8 to end users, so your mod should target Java 8.
 
 compileJava.options.encoding = 'UTF-8'
 
@@ -128,9 +128,9 @@ dependencies {
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
 
     implementation fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
-    implementation fg.deobf("xyz.brassgoggledcoders:PatchouliProvider:1.17.1-${patchouli_provider_version}")
+    implementation fg.deobf("xyz.brassgoggledcoders:PatchouliProvider:${mc_version}-${patchouli_provider_version}")
 
-    runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:3533015")
+    runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:3546593")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

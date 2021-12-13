@@ -19,10 +19,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class SpelledRegistry {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MOD_ID);
@@ -40,7 +40,7 @@ public class SpelledRegistry {
     public static final RegistryObject<Item> SPELL_BOOK = ITEMS.register("spell_book" , () -> new SpellbookItem(itemBuilder().stacksTo(1).tab(SpelledTab.TAB)));
 
     public static final RegistryObject<BlockEntityType<LevelingAltarTile>> LEVELING_ALTAR_TILE = BLOCK_ENTITIES.register("leveling_altar_tile", () -> BlockEntityType.Builder.of(LevelingAltarTile::new, LEVELING_ALTAR.get()).build(null));
-    public static final RegistryObject<MenuType<AltarContainer>> ALTAR_CONTAINER = CONTAINERS.register("leveling_altar", () -> IForgeContainerType.create((windowId, inv, data) -> new AltarContainer(windowId, inv)));
+    public static final RegistryObject<MenuType<AltarContainer>> ALTAR_CONTAINER = CONTAINERS.register("leveling_altar", () -> IForgeMenuType.create((windowId, inv, data) -> new AltarContainer(windowId, inv)));
 
     public static final RegistryObject<EntityType<SpellEntity>> SPELL = ENTITIES.register("spell", () ->
             register("spell", EntityType.Builder.<SpellEntity>of(SpellEntity::new, MobCategory.MISC)

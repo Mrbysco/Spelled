@@ -204,7 +204,7 @@ public class SpellBookScreen extends Screen {
 			if(flag || flag2) {
 				StringBuilder builder = new StringBuilder();
 				if(flag) {
-					builder.append(I18n.get("spelled.screen.missing_adjectives") + " ");
+					builder.append(I18n.get("spelled.screen.missing_adjectives")).append(" ");
 				}
 				if(flag2) {
 					builder.append(I18n.get("spelled.screen.missing_type"));
@@ -319,7 +319,7 @@ public class SpellBookScreen extends Screen {
 
 				StringBuilder builder = new StringBuilder();
 				if(selectedAdjectives.isEmpty()) {
-					builder.append(I18n.get("spelled.screen.missing_adjectives") + " ");
+					builder.append(I18n.get("spelled.screen.missing_adjectives")).append(" ");
 				} else {
 					selectedAdjectives.forEach((adjective) -> builder.append(adjective).append(" "));
 				}

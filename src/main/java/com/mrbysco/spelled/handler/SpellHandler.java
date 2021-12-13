@@ -9,8 +9,7 @@ public class SpellHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void projectileImpact(ProjectileImpactEvent event) {
-        if(event.getProjectile() instanceof SpellEntity) {
-            SpellEntity spell = (SpellEntity)event.getProjectile();
+        if(event.getProjectile() instanceof SpellEntity spell) {
             if(spell.isCold() || spell.isWater()) {
                 event.setCanceled(true);
             }

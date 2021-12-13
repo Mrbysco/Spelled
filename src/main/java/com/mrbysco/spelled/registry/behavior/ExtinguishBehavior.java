@@ -33,7 +33,7 @@ public class ExtinguishBehavior extends BaseBehavior {
         } else if (CampfireBlock.isLitCampfire(blockstate)) {
             world.levelEvent((Player)null, 1009, pos, 0);
             CampfireBlock.dowse(null, world, pos, blockstate);
-            world.setBlockAndUpdate(pos, blockstate.setValue(CampfireBlock.LIT, Boolean.valueOf(false)));
+            world.setBlockAndUpdate(pos, blockstate.setValue(CampfireBlock.LIT, Boolean.FALSE));
         }
     }
 

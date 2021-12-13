@@ -17,8 +17,7 @@ public class ProtectBehavior extends BaseBehavior {
 
     @Override
     public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        if(entity instanceof LivingEntity) {
-            LivingEntity livingEntity = (LivingEntity) entity;
+        if(entity instanceof LivingEntity livingEntity) {
             if(livingEntity.getEffect(MobEffects.DAMAGE_RESISTANCE) == null) {
                 livingEntity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 0, false, false));
             } else {
