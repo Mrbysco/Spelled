@@ -1,4 +1,4 @@
-[![build](https://github.com/Mrbysco/spelled/actions/workflows/build.yml/badge.svg)](https://github.com/Mrbysco/spelled/actions/workflows/build.yml) [![Curse](http://cf.way2muchnoise.eu/versions/430960_latest.svg)](https://www.curseforge.com/minecraft/mc-mods/spelled/)
+[![build](https://github.com/Mrbysco/spelled/actions/workflows/build.yml/badge.svg)](https://github.com/Mrbysco/spelled/actions/workflows/build.yml) [![Curse](http://cf.way2muchnoise.eu/versions/430960.svg)](https://www.curseforge.com/minecraft/mc-mods/spelled/)
 
 # Spelled #
 
