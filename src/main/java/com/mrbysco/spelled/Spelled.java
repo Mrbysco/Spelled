@@ -58,6 +58,7 @@ public class Spelled {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             eventBus.addListener(ClientHandler::onClientSetupEvent);
             eventBus.addListener(ClientHandler::registerEntityRenders);
+            MinecraftForge.EVENT_BUS.addListener(ClientHandler::loginEvent);
         });
     }
 
