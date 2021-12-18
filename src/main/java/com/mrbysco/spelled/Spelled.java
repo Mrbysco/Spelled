@@ -48,6 +48,7 @@ public class Spelled {
         eventBus.addListener(this::setup);
 
         MinecraftForge.EVENT_BUS.register(new ReloadManager());
+
         MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
         MinecraftForge.EVENT_BUS.register(new SpellCastHandler());
         MinecraftForge.EVENT_BUS.register(new LootHandler());
@@ -56,7 +57,10 @@ public class Spelled {
         MinecraftForge.EVENT_BUS.addListener(this::onCommandRegister);
         MinecraftForge.EVENT_BUS.addListener(this::serverStart);
 
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(ClientHandler::onClientSetupEvent));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            eventBus.addListener(ClientHandler::onClientSetupEvent);
+            MinecraftForge.EVENT_BUS.addListener(ClientHandler::loginEvent);
+        });
     }
 
     private void setup(final FMLCommonSetupEvent event) {
