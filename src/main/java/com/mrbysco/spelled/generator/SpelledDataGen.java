@@ -117,6 +117,9 @@ public class SpelledDataGen {
             add("spelled.level_up.fail_xp", "You lack the required xp to level up!");
 
             add("spelled.spell.cooldown", "* %s failed to cast. Try again in %s second(s)");
+            add("spelled.spell.no_levels", "* %s failed to cast. You do not have enough levels to cast this spell");
+            add("spelled.spell.insufficient_level", "* %s failed to cast. You're level is too low to cast this spell, you need at least level %s, you have %s");
+            add("spelled.spell.too_many_words", "* %s failed to cast. You're level is too low to cast a spell with this many words, your level only allows for %s words");
 
             addBlock(SpelledRegistry.LEVELING_ALTAR, "Leveling Altar");
             addItem(SpelledRegistry.KNOWLEDGE_TOME, "Tome Of Ancient Knowledge");
