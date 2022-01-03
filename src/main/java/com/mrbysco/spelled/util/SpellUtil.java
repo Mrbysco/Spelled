@@ -22,6 +22,7 @@ import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.util.text.event.HoverEvent.Action;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ServerChatEvent;
+import org.lwjgl.system.CallbackI.P;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -42,13 +43,14 @@ public class SpellUtil {
 	public static void castSpell(ServerChatEvent event) {
 		ServerPlayerEntity player = event.getPlayer();
 		SpelledAPI.getSpellDataCap(player).ifPresent(data -> {
-			if (data.getLevel() > 0) {
-				KeywordRegistry registry = KeywordRegistry.instance();
-				String message = event.getMessage().toLowerCase(Locale.ROOT);
-				String[] wordArray = message.split("\\s+");
-				List<String> words = Arrays.asList(wordArray);
+			KeywordRegistry registry = KeywordRegistry.instance();
+			String message = event.getMessage().toLowerCase(Locale.ROOT);
+			String[] wordArray = message.split("\\s+");
+			List<String> words = Arrays.asList(wordArray);
 
-				if (words.size() >= 2 && SpellUtil.canCastSpell(player, words)) {
+			boolean validSpellFormation = isValidSpellFormation(player, words);
+			if(words.size() >= 2 && validSpellFormation) {
+				if (SpellUtil.canCastSpell(player, words)) {
 					if (isOnCooldown(player)) {
 						event.setCanceled(true);
 						return;
@@ -114,19 +116,16 @@ public class SpellUtil {
 							event.setComponent(finalMessage);
 						}
 					}
+				} else {
+					event.setCanceled(true);
 				}
 			}
 		});
 	}
 
-	public static boolean canCastSpell(ServerPlayerEntity player, List<String> words) {
+	public static boolean isValidSpellFormation(ServerPlayerEntity player, List<String> words) {
 		ISpellData data = SpelledAPI.getSpellDataCap(player).orElse(new SpellDataCapability());
 		final KeywordRegistry registry = KeywordRegistry.instance();
-
-		int currentLevel = data.getLevel();
-
-		if(currentLevel == 0)
-			return false;
 
 		//Check if every word matches a keyword
 		for (String word : words) {
@@ -138,9 +137,25 @@ public class SpellUtil {
 				return false;
 		}
 
+		return true;
+	}
+
+	public static boolean canCastSpell(ServerPlayerEntity player, List<String> words) {
+		ISpellData data = SpelledAPI.getSpellDataCap(player).orElse(new SpellDataCapability());
+		final KeywordRegistry registry = KeywordRegistry.instance();
+
 		//If creative just return true if the chat message was a valid spell
 		if(player.abilities.instabuild)
 			return true;
+
+		int currentLevel = data.getLevel();
+
+		if(currentLevel == 0) {
+			IFormattableTextComponent finalMessage = new TranslationTextComponent("spelled.spell.no_levels", player.getDisplayName())
+					.withStyle(TextFormatting.RED);
+			player.sendMessage(finalMessage, Util.NIL_UUID);
+			return false;
+		}
 
 		int maxLevelWord = 0;
 		for (String word : words) {
@@ -149,11 +164,22 @@ public class SpellUtil {
 				maxLevelWord = keyword.getLevel();
 		}
 
-		if(maxLevelWord > currentLevel)
+		if(maxLevelWord > currentLevel) {
+			IFormattableTextComponent errorMessage = new TranslationTextComponent("spelled.spell.insufficient_level", player.getDisplayName(), maxLevelWord, currentLevel)
+					.withStyle(TextFormatting.RED);
+			player.sendMessage(errorMessage, Util.NIL_UUID);
 			return false;
+		}
 
 		int maxWordCount = LevelHelper.getAllowedWordCount(currentLevel);
-		return maxWordCount > 0 && words.size() <= maxWordCount;
+		if(maxWordCount > 0 && words.size() <= maxWordCount) {
+			return true;
+		} else {
+			IFormattableTextComponent errorMessage = new TranslationTextComponent("spelled.spell.too_many_words", player.getDisplayName(), maxWordCount)
+					.withStyle(TextFormatting.RED);
+			player.sendMessage(errorMessage, Util.NIL_UUID);
+			return false;
+		}
 	}
 
 	public static boolean isOnCooldown(ServerPlayerEntity player) {
