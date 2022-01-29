@@ -7,6 +7,7 @@ import com.mrbysco.spelled.api.keywords.IKeyword;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.entity.SpellEntity;
+import com.mrbysco.spelled.registry.SpelledRegistry;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword.Type;
 import net.minecraft.ChatFormatting;
@@ -18,6 +19,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -206,5 +209,6 @@ public class SpellUtil {
 		} else { //Ball (Self is handled elsewhere)
 			spell.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.0F, 0.0F);
 		}
+		player.level.playSound((Player)null, player.blockPosition(), SpelledRegistry.SHOOT_SPELL.get(), SoundSource.PLAYERS, 1.0F, 1.0F / (player.level.random.nextFloat() * 0.4F + 1.2F) + 0.5F);
 	}
 }

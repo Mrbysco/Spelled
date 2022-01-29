@@ -8,6 +8,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.LootTable.Builder;
@@ -87,6 +88,8 @@ public class SpelledDataGen {
         @Override
         protected void addTranslations() {
             add("itemGroup.spelled", "Spelled");
+
+            addSoundEvent(SpelledRegistry.SHOOT_SPELL, "Shoots spell");
 
             add("key.spelled.category", "Spelled");
             add("key.spelled.use", "Use Spell");
@@ -329,6 +332,10 @@ public class SpelledDataGen {
             add("info.spelled.book.descriptive.ignis.name", "Ignis");
             add("info.spelled.book.descriptive.ignis.text", "Harnessing the sun has long been a dream, and now you kinda can! Sure it’s barely warm enough to boil water in your kettle, but in a world where fire has taken on a life of its own in literal hell you take what little power you can get. Discovered by accident when a frustrated word wielder yelled at a pile of sticks, this spell is a favourite for many a pyromaniac word wielder,");
             add("info.spelled.book.descriptive.ignis.text2", "who finds the ability to set things on fire at will too tempting to give up. Please take care when using this word, and remember, only you can stop forest fires!");
+        }
+
+        public void addSoundEvent(Supplier<? extends SoundEvent> key, String subtitle) {
+            add(Reference.MOD_ID + ".subtitles." + key.get().getLocation().getPath(), subtitle);
         }
     }
 }

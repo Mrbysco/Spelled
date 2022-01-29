@@ -8,6 +8,8 @@ import com.mrbysco.spelled.item.CreativeTomeItem;
 import com.mrbysco.spelled.item.SpellbookItem;
 import com.mrbysco.spelled.item.TomeItem;
 import com.mrbysco.spelled.tile.LevelingAltarTile;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -30,6 +32,10 @@ public class SpelledRegistry {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, Reference.MOD_ID);
     public static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Reference.MOD_ID);
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Reference.MOD_ID);
+    public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Reference.MOD_ID);
+
+    public static final RegistryObject<SoundEvent> SHOOT_SPELL = SOUND_EVENTS.register("shoot.spell", () ->
+            new SoundEvent(new ResourceLocation(Reference.MOD_ID, "shoot.spell")));
 
     public static final RegistryObject<Block> LEVELING_ALTAR = BLOCKS.register("leveling_altar", () ->  new LevelingAltarBlock(
             Block.Properties.of(Material.WOOD).strength(2.5F).sound(SoundType.WOOD)));

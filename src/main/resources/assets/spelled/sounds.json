@@ -1,0 +1,9 @@
+{
+  "shoot.spell" : {
+	"category" : "player",
+	"subtitle": "spelled.subtitles.shoot.spell",
+	"sounds": [
+	  "mob/ghast/fireball4"
+	]
+  }
+}

@@ -42,6 +42,7 @@ public class Spelled {
         SpelledRegistry.CONTAINERS.register(eventBus);
         SpelledRegistry.ITEMS.register(eventBus);
         SpelledRegistry.ENTITIES.register(eventBus);
+        SpelledRegistry.SOUND_EVENTS.register(eventBus);
 
         eventBus.addListener(this::setup);
         eventBus.addListener(this::onCapabilityRegister);

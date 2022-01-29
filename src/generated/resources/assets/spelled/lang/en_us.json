@@ -198,6 +198,7 @@
   "spelled.spell.too_many_words": "* %s failed to cast. You're level is too low to cast a spell with this many words, your level only allows for %s words",
   "spelled.spell_book.insufficient": "You do not know any adjectives",
   "spelled.spell_book.screen": "Spell Book",
+  "spelled.subtitles.shoot.spell": "Shoots spell",
   "spelled.tome.description": "Contains knowledge about \"%s\"",
   "spelled.tome.description.invalid": "Tome invalid! Right click to fix",
   "spelled.tome.fail": "You already know the knowledge of the tome",

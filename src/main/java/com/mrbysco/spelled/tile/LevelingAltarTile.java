@@ -25,12 +25,11 @@ public class LevelingAltarTile extends BlockEntity implements Nameable {
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
-        super.save(compound);
-        if (this.hasCustomName())
-            compound.putString("CustomName", Component.Serializer.toJson(this.customName));
+    protected void saveAdditional(CompoundTag compoundTag) {
+        super.saveAdditional(compoundTag);
 
-        return compound;
+        if (this.hasCustomName())
+            compoundTag.putString("CustomName", Component.Serializer.toJson(this.customName));
     }
 
     @Override
