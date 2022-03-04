@@ -9,14 +9,14 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 
 public class ProtectKeyword extends BaseKeyword {
-    public ProtectKeyword(String keyword, int level, int slots) {
-        super(keyword, level, slots);
-    }
+	public ProtectKeyword(String keyword, int level, int slots) {
+		super(keyword, level, slots);
+	}
 
-    @Override
-    public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
-        if(spell != null) {
-            spell.insertAction("protection");
-        }
-    }
+	@Override
+	public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
+		if (spell != null) {
+			spell.insertAction("protection");
+		}
+	}
 }

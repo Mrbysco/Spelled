@@ -9,14 +9,14 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 
 public class ExplodingKeyword extends BaseKeyword {
-    public ExplodingKeyword(String keyword, int level, int slots) {
-        super(keyword, level, slots);
-    }
+	public ExplodingKeyword(String keyword, int level, int slots) {
+		super(keyword, level, slots);
+	}
 
-    @Override
-    public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
-        if(spell != null) {
-            spell.insertAction("explode");
-        }
-    }
+	@Override
+	public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
+		if (spell != null) {
+			spell.insertAction("explode");
+		}
+	}
 }

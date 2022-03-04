@@ -7,12 +7,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class SpellHandler {
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void projectileImpact(ProjectileImpactEvent event) {
-        if(event.getProjectile() instanceof SpellEntity spell) {
-            if(spell.isCold() || spell.isWater()) {
-                event.setCanceled(true);
-            }
-        }
-    }
+	@SubscribeEvent(priority = EventPriority.HIGH)
+	public void projectileImpact(ProjectileImpactEvent event) {
+		if (event.getProjectile() instanceof SpellEntity spell) {
+			if (spell.isCold() || spell.isWater()) {
+				event.setCanceled(true);
+			}
+		}
+	}
 }

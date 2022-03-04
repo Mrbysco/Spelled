@@ -25,12 +25,12 @@ public class CreativeTomeItem extends Item {
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
-		if(!worldIn.isClientSide) {
+		if (!worldIn.isClientSide) {
 			ItemStack itemstack = playerIn.getItemInHand(handIn);
 			playerIn.startUsingItem(handIn);
 			List<String> adjectives = KeywordRegistry.instance().getAdjectives();
-			for(String adjective : adjectives) {
-				SpelledAPI.unlockKeyword((ServerPlayer)playerIn, adjective);
+			for (String adjective : adjectives) {
+				SpelledAPI.unlockKeyword((ServerPlayer) playerIn, adjective);
 			}
 			SpelledAPI.syncCap((ServerPlayer) playerIn);
 			playerIn.displayClientMessage(new TranslatableComponent("spelled.tome.success"), true);

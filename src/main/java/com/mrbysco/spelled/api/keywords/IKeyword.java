@@ -9,37 +9,37 @@ import javax.annotation.Nullable;
 
 public interface IKeyword {
 
-    void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective);
+	void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective);
 
-    /*
-     * @return keyword
-     */
-    String getKeyword();
+	/*
+	 * @return keyword
+	 */
+	String getKeyword();
 
-    /*
-     * @return description of keyword
-     */
-    Component getDescription();
+	/*
+	 * @return description of keyword
+	 */
+	Component getDescription();
 
-    /*
-     * @return level required for keyword
-     */
-    int getLevel();
+	/*
+	 * @return level required for keyword
+	 */
+	int getLevel();
 
-    /*
-     * Set level required for keyword
-     * @param level: the level required for the keyword
-     */
-    void setLevel(int level);
+	/*
+	 * Set level required for keyword
+	 * @param level: the level required for the keyword
+	 */
+	void setLevel(int level);
 
-    /*
-     * @return slots used by keyword
-     */
-    int getSlots();
+	/*
+	 * @return slots used by keyword
+	 */
+	int getSlots();
 
-    /*
-     * Set slots used by the keyword
-     * @param slots: the slots used by the keyword
-     */
-    void setSlots(int slots);
+	/*
+	 * Set slots used by the keyword
+	 * @param slots: the slots used by the keyword
+	 */
+	void setSlots(int slots);
 }

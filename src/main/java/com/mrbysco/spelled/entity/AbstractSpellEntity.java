@@ -34,308 +34,323 @@ import java.util.OptionalInt;
 import java.util.function.Predicate;
 
 public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
-    private static final EntityDataAccessor<CompoundTag> SPELL_ORDER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.COMPOUND_TAG);
-    private static final EntityDataAccessor<Integer> SPELL_TYPE = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<OptionalInt> COLOR = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.OPTIONAL_UNSIGNED_INT);
-    private static final EntityDataAccessor<Boolean> FIERY = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> LAVA = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> WATER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> COLD = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> SNOW = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> SMOKY = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> INKY = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Float> SIZE_MULTIPLIER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<CompoundTag> SPELL_ORDER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.COMPOUND_TAG);
+	private static final EntityDataAccessor<Integer> SPELL_TYPE = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<OptionalInt> COLOR = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.OPTIONAL_UNSIGNED_INT);
+	private static final EntityDataAccessor<Boolean> FIERY = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> LAVA = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> WATER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> COLD = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> SNOW = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> SMOKY = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> INKY = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Float> SIZE_MULTIPLIER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.FLOAT);
 
-    public AbstractSpellEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level worldIn) {
-        super(entityType, worldIn);
-    }
+	public AbstractSpellEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level worldIn) {
+		super(entityType, worldIn);
+	}
 
-    public AbstractSpellEntity(EntityType<? extends AbstractHurtingProjectile> entityType, LivingEntity shooter, Level worldIn) {
-        super(SpelledRegistry.SPELL.get(), worldIn);
-        this.setPos(shooter.getX(), shooter.getEyeY() - (double)0.1F, shooter.getZ());
-        this.setOwner(shooter);
-    }
+	public AbstractSpellEntity(EntityType<? extends AbstractHurtingProjectile> entityType, LivingEntity shooter, Level worldIn) {
+		super(SpelledRegistry.SPELL.get(), worldIn);
+		this.setPos(shooter.getX(), shooter.getEyeY() - (double) 0.1F, shooter.getZ());
+		this.setOwner(shooter);
+	}
 
-    @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(SPELL_ORDER, new CompoundTag());
-        this.entityData.define(SPELL_TYPE, 0);
-        this.entityData.define(COLOR, OptionalInt.empty());
-        this.entityData.define(FIERY, false);
-        this.entityData.define(LAVA, false);
-        this.entityData.define(WATER, false);
-        this.entityData.define(COLD, false);
-        this.entityData.define(SNOW, false);
-        this.entityData.define(SMOKY, false);
-        this.entityData.define(INKY, false);
-        this.entityData.define(SIZE_MULTIPLIER, 1.0F);
-    }
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(SPELL_ORDER, new CompoundTag());
+		this.entityData.define(SPELL_TYPE, 0);
+		this.entityData.define(COLOR, OptionalInt.empty());
+		this.entityData.define(FIERY, false);
+		this.entityData.define(LAVA, false);
+		this.entityData.define(WATER, false);
+		this.entityData.define(COLD, false);
+		this.entityData.define(SNOW, false);
+		this.entityData.define(SMOKY, false);
+		this.entityData.define(INKY, false);
+		this.entityData.define(SIZE_MULTIPLIER, 1.0F);
+	}
 
-    public void setSpellOrder(CompoundTag order) {
-        this.getEntityData().set(SPELL_ORDER, order);
-    }
-    public void insertAction(String action) {
-        CompoundTag order = this.getSpellOrder();
-        order.putString(order.isEmpty() ? String.valueOf(0) : String.valueOf(order.size()), action);
-        this.setSpellOrder(order);
-    }
-    public CompoundTag getSpellOrder() {
-        return this.getEntityData().get(SPELL_ORDER);
-    }
+	public void setSpellOrder(CompoundTag order) {
+		this.getEntityData().set(SPELL_ORDER, order);
+	}
 
-    public void setSpellType(int type) {
-        this.getEntityData().set(SPELL_TYPE, type);
-    }
-    public int getSpellType() {
-        return this.getEntityData().get(SPELL_TYPE);
-    }
+	public void insertAction(String action) {
+		CompoundTag order = this.getSpellOrder();
+		order.putString(order.isEmpty() ? String.valueOf(0) : String.valueOf(order.size()), action);
+		this.setSpellOrder(order);
+	}
 
-    public void setColor(int color) {
-        this.getEntityData().set(COLOR, OptionalInt.of(color));
-    }
-    public OptionalInt getColor() {
-        return this.getEntityData().get(COLOR);
-    }
-    public boolean hasColor() { return this.getEntityData().get(COLOR).isPresent(); }
+	public CompoundTag getSpellOrder() {
+		return this.getEntityData().get(SPELL_ORDER);
+	}
 
-    public void setFiery(boolean fiery) {
-        this.getEntityData().set(FIERY, fiery);
-    }
-    public boolean isFiery() {
-        return this.getEntityData().get(FIERY);
-    }
+	public void setSpellType(int type) {
+		this.getEntityData().set(SPELL_TYPE, type);
+	}
 
-    public void setLava(boolean lava) {
-        this.getEntityData().set(LAVA, lava);
-    }
-    public boolean isLava() {
-        return this.getEntityData().get(LAVA);
-    }
+	public int getSpellType() {
+		return this.getEntityData().get(SPELL_TYPE);
+	}
 
-    public void setWater(boolean water) {
-        this.getEntityData().set(WATER, water);
-    }
-    public boolean isWater() {
-        return this.getEntityData().get(WATER);
-    }
+	public void setColor(int color) {
+		this.getEntityData().set(COLOR, OptionalInt.of(color));
+	}
 
-    public void setCold(boolean cold) {
-        this.getEntityData().set(COLD, cold);
-    }
-    public boolean isCold() {
-        return this.getEntityData().get(COLD);
-    }
+	public OptionalInt getColor() {
+		return this.getEntityData().get(COLOR);
+	}
 
-    public void setSnow(boolean snow) {
-        this.getEntityData().set(SNOW, snow);
-    }
-    public boolean isSnow() {
-        return this.getEntityData().get(SNOW);
-    }
+	public boolean hasColor() {
+		return this.getEntityData().get(COLOR).isPresent();
+	}
 
-    public void setSmoky(boolean smoky) {
-        this.getEntityData().set(SMOKY, smoky);
-    }
-    public boolean isSmoky() {
-        return this.getEntityData().get(SMOKY);
-    }
+	public void setFiery(boolean fiery) {
+		this.getEntityData().set(FIERY, fiery);
+	}
 
-    public void setInky(boolean inky) {
-        this.getEntityData().set(INKY, inky);
-    }
-    public boolean isInky() {
-        return this.getEntityData().get(INKY);
-    }
+	public boolean isFiery() {
+		return this.getEntityData().get(FIERY);
+	}
 
-    public void setSizeMultiplier(float sizeMultiplier) {
-        this.getEntityData().set(SIZE_MULTIPLIER, sizeMultiplier);
-        this.reapplyPosition();
-        this.refreshDimensions();
-    }
-    public float getSizeMultiplier() {
-        return this.getEntityData().get(SIZE_MULTIPLIER);
-    }
+	public void setLava(boolean lava) {
+		this.getEntityData().set(LAVA, lava);
+	}
 
-    public void refreshDimensions() {
-        double d0 = this.getX();
-        double d1 = this.getY();
-        double d2 = this.getZ();
-        super.refreshDimensions();
-        this.setPos(d0, d1, d2);
-    }
+	public boolean isLava() {
+		return this.getEntityData().get(LAVA);
+	}
 
-    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        if (SIZE_MULTIPLIER.equals(key)) {
-            this.refreshDimensions();
-        }
+	public void setWater(boolean water) {
+		this.getEntityData().set(WATER, water);
+	}
 
-        super.onSyncedDataUpdated(key);
-    }
+	public boolean isWater() {
+		return this.getEntityData().get(WATER);
+	}
 
-    @Override
-    public EntityDimensions getDimensions(Pose poseIn) {
-        return super.getDimensions(poseIn).scale(this.getSizeMultiplier());
-    }
+	public void setCold(boolean cold) {
+		this.getEntityData().set(COLD, cold);
+	}
 
-    @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
+	public boolean isCold() {
+		return this.getEntityData().get(COLD);
+	}
 
-        if (compound.contains("SpellOrder", 10))
-            this.setSpellOrder(compound.getCompound("SpellOrder"));
+	public void setSnow(boolean snow) {
+		this.getEntityData().set(SNOW, snow);
+	}
 
-        if(compound.contains("colorPresent"))
-            setColor(compound.getInt("Color"));
+	public boolean isSnow() {
+		return this.getEntityData().get(SNOW);
+	}
 
-        setFiery(compound.getBoolean("Fiery"));
-        setLava(compound.getBoolean("Lava"));
-        setWater(compound.getBoolean("Water"));
-        setCold(compound.getBoolean("Cold"));
-        setSnow(compound.getBoolean("Snow"));
-        setSmoky(compound.getBoolean("Smoky"));
-        setInky(compound.getBoolean("Inky"));
+	public void setSmoky(boolean smoky) {
+		this.getEntityData().set(SMOKY, smoky);
+	}
 
-        setSizeMultiplier(compound.getFloat("SizeMultiplier"));
-    }
+	public boolean isSmoky() {
+		return this.getEntityData().get(SMOKY);
+	}
 
-    @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
+	public void setInky(boolean inky) {
+		this.getEntityData().set(INKY, inky);
+	}
 
-        if (!this.getSpellOrder().isEmpty())
-            compound.put("SpellOrder", this.getSpellOrder());
+	public boolean isInky() {
+		return this.getEntityData().get(INKY);
+	}
 
-        compound.putBoolean("colorPresent", hasColor());
-        if (hasColor())
-            compound.putInt("Color", getColor().getAsInt());
+	public void setSizeMultiplier(float sizeMultiplier) {
+		this.getEntityData().set(SIZE_MULTIPLIER, sizeMultiplier);
+		this.reapplyPosition();
+		this.refreshDimensions();
+	}
 
-        compound.putBoolean("Fiery", isFiery());
-        compound.putBoolean("Lava", isLava());
-        compound.putBoolean("Water", isWater());
-        compound.putBoolean("Cold", isCold());
-        compound.putBoolean("Snow", isSnow());
-        compound.putBoolean("Smoky", isSmoky());
-        compound.putBoolean("Inky", isInky());
+	public float getSizeMultiplier() {
+		return this.getEntityData().get(SIZE_MULTIPLIER);
+	}
 
-        compound.putFloat("SizeMultiplier", getSizeMultiplier());
-    }
+	public void refreshDimensions() {
+		double d0 = this.getX();
+		double d1 = this.getY();
+		double d2 = this.getZ();
+		super.refreshDimensions();
+		this.setPos(d0, d1, d2);
+	}
 
-    @Override
-    protected boolean shouldBurn() {
-        return isFiery();
-    }
+	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+		if (SIZE_MULTIPLIER.equals(key)) {
+			this.refreshDimensions();
+		}
 
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+		super.onSyncedDataUpdated(key);
+	}
 
-    @Override
-    protected ParticleOptions getTrailParticle() {
-        if(isLava() && (isCold() || isSnow() || isWater())) {
-            return new BlockParticleOption(ParticleTypes.BLOCK, Blocks.STONE.defaultBlockState());
-        } else {
-            if(isWater() || (isFiery() && isSnow()))
-                return ParticleTypes.DRIPPING_WATER;
-            if(isSmoky())
-                return ParticleTypes.SMOKE;
-            if(isInky())
-                return ParticleTypes.SQUID_INK;
-            if(isFiery())
-                return ParticleTypes.FLAME;
-            if(isSnow())
-                return ParticleTypes.ITEM_SNOWBALL;
+	@Override
+	public EntityDimensions getDimensions(Pose poseIn) {
+		return super.getDimensions(poseIn).scale(this.getSizeMultiplier());
+	}
 
-            return ParticleTypes.WITCH;
-        }
-    }
+	@Override
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
 
-    @Override
-    public float getBrightness() {
-        return (isFiery() || isLava()) ? 1.0F : 0.5F;
-    }
+		if (compound.contains("SpellOrder", 10))
+			this.setSpellOrder(compound.getCompound("SpellOrder"));
 
-    @Override
-    public void tick() {
-        if (tickCount > 200) {
-            this.discard();
-        }
+		if (compound.contains("colorPresent"))
+			setColor(compound.getInt("Color"));
 
-        if(isCold() || isWater()) {
-            Entity entity = this.getOwner();
-            if (this.level.isClientSide || (entity == null || entity.isAlive()) && this.level.hasChunkAt(this.blockPosition())) {
-                HitResult raytraceresult = rayTraceWater(this::canHitEntity);
-                if (raytraceresult.getType() != HitResult.Type.MISS) {
-                    this.onHit(raytraceresult);
-                }
-            }
-        }
-        Vec3 vector3d = this.getDeltaMovement();
-        this.updateRotation();
-        this.setDeltaMovement(vector3d.scale((double)0.99F));
-        if (!this.isNoGravity()) {
-            Vec3 vector3d1 = this.getDeltaMovement();
-            this.setDeltaMovement(vector3d1.x, vector3d1.y - (double)0.02F, vector3d1.z);
-        }
+		setFiery(compound.getBoolean("Fiery"));
+		setLava(compound.getBoolean("Lava"));
+		setWater(compound.getBoolean("Water"));
+		setCold(compound.getBoolean("Cold"));
+		setSnow(compound.getBoolean("Snow"));
+		setSmoky(compound.getBoolean("Smoky"));
+		setInky(compound.getBoolean("Inky"));
 
-        super.tick();
-    }
+		setSizeMultiplier(compound.getFloat("SizeMultiplier"));
+	}
 
-    public HitResult rayTraceWater(Predicate<Entity> entityPredicate) {
-        Vec3 vector3d = this.getDeltaMovement();
-        Level world = this.level;
-        Vec3 vector3d1 = this.position();
-        Vec3 vector3d2 = vector3d1.add(vector3d);
-        HitResult raytraceresult = world.clip(new ClipContext(vector3d1, vector3d2, ClipContext.Block.COLLIDER, Fluid.SOURCE_ONLY, this));
-        if (raytraceresult.getType() != HitResult.Type.MISS) {
-            vector3d2 = raytraceresult.getLocation();
-        }
+	@Override
+	public void addAdditionalSaveData(CompoundTag compound) {
+		super.addAdditionalSaveData(compound);
 
-        HitResult raytraceresult1 = ProjectileUtil.getEntityHitResult(world, this, vector3d1, vector3d2, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), entityPredicate);
-        if (raytraceresult1 != null) {
-            raytraceresult = raytraceresult1;
-        }
+		if (!this.getSpellOrder().isEmpty())
+			compound.put("SpellOrder", this.getSpellOrder());
 
-        return raytraceresult;
-    }
+		compound.putBoolean("colorPresent", hasColor());
+		if (hasColor())
+			compound.putInt("Color", getColor().getAsInt());
 
-    public void explode() {
-        boolean flag = !(isSnow() || isWater()) && isFiery();
-        int size = (int) Math.ceil(1 * getSizeMultiplier());
-        this.level.explode(this, this.getX(), this.getY(), this.getZ(), (float) size, flag, flag ? BlockInteraction.DESTROY : BlockInteraction.BREAK);
-    }
+		compound.putBoolean("Fiery", isFiery());
+		compound.putBoolean("Lava", isLava());
+		compound.putBoolean("Water", isWater());
+		compound.putBoolean("Cold", isCold());
+		compound.putBoolean("Snow", isSnow());
+		compound.putBoolean("Smoky", isSmoky());
+		compound.putBoolean("Inky", isInky());
 
-    public List<BlockPos> getSizedPos(BlockPos pos) {
-        if(getSizeMultiplier() > 1) {
-            double offset = getSizeMultiplier() * 0.5f;
-            List<BlockPos> positionList = new ArrayList<>();
-            Iterable<BlockPos> positions = BlockPos.betweenClosed(pos.offset(-offset, -offset, -offset), pos.offset(offset, offset, offset));
-            for(BlockPos position : positions) {
-                if(!positionList.contains(position)) {
-                    positionList.add(new BlockPos(position));
-                }
-            }
-            return positionList;
-        }
-        return Collections.singletonList(pos);
-    }
+		compound.putFloat("SizeMultiplier", getSizeMultiplier());
+	}
 
-    public List<Entity> getRangedEntities(Entity hitEntity) {
-        if(getSizeMultiplier() > 1) {
-            double offset = getSizeMultiplier();
-            AABB hitbox = new AABB(hitEntity.getX() - 0.5f, hitEntity.getY() - 0.5f, hitEntity.getZ() - 0.5f, hitEntity.getX() + 0.5f, hitEntity.getY() + 0.5f, hitEntity.getZ() + 0.5f)
-                    .expandTowards(-offset, -offset, -offset).expandTowards(offset, offset, offset);
+	@Override
+	protected boolean shouldBurn() {
+		return isFiery();
+	}
 
-            return level.getEntities(this, hitbox, Entity::isAlive);
-        }
-        return Collections.singletonList(hitEntity);
-    }
+	@Override
+	public Packet<?> getAddEntityPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
+	}
 
-    public void shootSpell(Vec3 lookVec) {
-        this.setDeltaMovement(lookVec);
-        this.xPower = lookVec.x * 0.1D;
-        this.yPower = lookVec.y * 0.1D;
-        this.zPower = lookVec.z * 0.1D;
-    }
+	@Override
+	protected ParticleOptions getTrailParticle() {
+		if (isLava() && (isCold() || isSnow() || isWater())) {
+			return new BlockParticleOption(ParticleTypes.BLOCK, Blocks.STONE.defaultBlockState());
+		} else {
+			if (isWater() || (isFiery() && isSnow()))
+				return ParticleTypes.DRIPPING_WATER;
+			if (isSmoky())
+				return ParticleTypes.SMOKE;
+			if (isInky())
+				return ParticleTypes.SQUID_INK;
+			if (isFiery())
+				return ParticleTypes.FLAME;
+			if (isSnow())
+				return ParticleTypes.ITEM_SNOWBALL;
+
+			return ParticleTypes.WITCH;
+		}
+	}
+
+	@Override
+	public float getBrightness() {
+		return (isFiery() || isLava()) ? 1.0F : 0.5F;
+	}
+
+	@Override
+	public void tick() {
+		if (tickCount > 200) {
+			this.discard();
+		}
+
+		if (isCold() || isWater()) {
+			Entity entity = this.getOwner();
+			if (this.level.isClientSide || (entity == null || entity.isAlive()) && this.level.hasChunkAt(this.blockPosition())) {
+				HitResult raytraceresult = rayTraceWater(this::canHitEntity);
+				if (raytraceresult.getType() != HitResult.Type.MISS) {
+					this.onHit(raytraceresult);
+				}
+			}
+		}
+		Vec3 vector3d = this.getDeltaMovement();
+		this.updateRotation();
+		this.setDeltaMovement(vector3d.scale((double) 0.99F));
+		if (!this.isNoGravity()) {
+			Vec3 vector3d1 = this.getDeltaMovement();
+			this.setDeltaMovement(vector3d1.x, vector3d1.y - (double) 0.02F, vector3d1.z);
+		}
+
+		super.tick();
+	}
+
+	public HitResult rayTraceWater(Predicate<Entity> entityPredicate) {
+		Vec3 vector3d = this.getDeltaMovement();
+		Level world = this.level;
+		Vec3 vector3d1 = this.position();
+		Vec3 vector3d2 = vector3d1.add(vector3d);
+		HitResult raytraceresult = world.clip(new ClipContext(vector3d1, vector3d2, ClipContext.Block.COLLIDER, Fluid.SOURCE_ONLY, this));
+		if (raytraceresult.getType() != HitResult.Type.MISS) {
+			vector3d2 = raytraceresult.getLocation();
+		}
+
+		HitResult raytraceresult1 = ProjectileUtil.getEntityHitResult(world, this, vector3d1, vector3d2, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), entityPredicate);
+		if (raytraceresult1 != null) {
+			raytraceresult = raytraceresult1;
+		}
+
+		return raytraceresult;
+	}
+
+	public void explode() {
+		boolean flag = !(isSnow() || isWater()) && isFiery();
+		int size = (int) Math.ceil(1 * getSizeMultiplier());
+		this.level.explode(this, this.getX(), this.getY(), this.getZ(), (float) size, flag, flag ? BlockInteraction.DESTROY : BlockInteraction.BREAK);
+	}
+
+	public List<BlockPos> getSizedPos(BlockPos pos) {
+		if (getSizeMultiplier() > 1) {
+			double offset = getSizeMultiplier() * 0.5f;
+			List<BlockPos> positionList = new ArrayList<>();
+			Iterable<BlockPos> positions = BlockPos.betweenClosed(pos.offset(-offset, -offset, -offset), pos.offset(offset, offset, offset));
+			for (BlockPos position : positions) {
+				if (!positionList.contains(position)) {
+					positionList.add(new BlockPos(position));
+				}
+			}
+			return positionList;
+		}
+		return Collections.singletonList(pos);
+	}
+
+	public List<Entity> getRangedEntities(Entity hitEntity) {
+		if (getSizeMultiplier() > 1) {
+			double offset = getSizeMultiplier();
+			AABB hitbox = new AABB(hitEntity.getX() - 0.5f, hitEntity.getY() - 0.5f, hitEntity.getZ() - 0.5f, hitEntity.getX() + 0.5f, hitEntity.getY() + 0.5f, hitEntity.getZ() + 0.5f)
+					.expandTowards(-offset, -offset, -offset).expandTowards(offset, offset, offset);
+
+			return level.getEntities(this, hitbox, Entity::isAlive);
+		}
+		return Collections.singletonList(hitEntity);
+	}
+
+	public void shootSpell(Vec3 lookVec) {
+		this.setDeltaMovement(lookVec);
+		this.xPower = lookVec.x * 0.1D;
+		this.yPower = lookVec.y * 0.1D;
+		this.zPower = lookVec.z * 0.1D;
+	}
 }

@@ -12,40 +12,40 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public class SpellDataSyncMessage {
-    private final CompoundTag data;
-    private final UUID playerUUID;
+	private final CompoundTag data;
+	private final UUID playerUUID;
 
-    public SpellDataSyncMessage(ISpellData data, UUID playerUUID) {
-        this.data = data.serializeNBT();
-        this.playerUUID = playerUUID;
-    }
+	public SpellDataSyncMessage(ISpellData data, UUID playerUUID) {
+		this.data = data.serializeNBT();
+		this.playerUUID = playerUUID;
+	}
 
-    private SpellDataSyncMessage(FriendlyByteBuf buf) {
-        this.data = buf.readNbt();
-        this.playerUUID = buf.readUUID();
-    }
+	private SpellDataSyncMessage(FriendlyByteBuf buf) {
+		this.data = buf.readNbt();
+		this.playerUUID = buf.readUUID();
+	}
 
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeNbt(data);
-        buf.writeUUID(playerUUID);
-    }
+	public void encode(FriendlyByteBuf buf) {
+		buf.writeNbt(data);
+		buf.writeUUID(playerUUID);
+	}
 
-    public static SpellDataSyncMessage decode(final FriendlyByteBuf packetBuffer) {
-        return new SpellDataSyncMessage(packetBuffer);
-    }
+	public static SpellDataSyncMessage decode(final FriendlyByteBuf packetBuffer) {
+		return new SpellDataSyncMessage(packetBuffer);
+	}
 
-    public void handle(Supplier<Context> context) {
-        Context ctx = context.get();
-        ctx.enqueueWork(() -> {
-            if (ctx.getDirection().getReceptionSide().isClient()) {
-                Player player = Minecraft.getInstance().level.getPlayerByUUID(this.playerUUID);
-                if(player != null) {
-                    player.getCapability(SpelledAPI.SPELL_DATA_CAP).ifPresent(sanityCap -> {
-                        sanityCap.deserializeNBT(data);
-                    });
-                }
-            }
-        });
-        ctx.setPacketHandled(true);
-    }
+	public void handle(Supplier<Context> context) {
+		Context ctx = context.get();
+		ctx.enqueueWork(() -> {
+			if (ctx.getDirection().getReceptionSide().isClient()) {
+				Player player = Minecraft.getInstance().level.getPlayerByUUID(this.playerUUID);
+				if (player != null) {
+					player.getCapability(SpelledAPI.SPELL_DATA_CAP).ifPresent(sanityCap -> {
+						sanityCap.deserializeNBT(data);
+					});
+				}
+			}
+		});
+		ctx.setPacketHandled(true);
+	}
 }

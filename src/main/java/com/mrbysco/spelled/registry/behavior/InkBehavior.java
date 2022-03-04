@@ -10,14 +10,14 @@ import net.minecraft.world.entity.LivingEntity;
 import javax.annotation.Nonnull;
 
 public class InkBehavior extends BaseBehavior {
-    public InkBehavior() {
-        super("ink");
-    }
+	public InkBehavior() {
+		super("ink");
+	}
 
-    @Override
-    public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        if(entity instanceof LivingEntity) {
-            ((LivingEntity)entity).addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 5*20, 0,  false, false));
-        }
-    }
+	@Override
+	public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
+		if (entity instanceof LivingEntity) {
+			((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 5 * 20, 0, false, false));
+		}
+	}
 }

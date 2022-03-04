@@ -10,14 +10,14 @@ import net.minecraft.world.entity.LivingEntity;
 import javax.annotation.Nonnull;
 
 public class GlowBehavior extends BaseBehavior {
-    public GlowBehavior() {
-        super("glow");
-    }
+	public GlowBehavior() {
+		super("glow");
+	}
 
-    @Override
-    public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        if(entity instanceof LivingEntity) {
-            ((LivingEntity)entity).addEffect(new MobEffectInstance(MobEffects.GLOWING, 5*20, 0,  false, false));
-        }
-    }
+	@Override
+	public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
+		if (entity instanceof LivingEntity) {
+			((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.GLOWING, 5 * 20, 0, false, false));
+		}
+	}
 }

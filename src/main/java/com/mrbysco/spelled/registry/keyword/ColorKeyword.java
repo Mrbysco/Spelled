@@ -11,48 +11,48 @@ import javax.annotation.Nullable;
 import java.awt.Color;
 
 public class ColorKeyword extends BaseKeyword {
-    private final ChatFormatting color;
+	private final ChatFormatting color;
 
-    public ColorKeyword(String keyword, ChatFormatting color, int level, int slots) {
-        super(keyword, level, slots);
-        this.color = color;
-    }
+	public ColorKeyword(String keyword, ChatFormatting color, int level, int slots) {
+		super(keyword, level, slots);
+		this.color = color;
+	}
 
-    @Override
-    public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
-        if(spell != null) {
-            if((adjective == null || adjective instanceof LiquidKeyword) && color == ChatFormatting.BLACK) {
-                spell.setInky(true);
-                spell.insertAction("ink");
-            }
-            if(color == ChatFormatting.AQUA && adjective instanceof LiquidKeyword) {
-                spell.setWater(true);
-                Color waterColor = new Color(0.2F, 0.3F, 1.0F);
-                int colorID = waterColor.getRGB();
-                if(spell.hasColor()) {
-                    int currentColor = spell.getColor().getAsInt();
-                    int combinedColor = (int)((currentColor * 0.5F) + (colorID * 0.5F)); //Combine colors
-                    spell.setColor(combinedColor);
-                } else {
-                    spell.setColor(colorID);
-                }
-                spell.insertAction("water");
-            } else {
-                Integer colorID = color.getColor();
-                if(colorID != null) {
-                    if(spell.hasColor()) {
-                        int currentColor = spell.getColor().getAsInt();
-                        int combinedColor = (int)((currentColor * 0.5F) + (colorID * 0.5F)); //Combine colors
-                        spell.setColor(combinedColor);
-                    } else {
-                        spell.setColor(colorID);
-                    }
-                }
+	@Override
+	public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
+		if (spell != null) {
+			if ((adjective == null || adjective instanceof LiquidKeyword) && color == ChatFormatting.BLACK) {
+				spell.setInky(true);
+				spell.insertAction("ink");
+			}
+			if (color == ChatFormatting.AQUA && adjective instanceof LiquidKeyword) {
+				spell.setWater(true);
+				Color waterColor = new Color(0.2F, 0.3F, 1.0F);
+				int colorID = waterColor.getRGB();
+				if (spell.hasColor()) {
+					int currentColor = spell.getColor().getAsInt();
+					int combinedColor = (int) ((currentColor * 0.5F) + (colorID * 0.5F)); //Combine colors
+					spell.setColor(combinedColor);
+				} else {
+					spell.setColor(colorID);
+				}
+				spell.insertAction("water");
+			} else {
+				Integer colorID = color.getColor();
+				if (colorID != null) {
+					if (spell.hasColor()) {
+						int currentColor = spell.getColor().getAsInt();
+						int combinedColor = (int) ((currentColor * 0.5F) + (colorID * 0.5F)); //Combine colors
+						spell.setColor(combinedColor);
+					} else {
+						spell.setColor(colorID);
+					}
+				}
 
-                if(adjective == null && color == ChatFormatting.WHITE) {
-                    spell.insertAction("glow");
-                }
-            }
-        }
-    }
+				if (adjective == null && color == ChatFormatting.WHITE) {
+					spell.insertAction("glow");
+				}
+			}
+		}
+	}
 }

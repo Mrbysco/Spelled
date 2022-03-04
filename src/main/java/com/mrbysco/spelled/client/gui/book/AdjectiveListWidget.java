@@ -59,7 +59,7 @@ public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 			font.draw(poseStack, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
 					(this.parent.width / 2) - (font.width(name) / 2) + 3, top + 6, 0xFFFFFF);
 
-			if(isMouseOver(mouseX, mouseY)) {
+			if (isMouseOver(mouseX, mouseY)) {
 				parent.renderTooltip(poseStack, getDescription(), mouseX, mouseY);
 			}
 		}
@@ -81,7 +81,7 @@ public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 		}
 
 		public Component getDescription() {
-			if(isType()) {
+			if (isType()) {
 				return new TextComponent("Type: ").withStyle(ChatFormatting.GOLD).append(adjective.getAdjectiveDescription());
 			}
 			return adjective.getAdjectiveDescription();

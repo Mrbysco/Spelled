@@ -12,25 +12,25 @@ import net.minecraft.world.item.ItemStack;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
-    private static final ResourceLocation UID = new ResourceLocation(Reference.MOD_ID, "jei_plugin");
+	private static final ResourceLocation UID = new ResourceLocation(Reference.MOD_ID, "jei_plugin");
 
-    @Override
-    public ResourceLocation getPluginUid() {
-        return UID;
-    }
+	@Override
+	public ResourceLocation getPluginUid() {
+		return UID;
+	}
 
-    @Override
-    public void registerItemSubtypes(ISubtypeRegistration registration) {
-        registration.registerSubtypeInterpreter(SpelledRegistry.KNOWLEDGE_TOME.get(), new TomeSubTypes());
-    }
+	@Override
+	public void registerItemSubtypes(ISubtypeRegistration registration) {
+		registration.registerSubtypeInterpreter(SpelledRegistry.KNOWLEDGE_TOME.get(), new TomeSubTypes());
+	}
 
-    private static class TomeSubTypes implements IIngredientSubtypeInterpreter<ItemStack> {
-        @Override
-        public String apply(ItemStack stack, UidContext context) {
-            if (!stack.hasTag()) return IIngredientSubtypeInterpreter.NONE;
-                String tomeUnlock = stack.getTag().getString(Reference.tomeUnlock);
-            if (tomeUnlock.isEmpty()) return IIngredientSubtypeInterpreter.NONE;
-                return stack.getItem().getRegistryName() + "@" + tomeUnlock;
-        }
-    }
+	private static class TomeSubTypes implements IIngredientSubtypeInterpreter<ItemStack> {
+		@Override
+		public String apply(ItemStack stack, UidContext context) {
+			if (!stack.hasTag()) return IIngredientSubtypeInterpreter.NONE;
+			String tomeUnlock = stack.getTag().getString(Reference.tomeUnlock);
+			if (tomeUnlock.isEmpty()) return IIngredientSubtypeInterpreter.NONE;
+			return stack.getItem().getRegistryName() + "@" + tomeUnlock;
+		}
+	}
 }

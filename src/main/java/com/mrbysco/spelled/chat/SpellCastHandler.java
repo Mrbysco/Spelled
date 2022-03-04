@@ -10,28 +10,28 @@ import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class SpellCastHandler {
-    @SubscribeEvent
-    public void onPlayerTick(PlayerTickEvent event) {
-        if(event.phase == TickEvent.Phase.START)
-            return;
+	@SubscribeEvent
+	public void onPlayerTick(PlayerTickEvent event) {
+		if (event.phase == TickEvent.Phase.START)
+			return;
 
-        Level world = event.player.level;
-        if(!world.isClientSide && world.getGameTime() % 20 == 0) {
-            ServerPlayer player = (ServerPlayer) event.player;
-            int cooldown = SpelledAPI.getCooldown(player);
-            if(cooldown > 0) {
-                SpelledAPI.setCooldown(player, cooldown - 1);
-                SpelledAPI.syncCap(player);
-            }
-        }
-    }
+		Level world = event.player.level;
+		if (!world.isClientSide && world.getGameTime() % 20 == 0) {
+			ServerPlayer player = (ServerPlayer) event.player;
+			int cooldown = SpelledAPI.getCooldown(player);
+			if (cooldown > 0) {
+				SpelledAPI.setCooldown(player, cooldown - 1);
+				SpelledAPI.syncCap(player);
+			}
+		}
+	}
 
-    @SubscribeEvent
-    public void onChatEvent(ServerChatEvent event) {
-        final String regExp = "^[a-zA-Z\\s]*$";
-        String actualMessage = event.getMessage();
-        if (!actualMessage.isEmpty() && actualMessage.matches(regExp)) {
-            SpellUtil.castSpell(event);
-        }
-    }
+	@SubscribeEvent
+	public void onChatEvent(ServerChatEvent event) {
+		final String regExp = "^[a-zA-Z\\s]*$";
+		String actualMessage = event.getMessage();
+		if (!actualMessage.isEmpty() && actualMessage.matches(regExp)) {
+			SpellUtil.castSpell(event);
+		}
+	}
 }

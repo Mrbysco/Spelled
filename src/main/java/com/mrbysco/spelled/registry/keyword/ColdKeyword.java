@@ -9,15 +9,15 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 
 public class ColdKeyword extends BaseKeyword {
-    public ColdKeyword(String keyword, int level, int slots) {
-        super(keyword, level, slots);
-    }
+	public ColdKeyword(String keyword, int level, int slots) {
+		super(keyword, level, slots);
+	}
 
-    @Override
-    public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
-        if(spell != null) {
-            spell.setCold(true);
-            spell.insertAction("cold");
-        }
-    }
+	@Override
+	public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
+		if (spell != null) {
+			spell.setCold(true);
+			spell.insertAction("cold");
+		}
+	}
 }

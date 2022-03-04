@@ -10,21 +10,21 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nonnull;
 
 public class FireBehavior extends BaseBehavior {
-    public FireBehavior() {
-        super("fire");
-    }
+	public FireBehavior() {
+		super("fire");
+	}
 
-    @Override
-    public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
-        BlockState offState = spell.level.getBlockState(offPos);
+	@Override
+	public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
+		BlockState offState = spell.level.getBlockState(offPos);
 
-        if (offState.getMaterial().isReplaceable()) {
-            spell.level.setBlockAndUpdate(offPos, BaseFireBlock.getState(spell.level, offPos));
-        }
-    }
+		if (offState.getMaterial().isReplaceable()) {
+			spell.level.setBlockAndUpdate(offPos, BaseFireBlock.getState(spell.level, offPos));
+		}
+	}
 
-    @Override
-    public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        entity.setSecondsOnFire(5);
-    }
+	@Override
+	public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
+		entity.setSecondsOnFire(5);
+	}
 }

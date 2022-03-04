@@ -51,7 +51,7 @@ public class SpellUtil {
 			List<String> words = Arrays.asList(wordArray);
 
 			boolean validSpellFormation = isValidSpellFormation(player, words);
-			if(words.size() >= 2 && validSpellFormation) {
+			if (words.size() >= 2 && validSpellFormation) {
 				if (SpellUtil.canCastSpell(player, words)) {
 					if (isOnCooldown(player)) {
 						event.setCanceled(true);
@@ -134,7 +134,7 @@ public class SpellUtil {
 			if (!registry.containsKey(word))
 				return false;
 			//Doesn't know the word
-			if(!data.knowsKeyword(word))
+			if (!data.knowsKeyword(word))
 				return false;
 		}
 
@@ -146,12 +146,12 @@ public class SpellUtil {
 		final KeywordRegistry registry = KeywordRegistry.instance();
 
 		//If creative just return true if the chat message was a valid spell
-		if(player.getAbilities().instabuild)
+		if (player.getAbilities().instabuild)
 			return true;
 
 		int currentLevel = data.getLevel();
 
-		if(currentLevel == 0) {
+		if (currentLevel == 0) {
 			MutableComponent finalMessage = new TranslatableComponent("spelled.spell.no_levels", player.getDisplayName()).withStyle(ChatFormatting.RED);
 			player.sendMessage(finalMessage, Util.NIL_UUID);
 			return false;
@@ -160,11 +160,11 @@ public class SpellUtil {
 		int maxLevelWord = 0;
 		for (String word : words) {
 			IKeyword keyword = registry.getKeywordFromName(word);
-			if(keyword != null && keyword.getLevel() > maxLevelWord)
+			if (keyword != null && keyword.getLevel() > maxLevelWord)
 				maxLevelWord = keyword.getLevel();
 		}
 
-		if(maxLevelWord > currentLevel) {
+		if (maxLevelWord > currentLevel) {
 			MutableComponent errorMessage = new TranslatableComponent("spelled.spell.insufficient_level", player.getDisplayName(), maxLevelWord, currentLevel)
 					.withStyle(ChatFormatting.RED);
 			player.sendMessage(errorMessage, Util.NIL_UUID);
@@ -172,7 +172,7 @@ public class SpellUtil {
 		}
 
 		int maxWordCount = LevelHelper.getAllowedWordCount(currentLevel);
-		if(maxWordCount > 0 && words.size() <= maxWordCount) {
+		if (maxWordCount > 0 && words.size() <= maxWordCount) {
 			return true;
 		} else {
 			MutableComponent errorMessage = new TranslatableComponent("spelled.spell.too_many_words", player.getDisplayName(), maxWordCount)
@@ -186,7 +186,7 @@ public class SpellUtil {
 		ISpellData data = SpelledAPI.getSpellDataCap(player).orElse(new SpellDataCapability());
 		//Check if player is on cooldown
 		int cooldown = data.getCastCooldown();
-		if(cooldown > 0) {
+		if (cooldown > 0) {
 			MutableComponent finalMessage = new TranslatableComponent("spelled.spell.cooldown", player.getDisplayName(), cooldown);
 			player.sendMessage(finalMessage, Util.NIL_UUID);
 			return true;
@@ -203,12 +203,12 @@ public class SpellUtil {
 
 	public static void shootSpell(ServerPlayer player, SpellEntity spell) {
 		spell.setOwner(player);
-		spell.setPos(player.getX(), player.getEyeY() - (double)0.1F, player.getZ());
+		spell.setPos(player.getX(), player.getEyeY() - (double) 0.1F, player.getZ());
 		if (spell.getSpellType() == 1) { //Projectile
 			spell.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 4.0F, 0.0F);
 		} else { //Ball (Self is handled elsewhere)
 			spell.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.0F, 0.0F);
 		}
-		player.level.playSound((Player)null, player.blockPosition(), SpelledRegistry.SHOOT_SPELL.get(), SoundSource.PLAYERS, 1.0F, 1.0F / (player.level.random.nextFloat() * 0.4F + 1.2F) + 0.5F);
+		player.level.playSound((Player) null, player.blockPosition(), SpelledRegistry.SHOOT_SPELL.get(), SoundSource.PLAYERS, 1.0F, 1.0F / (player.level.random.nextFloat() * 0.4F + 1.2F) + 0.5F);
 	}
 }

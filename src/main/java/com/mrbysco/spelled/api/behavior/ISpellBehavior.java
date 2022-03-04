@@ -8,14 +8,14 @@ import javax.annotation.Nonnull;
 
 public interface ISpellBehavior {
 
-    void onEntityHit(@Nonnull SpellEntity spell, Entity entity);
+	void onEntityHit(@Nonnull SpellEntity spell, Entity entity);
 
-    void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos);
+	void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos);
 
-    boolean appliedMultiple();
+	boolean appliedMultiple();
 
-    /*
-     * @return behavior
-     */
-    String getName();
+	/*
+	 * @return behavior
+	 */
+	String getName();
 }

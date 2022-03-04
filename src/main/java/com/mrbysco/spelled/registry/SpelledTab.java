@@ -10,22 +10,22 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class SpelledTab {
-    public static final CreativeModeTab TAB = new CreativeModeTab(Reference.MOD_ID) {
-        @OnlyIn(Dist.CLIENT)
-        public ItemStack makeIcon() {
-            return new ItemStack(SpelledRegistry.LEVELING_ALTAR.get());
-        }
+	public static final CreativeModeTab TAB = new CreativeModeTab(Reference.MOD_ID) {
+		@OnlyIn(Dist.CLIENT)
+		public ItemStack makeIcon() {
+			return new ItemStack(SpelledRegistry.LEVELING_ALTAR.get());
+		}
 
-        @Override
-        public void fillItemList(NonNullList<ItemStack> items) {
-            super.fillItemList(items);
-            for(String adjective : KeywordRegistry.instance().getAdjectives()) {
-                CompoundTag nbt = new CompoundTag();
-                nbt.putString(Reference.tomeUnlock, adjective);
-                ItemStack stack = new ItemStack(SpelledRegistry.KNOWLEDGE_TOME.get(), 1, nbt);
-                stack.setTag(nbt);
-                items.add(stack);
-            }
-        }
-    };
+		@Override
+		public void fillItemList(NonNullList<ItemStack> items) {
+			super.fillItemList(items);
+			for (String adjective : KeywordRegistry.instance().getAdjectives()) {
+				CompoundTag nbt = new CompoundTag();
+				nbt.putString(Reference.tomeUnlock, adjective);
+				ItemStack stack = new ItemStack(SpelledRegistry.KNOWLEDGE_TOME.get(), 1, nbt);
+				stack.setTag(nbt);
+				items.add(stack);
+			}
+		}
+	};
 }

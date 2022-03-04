@@ -4,25 +4,25 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 public interface ISpellData extends ICapabilitySerializable<CompoundTag> {
-    CompoundTag getUnlocked();
+	CompoundTag getUnlocked();
 
-    void setUnlocked(CompoundTag nbt);
+	void setUnlocked(CompoundTag nbt);
 
-    boolean knowsKeyword(String keyword);
+	boolean knowsKeyword(String keyword);
 
-    void unlockKeyword(String keyword);
+	void unlockKeyword(String keyword);
 
-    void lockKeyword(String keyword);
+	void lockKeyword(String keyword);
 
-    void resetUnlocks();
+	void resetUnlocks();
 
-    int getLevel();
+	int getLevel();
 
-    void setLevel(int level);
+	void setLevel(int level);
 
-    int getCastCooldown();
+	int getCastCooldown();
 
-    void setCastCooldown(int cooldown);
+	void setCastCooldown(int cooldown);
 
 //    boolean isDirty();
 //

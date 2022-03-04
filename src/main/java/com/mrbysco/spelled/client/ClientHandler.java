@@ -13,18 +13,18 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class ClientHandler {
-    public static void onClientSetupEvent(FMLClientSetupEvent event) {
-        ItemBlockRenderTypes.setRenderLayer(SpelledRegistry.LEVELING_ALTAR.get(), RenderType.cutout());
+	public static void onClientSetupEvent(FMLClientSetupEvent event) {
+		ItemBlockRenderTypes.setRenderLayer(SpelledRegistry.LEVELING_ALTAR.get(), RenderType.cutout());
 
-        MenuScreens.register(SpelledRegistry.ALTAR_CONTAINER.get(), AltarScreen::new);
-    }
+		MenuScreens.register(SpelledRegistry.ALTAR_CONTAINER.get(), AltarScreen::new);
+	}
 
-    public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(SpelledRegistry.SPELL.get(), SpellRenderer::new);
-    }
+	public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
+		event.registerEntityRenderer(SpelledRegistry.SPELL.get(), SpellRenderer::new);
+	}
 
-    public static void loginEvent(LoggedInEvent event) {
-        KeywordRegistry.instance().initializeKeywords();
-        BehaviorRegistry.instance().initializeBehaviors();
-    }
+	public static void loginEvent(LoggedInEvent event) {
+		KeywordRegistry.instance().initializeKeywords();
+		BehaviorRegistry.instance().initializeBehaviors();
+	}
 }

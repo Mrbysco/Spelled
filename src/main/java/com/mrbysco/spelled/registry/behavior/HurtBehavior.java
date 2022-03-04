@@ -9,14 +9,14 @@ import net.minecraft.world.entity.LivingEntity;
 import javax.annotation.Nonnull;
 
 public class HurtBehavior extends BaseBehavior {
-    public HurtBehavior() {
-        super("hurt");
-    }
+	public HurtBehavior() {
+		super("hurt");
+	}
 
-    @Override
-    public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        if(entity instanceof LivingEntity) {
-            entity.hurt(Reference.causeMagicDamage(spell), 1);
-        }
-    }
+	@Override
+	public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
+		if (entity instanceof LivingEntity) {
+			entity.hurt(Reference.causeMagicDamage(spell), 1);
+		}
+	}
 }

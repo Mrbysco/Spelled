@@ -24,65 +24,65 @@ import java.util.Locale;
 import java.util.Map;
 
 public class BehaviorRegistry {
-    private final Map<String, ISpellBehavior> behaviorMap = Maps.newHashMap();
+	private final Map<String, ISpellBehavior> behaviorMap = Maps.newHashMap();
 
-    private static BehaviorRegistry INSTANCE;
+	private static BehaviorRegistry INSTANCE;
 
-    public static BehaviorRegistry instance() {
-        if (INSTANCE == null)
-            INSTANCE = new BehaviorRegistry();
-        return INSTANCE;
-    }
+	public static BehaviorRegistry instance() {
+		if (INSTANCE == null)
+			INSTANCE = new BehaviorRegistry();
+		return INSTANCE;
+	}
 
-    public void reloadBehaviors() {
-        behaviorMap.clear();
-        initializeBehaviors();
-    }
+	public void reloadBehaviors() {
+		behaviorMap.clear();
+		initializeBehaviors();
+	}
 
-    public void initializeBehaviors() {
-        Spelled.LOGGER.info("Initializing spell behavior");
+	public void initializeBehaviors() {
+		Spelled.LOGGER.info("Initializing spell behavior");
 
-        registerBehavior(new ColdBehavior());
-        registerBehavior(new FireBehavior());
-        registerBehavior(new ExplodeBehavior());
-        registerBehavior(new HarvestBehavior());
-        registerBehavior(new HealBehavior());
-        registerBehavior(new HurtBehavior());
-        registerBehavior(new ProtectBehavior());
-        registerBehavior(new InkBehavior());
-        registerBehavior(new GlowBehavior());
-        registerBehavior(new KnockbackBehavior());
-        registerBehavior(new LavaBehavior());
-        registerBehavior(new SmokeBehavior());
-        registerBehavior(new SnowBehavior());
-        registerBehavior(new WaterBehavior());
-        registerBehavior(new ExtinguishBehavior());
-    }
+		registerBehavior(new ColdBehavior());
+		registerBehavior(new FireBehavior());
+		registerBehavior(new ExplodeBehavior());
+		registerBehavior(new HarvestBehavior());
+		registerBehavior(new HealBehavior());
+		registerBehavior(new HurtBehavior());
+		registerBehavior(new ProtectBehavior());
+		registerBehavior(new InkBehavior());
+		registerBehavior(new GlowBehavior());
+		registerBehavior(new KnockbackBehavior());
+		registerBehavior(new LavaBehavior());
+		registerBehavior(new SmokeBehavior());
+		registerBehavior(new SnowBehavior());
+		registerBehavior(new WaterBehavior());
+		registerBehavior(new ExtinguishBehavior());
+	}
 
-    public void registerBehavior(ISpellBehavior behavior) {
-        String keyword = behavior.getName().toLowerCase(Locale.ROOT);
-        if(!containsKey(keyword)) {
-            behaviorMap.put(keyword, behavior);
-        }
-    }
+	public void registerBehavior(ISpellBehavior behavior) {
+		String keyword = behavior.getName().toLowerCase(Locale.ROOT);
+		if (!containsKey(keyword)) {
+			behaviorMap.put(keyword, behavior);
+		}
+	}
 
-    public boolean containsKey(String keyword) {
-        if(!behaviorMap.isEmpty()) {
-            return behaviorMap.containsKey(keyword.toLowerCase(Locale.ROOT));
-        }
-        return false;
-    }
+	public boolean containsKey(String keyword) {
+		if (!behaviorMap.isEmpty()) {
+			return behaviorMap.containsKey(keyword.toLowerCase(Locale.ROOT));
+		}
+		return false;
+	}
 
-    public HashMap<String, ISpellBehavior> getBehaviors() {
-        return new HashMap<>(behaviorMap);
-    }
+	public HashMap<String, ISpellBehavior> getBehaviors() {
+		return new HashMap<>(behaviorMap);
+	}
 
-    @Nullable
-    public ISpellBehavior getBehaviorByName(String behavior) {
-        String name = behavior.toLowerCase(Locale.ROOT);
-        if(containsKey(name)) {
-            return behaviorMap.get(name);
-        }
-        return null;
-    }
+	@Nullable
+	public ISpellBehavior getBehaviorByName(String behavior) {
+		String name = behavior.toLowerCase(Locale.ROOT);
+		if (containsKey(name)) {
+			return behaviorMap.get(name);
+		}
+		return null;
+	}
 }

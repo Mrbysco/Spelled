@@ -14,42 +14,42 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nullable;
 
 public class LevelingAltarTile extends BlockEntity implements Nameable {
-    private Component customName;
+	private Component customName;
 
-    public LevelingAltarTile(BlockEntityType<?> entityType, BlockPos pos, BlockState state) {
-        super(entityType, pos, state);
-    }
+	public LevelingAltarTile(BlockEntityType<?> entityType, BlockPos pos, BlockState state) {
+		super(entityType, pos, state);
+	}
 
-    public LevelingAltarTile(BlockPos pos, BlockState state) {
-        this(SpelledRegistry.LEVELING_ALTAR_TILE.get(), pos, state);
-    }
+	public LevelingAltarTile(BlockPos pos, BlockState state) {
+		this(SpelledRegistry.LEVELING_ALTAR_TILE.get(), pos, state);
+	}
 
-    @Override
-    protected void saveAdditional(CompoundTag compoundTag) {
-        super.saveAdditional(compoundTag);
+	@Override
+	protected void saveAdditional(CompoundTag compoundTag) {
+		super.saveAdditional(compoundTag);
 
-        if (this.hasCustomName())
-            compoundTag.putString("CustomName", Component.Serializer.toJson(this.customName));
-    }
+		if (this.hasCustomName())
+			compoundTag.putString("CustomName", Component.Serializer.toJson(this.customName));
+	}
 
-    @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
-        if (nbt.contains("CustomName", 8))
-            this.customName = Component.Serializer.fromJson(nbt.getString("CustomName"));
-    }
+	@Override
+	public void load(CompoundTag nbt) {
+		super.load(nbt);
+		if (nbt.contains("CustomName", 8))
+			this.customName = Component.Serializer.fromJson(nbt.getString("CustomName"));
+	}
 
-    @Override
-    public Component getName() {
-        return this.customName != null ? this.customName : new TranslatableComponent(Reference.MOD_PREFIX+ "container.altar");
-    }
+	@Override
+	public Component getName() {
+		return this.customName != null ? this.customName : new TranslatableComponent(Reference.MOD_PREFIX + "container.altar");
+	}
 
-    public void setCustomName(@Nullable Component name) {
-        this.customName = name;
-    }
+	public void setCustomName(@Nullable Component name) {
+		this.customName = name;
+	}
 
-    @Nullable
-    public Component getCustomName() {
-        return this.customName;
-    }
+	@Nullable
+	public Component getCustomName() {
+		return this.customName;
+	}
 }

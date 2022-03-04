@@ -8,22 +8,22 @@ import net.minecraft.world.entity.Entity;
 import javax.annotation.Nonnull;
 
 public class ExplodeBehavior extends BaseBehavior {
-    public ExplodeBehavior() {
-        super("explode");
-    }
+	public ExplodeBehavior() {
+		super("explode");
+	}
 
-    @Override
-    public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
-        spell.explode();
-    }
+	@Override
+	public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
+		spell.explode();
+	}
 
-    @Override
-    public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        spell.explode();
-    }
+	@Override
+	public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
+		spell.explode();
+	}
 
-    @Override
-    public boolean appliedMultiple() {
-        return false;
-    }
+	@Override
+	public boolean appliedMultiple() {
+		return false;
+	}
 }

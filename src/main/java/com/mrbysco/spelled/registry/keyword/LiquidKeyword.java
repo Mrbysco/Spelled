@@ -9,17 +9,17 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 
 public class LiquidKeyword extends BaseKeyword {
-    public LiquidKeyword(String keyword, int level, int slots) {
-        super(keyword, level, slots);
-    }
+	public LiquidKeyword(String keyword, int level, int slots) {
+		super(keyword, level, slots);
+	}
 
-    @Override
-    public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
-        if(spell != null) {
-            spell.insertAction("extinguish");
-            if(adjective instanceof FireKeyword) {
-                spell.insertAction("smoke");
-            }
-        }
-    }
+	@Override
+	public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
+		if (spell != null) {
+			spell.insertAction("extinguish");
+			if (adjective instanceof FireKeyword) {
+				spell.insertAction("smoke");
+			}
+		}
+	}
 }

@@ -9,15 +9,15 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 
 public class SnowKeyword extends BaseKeyword {
-    public SnowKeyword(String keyword, int level, int slots) {
-        super(keyword, level, slots);
-    }
+	public SnowKeyword(String keyword, int level, int slots) {
+		super(keyword, level, slots);
+	}
 
-    @Override
-    public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
-        if(spell != null) {
-            spell.setSnow(true);
-            spell.insertAction("snow");
-        }
-    }
+	@Override
+	public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
+		if (spell != null) {
+			spell.setSnow(true);
+			spell.insertAction("snow");
+		}
+	}
 }

@@ -16,23 +16,23 @@ import net.minecraft.world.level.material.Fluids;
 import javax.annotation.Nonnull;
 
 public class ColdBehavior extends BaseBehavior {
-    public ColdBehavior() {
-        super("cold");
-    }
+	public ColdBehavior() {
+		super("cold");
+	}
 
-    @Override
-    public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
-        BlockState hitState = spell.level.getBlockState(pos);
-        if(hitState.getBlock() instanceof LiquidBlock && ((LiquidBlock)hitState.getBlock()).getFluid() == Fluids.WATER)
-            spell.level.setBlockAndUpdate(pos, Blocks.ICE.defaultBlockState());
-        if(hitState.getBlock() instanceof IceBlock)
-            spell.level.setBlockAndUpdate(pos, Blocks.PACKED_ICE.defaultBlockState());
-    }
+	@Override
+	public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
+		BlockState hitState = spell.level.getBlockState(pos);
+		if (hitState.getBlock() instanceof LiquidBlock && ((LiquidBlock) hitState.getBlock()).getFluid() == Fluids.WATER)
+			spell.level.setBlockAndUpdate(pos, Blocks.ICE.defaultBlockState());
+		if (hitState.getBlock() instanceof IceBlock)
+			spell.level.setBlockAndUpdate(pos, Blocks.PACKED_ICE.defaultBlockState());
+	}
 
-    @Override
-    public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        if(entity instanceof LivingEntity) {
-            ((LivingEntity)entity).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 4*20));
-        }
-    }
+	@Override
+	public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
+		if (entity instanceof LivingEntity) {
+			((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 4 * 20));
+		}
+	}
 }

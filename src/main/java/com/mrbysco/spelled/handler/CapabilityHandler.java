@@ -14,35 +14,35 @@ import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CapabilityHandler {
-    @SubscribeEvent
-    public void attachCapabilityEntity(AttachCapabilitiesEvent<Entity> event) {
-        if(event.getObject() instanceof Player) {
-            event.addCapability(Reference.SPELL_DATA_CAP, new SpellDataCapability());
-        }
-    }
+	@SubscribeEvent
+	public void attachCapabilityEntity(AttachCapabilitiesEvent<Entity> event) {
+		if (event.getObject() instanceof Player) {
+			event.addCapability(Reference.SPELL_DATA_CAP, new SpellDataCapability());
+		}
+	}
 
-    @SubscribeEvent
-    public void playerLoggedInEvent(PlayerLoggedInEvent event) {
-        Player player = event.getPlayer();
-        if(!player.level.isClientSide) {
-            SpelledAPI.syncCap((ServerPlayer) player);
-        }
-    }
+	@SubscribeEvent
+	public void playerLoggedInEvent(PlayerLoggedInEvent event) {
+		Player player = event.getPlayer();
+		if (!player.level.isClientSide) {
+			SpelledAPI.syncCap((ServerPlayer) player);
+		}
+	}
 
-    @SubscribeEvent
-    public void onDeath(PlayerEvent.Clone event) {
-        Player original = event.getOriginal();
-        Player newPlayer = event.getPlayer();
+	@SubscribeEvent
+	public void onDeath(PlayerEvent.Clone event) {
+		Player original = event.getOriginal();
+		Player newPlayer = event.getPlayer();
 
-        final Capability<ISpellData> capability = SpelledAPI.SPELL_DATA_CAP;
-        original.getCapability(capability).ifPresent(originalData -> {
-            newPlayer.getCapability(capability).ifPresent(futureData -> {
-                futureData.deserializeNBT(originalData.serializeNBT());
-            });
-        });
+		final Capability<ISpellData> capability = SpelledAPI.SPELL_DATA_CAP;
+		original.getCapability(capability).ifPresent(originalData -> {
+			newPlayer.getCapability(capability).ifPresent(futureData -> {
+				futureData.deserializeNBT(originalData.serializeNBT());
+			});
+		});
 
-        if(!newPlayer.level.isClientSide) {
-            SpelledAPI.syncCap((ServerPlayer) newPlayer);
-        }
-    }
+		if (!newPlayer.level.isClientSide) {
+			SpelledAPI.syncCap((ServerPlayer) newPlayer);
+		}
+	}
 }

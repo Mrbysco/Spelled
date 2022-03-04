@@ -9,43 +9,43 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 
 public class TypeKeyword extends BaseKeyword {
-    private final Type type;
+	private final Type type;
 
-    public TypeKeyword(String keyword, Type type, int level, int slots) {
-        super(keyword, level, slots);
-        this.type = type;
-    }
+	public TypeKeyword(String keyword, Type type, int level, int slots) {
+		super(keyword, level, slots);
+		this.type = type;
+	}
 
-    @Override
-    public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
-        if(spell != null) {
-            spell.setSpellType(type.getId());
-        }
-    }
+	@Override
+	public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
+		if (spell != null) {
+			spell.setSpellType(type.getId());
+		}
+	}
 
-    public Type getType() {
-        return type;
-    }
+	public Type getType() {
+		return type;
+	}
 
-    public enum Type {
-        BALL(0, "ball"),
-        PROJECTILE(1, "projectile"),
-        SELF(2, "self");
+	public enum Type {
+		BALL(0, "ball"),
+		PROJECTILE(1, "projectile"),
+		SELF(2, "self");
 
-        private final String name;
-        private final int id;
+		private final String name;
+		private final int id;
 
-        Type(int id, String name) {
-            this.id = id;
-            this.name = name;
-        }
+		Type(int id, String name) {
+			this.id = id;
+			this.name = name;
+		}
 
-        public String getName() {
-            return name;
-        }
+		public String getName() {
+			return name;
+		}
 
-        public int getId() {
-            return id;
-        }
-    }
+		public int getId() {
+			return id;
+		}
+	}
 }

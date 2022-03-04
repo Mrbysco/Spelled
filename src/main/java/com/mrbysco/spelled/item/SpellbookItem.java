@@ -35,9 +35,9 @@ public class SpellbookItem extends Item {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if(stack.hasTag() && stack.getTag().getBoolean("sealed")) {
-			if(!world.isClientSide) {
-				ServerPlayer serverPlayer = (ServerPlayer)player;
+		if (stack.hasTag() && stack.getTag().getBoolean("sealed")) {
+			if (!world.isClientSide) {
+				ServerPlayer serverPlayer = (ServerPlayer) player;
 				String message = stack.getTag().getString("spell");
 				final String regExp = "^[a-zA-Z\\s]*$";
 				if (!message.isEmpty() && message.matches(regExp)) {
@@ -52,17 +52,17 @@ public class SpellbookItem extends Item {
 				}
 			}
 		} else {
-			if(world.isClientSide) {
+			if (world.isClientSide) {
 				List<AdjectiveEntry> adjectives = new ArrayList<>();
 				SpelledAPI.getUnlocks(player).forEach((adjective) -> {
-					if(!adjective.isEmpty()) {
+					if (!adjective.isEmpty()) {
 						IKeyword word = KeywordRegistry.instance().getKeywordFromName(adjective);
-						if(word != null) {
+						if (word != null) {
 							adjectives.add(new AdjectiveEntry(word, word.getKeyword(), word.getDescription(), word.getSlots()));
 						}
 					}
 				});
-				if(adjectives.isEmpty()) {
+				if (adjectives.isEmpty()) {
 					player.sendMessage(new TranslatableComponent("spelled.spell_book.insufficient"), Util.NIL_UUID);
 				} else {
 					KeywordRegistry.instance().getTypes().forEach((adjective) -> {
@@ -88,13 +88,13 @@ public class SpellbookItem extends Item {
 	}
 
 	public static boolean makeSureSpellIsValid(Player player, @Nullable CompoundTag nbt) {
-		if(nbt != null && nbt.contains("spell")) {
+		if (nbt != null && nbt.contains("spell")) {
 			String currentSpell = nbt.getString("spell");
 			String[] words = currentSpell.split(" ");
 			List<String> wordList = Arrays.asList(words);
 			wordList = wordList.subList(0, wordList.size() - 1);
-			for(String word : wordList) {
-				if(!SpelledAPI.isUnlocked(player, word)) {
+			for (String word : wordList) {
+				if (!SpelledAPI.isUnlocked(player, word)) {
 					return false;
 				}
 			}

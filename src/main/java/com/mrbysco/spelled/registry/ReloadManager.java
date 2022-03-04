@@ -9,14 +9,14 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ReloadManager implements ResourceManagerReloadListener {
-    @Override
-    public void onResourceManagerReload(ResourceManager resourceManager) {
-        KeywordRegistry.instance().reloadKeywords();
-        BehaviorRegistry.instance().reloadBehaviors();
-    }
+	@Override
+	public void onResourceManagerReload(ResourceManager resourceManager) {
+		KeywordRegistry.instance().reloadKeywords();
+		BehaviorRegistry.instance().reloadBehaviors();
+	}
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onAddReloadListeners(AddReloadListenerEvent event) {
-        event.addListener(this);
-    }
+	@SubscribeEvent(priority = EventPriority.HIGH)
+	public void onAddReloadListeners(AddReloadListenerEvent event) {
+		event.addListener(this);
+	}
 }

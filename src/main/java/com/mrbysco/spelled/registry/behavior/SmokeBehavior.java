@@ -10,14 +10,14 @@ import net.minecraft.world.entity.LivingEntity;
 import javax.annotation.Nonnull;
 
 public class SmokeBehavior extends BaseBehavior {
-    public SmokeBehavior() {
-        super("smoke");
-    }
+	public SmokeBehavior() {
+		super("smoke");
+	}
 
-    @Override
-    public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        if(entity instanceof LivingEntity) {
-            ((LivingEntity)entity).addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 5*20));
-        }
-    }
+	@Override
+	public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
+		if (entity instanceof LivingEntity) {
+			((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 5 * 20));
+		}
+	}
 }

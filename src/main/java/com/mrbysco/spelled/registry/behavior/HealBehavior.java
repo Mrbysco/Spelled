@@ -8,14 +8,14 @@ import net.minecraft.world.entity.LivingEntity;
 import javax.annotation.Nonnull;
 
 public class HealBehavior extends BaseBehavior {
-    public HealBehavior() {
-        super("healing");
-    }
+	public HealBehavior() {
+		super("healing");
+	}
 
-    @Override
-    public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-        if(entity instanceof LivingEntity) {
-            ((LivingEntity)entity).heal(1.0F);
-        }
-    }
+	@Override
+	public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
+		if (entity instanceof LivingEntity) {
+			((LivingEntity) entity).heal(1.0F);
+		}
+	}
 }

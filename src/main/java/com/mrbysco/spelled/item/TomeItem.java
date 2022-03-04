@@ -24,54 +24,54 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class TomeItem extends Item {
-    public TomeItem(Properties builder) {
-        super(builder);
-    }
+	public TomeItem(Properties builder) {
+		super(builder);
+	}
 
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
-        if(!worldIn.isClientSide) {
-            ItemStack itemstack = playerIn.getItemInHand(handIn);
+	@Override
+	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+		if (!worldIn.isClientSide) {
+			ItemStack itemstack = playerIn.getItemInHand(handIn);
 
-            if(itemstack.hasTag() && itemstack.getTag() != null && itemstack.getTag().contains(Reference.tomeUnlock)) {
-                CompoundTag tag = itemstack.getTag();
-                LazyOptional<ISpellData> cap = SpelledAPI.getSpellDataCap(playerIn);
-                ISpellData data = cap.orElseGet(null);
-                if(cap.isPresent()) {
-                    String word = tag.getString(Reference.tomeUnlock);
-                    if(!data.knowsKeyword(word)) {
-                        playerIn.startUsingItem(handIn);
-                        SpelledAPI.unlockKeyword((ServerPlayer)playerIn, word);
-                        SpelledAPI.syncCap((ServerPlayer) playerIn);
-                        playerIn.displayClientMessage(new TranslatableComponent("spelled.tome.success"), true);
-                        return InteractionResultHolder.consume(itemstack);
-                    } else {
-                        playerIn.displayClientMessage(new TranslatableComponent("spelled.tome.fail"), true);
-                        return InteractionResultHolder.fail(itemstack);
-                    }
-                }
-            } else {
-                CompoundTag tag = new CompoundTag();
-                String adjective = KeywordRegistry.instance().getRandomAdjective();
-                if(!adjective.isEmpty()) {
-                    tag.putString(Reference.tomeUnlock, KeywordRegistry.instance().getRandomAdjective());
-                    itemstack.setTag(tag);
-                }
-            }
-        }
-        return super.use(worldIn, playerIn, handIn);
-    }
+			if (itemstack.hasTag() && itemstack.getTag() != null && itemstack.getTag().contains(Reference.tomeUnlock)) {
+				CompoundTag tag = itemstack.getTag();
+				LazyOptional<ISpellData> cap = SpelledAPI.getSpellDataCap(playerIn);
+				ISpellData data = cap.orElseGet(null);
+				if (cap.isPresent()) {
+					String word = tag.getString(Reference.tomeUnlock);
+					if (!data.knowsKeyword(word)) {
+						playerIn.startUsingItem(handIn);
+						SpelledAPI.unlockKeyword((ServerPlayer) playerIn, word);
+						SpelledAPI.syncCap((ServerPlayer) playerIn);
+						playerIn.displayClientMessage(new TranslatableComponent("spelled.tome.success"), true);
+						return InteractionResultHolder.consume(itemstack);
+					} else {
+						playerIn.displayClientMessage(new TranslatableComponent("spelled.tome.fail"), true);
+						return InteractionResultHolder.fail(itemstack);
+					}
+				}
+			} else {
+				CompoundTag tag = new CompoundTag();
+				String adjective = KeywordRegistry.instance().getRandomAdjective();
+				if (!adjective.isEmpty()) {
+					tag.putString(Reference.tomeUnlock, KeywordRegistry.instance().getRandomAdjective());
+					itemstack.setTag(tag);
+				}
+			}
+		}
+		return super.use(worldIn, playerIn, handIn);
+	}
 
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        if(!SpelledConfig.COMMON.hideKnowledgeTomeInfo.get()) {
-            if (stack.hasTag() && stack.getTag().contains(Reference.tomeUnlock)) {
-                CompoundTag tag = stack.getTag();
-                tooltip.add(new TranslatableComponent("spelled.tome.description", new TextComponent(tag.getString(Reference.tomeUnlock)).withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.YELLOW));
-            } else {
-                tooltip.add(new TranslatableComponent("spelled.tome.description.invalid").withStyle(ChatFormatting.RED));
-            }
-        }
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
-    }
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+		if (!SpelledConfig.COMMON.hideKnowledgeTomeInfo.get()) {
+			if (stack.hasTag() && stack.getTag().contains(Reference.tomeUnlock)) {
+				CompoundTag tag = stack.getTag();
+				tooltip.add(new TranslatableComponent("spelled.tome.description", new TextComponent(tag.getString(Reference.tomeUnlock)).withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.YELLOW));
+			} else {
+				tooltip.add(new TranslatableComponent("spelled.tome.description.invalid").withStyle(ChatFormatting.RED));
+			}
+		}
+		super.appendHoverText(stack, worldIn, tooltip, flagIn);
+	}
 }

@@ -30,53 +30,53 @@ import org.apache.logging.log4j.Logger;
 
 @Mod(Reference.MOD_ID)
 public class Spelled {
-    public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
+	public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
 
-    public Spelled() {
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        ModLoadingContext.get().registerConfig(Type.COMMON, SpelledConfig.commonSpec);
-        eventBus.register(SpelledConfig.class);
+	public Spelled() {
+		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		ModLoadingContext.get().registerConfig(Type.COMMON, SpelledConfig.commonSpec);
+		eventBus.register(SpelledConfig.class);
 
-        SpelledRegistry.BLOCKS.register(eventBus);
-        SpelledRegistry.BLOCK_ENTITIES.register(eventBus);
-        SpelledRegistry.CONTAINERS.register(eventBus);
-        SpelledRegistry.ITEMS.register(eventBus);
-        SpelledRegistry.ENTITIES.register(eventBus);
-        SpelledRegistry.SOUND_EVENTS.register(eventBus);
+		SpelledRegistry.BLOCKS.register(eventBus);
+		SpelledRegistry.BLOCK_ENTITIES.register(eventBus);
+		SpelledRegistry.CONTAINERS.register(eventBus);
+		SpelledRegistry.ITEMS.register(eventBus);
+		SpelledRegistry.ENTITIES.register(eventBus);
+		SpelledRegistry.SOUND_EVENTS.register(eventBus);
 
-        eventBus.addListener(this::setup);
-        eventBus.addListener(this::onCapabilityRegister);
+		eventBus.addListener(this::setup);
+		eventBus.addListener(this::onCapabilityRegister);
 
-        MinecraftForge.EVENT_BUS.register(new ReloadManager());
-        MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
-        MinecraftForge.EVENT_BUS.register(new SpellCastHandler());
-        MinecraftForge.EVENT_BUS.register(new LootHandler());
-        MinecraftForge.EVENT_BUS.register(new SpellHandler());
+		MinecraftForge.EVENT_BUS.register(new ReloadManager());
+		MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
+		MinecraftForge.EVENT_BUS.register(new SpellCastHandler());
+		MinecraftForge.EVENT_BUS.register(new LootHandler());
+		MinecraftForge.EVENT_BUS.register(new SpellHandler());
 
-        MinecraftForge.EVENT_BUS.addListener(this::onCommandRegister);
-        MinecraftForge.EVENT_BUS.addListener(this::serverStart);
+		MinecraftForge.EVENT_BUS.addListener(this::onCommandRegister);
+		MinecraftForge.EVENT_BUS.addListener(this::serverStart);
 
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            eventBus.addListener(ClientHandler::onClientSetupEvent);
-            eventBus.addListener(ClientHandler::registerEntityRenders);
-            MinecraftForge.EVENT_BUS.addListener(ClientHandler::loginEvent);
-        });
-    }
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+			eventBus.addListener(ClientHandler::onClientSetupEvent);
+			eventBus.addListener(ClientHandler::registerEntityRenders);
+			MinecraftForge.EVENT_BUS.addListener(ClientHandler::loginEvent);
+		});
+	}
 
-    private void setup(final FMLCommonSetupEvent event) {
-        PacketHandler.registerPackets();
-    }
+	private void setup(final FMLCommonSetupEvent event) {
+		PacketHandler.registerPackets();
+	}
 
-    public void onCapabilityRegister(RegisterCapabilitiesEvent event) {
-        event.register(ISpellData.class);
-    }
+	public void onCapabilityRegister(RegisterCapabilitiesEvent event) {
+		event.register(ISpellData.class);
+	}
 
-    public void onCommandRegister(RegisterCommandsEvent event) {
-        SpelledCommands.initializeCommands(event.getDispatcher());
-    }
+	public void onCommandRegister(RegisterCommandsEvent event) {
+		SpelledCommands.initializeCommands(event.getDispatcher());
+	}
 
-    public void serverStart(ServerStartingEvent event) {
-        KeywordRegistry.instance().initializeKeywords();
-        BehaviorRegistry.instance().initializeBehaviors();
-    }
+	public void serverStart(ServerStartingEvent event) {
+		KeywordRegistry.instance().initializeKeywords();
+		BehaviorRegistry.instance().initializeBehaviors();
+	}
 }
