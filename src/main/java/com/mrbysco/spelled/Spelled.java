@@ -1,5 +1,6 @@
 package com.mrbysco.spelled;
 
+import com.mojang.logging.LogUtils;
 import com.mrbysco.spelled.api.behavior.BehaviorRegistry;
 import com.mrbysco.spelled.api.capability.ISpellData;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
@@ -25,12 +26,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 @Mod(Reference.MOD_ID)
 public class Spelled {
-	public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
+	public static final Logger LOGGER = LogUtils.getLogger();
 
 	public Spelled() {
 		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
