@@ -38,7 +38,7 @@ public class SpelledDataGen {
 
 		if (event.includeServer()) {
 			generator.addProvider(new Loots(generator));
-			generator.addProvider(new SpelledAdvancements(generator));
+			generator.addProvider(new SpelledAdvancements(generator, helper));
 			generator.addProvider(new SpelledPatchouliProvider(generator));
 		}
 		if (event.includeClient()) {

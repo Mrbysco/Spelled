@@ -17,6 +17,7 @@ import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -58,8 +59,8 @@ public class SpelledAdvancements extends AdvancementProvider {
 	public Advancement propellentibus;
 	public Advancement ignis;
 
-	public SpelledAdvancements(DataGenerator generatorIn) {
-		super(generatorIn);
+	public SpelledAdvancements(DataGenerator generatorIn, ExistingFileHelper fileHelper) {
+		super(generatorIn, fileHelper);
 		this.dataGenerator = generatorIn;
 	}
 
@@ -75,7 +76,7 @@ public class SpelledAdvancements extends AdvancementProvider {
 			try {
 				DataProvider.save(GSON, cache, advancement.deconstruct().serializeToJson(), path);
 			} catch (IOException e) {
-				Spelled.LOGGER.error(e);
+				Spelled.LOGGER.trace("Failed to save", e);
 			}
 		};
 		registerAdvancements(consumer);
@@ -124,12 +125,6 @@ public class SpelledAdvancements extends AdvancementProvider {
 		fractionis = generateAdjectiveAdvancement("fractionis", praesidium, consumer);
 		propellentibus = generateAdjectiveAdvancement("propellentibus", fractionis, consumer);
 		ignis = generateAdjectiveAdvancement("ignis", propellentibus, consumer);
-	}
-
-	private AdvancementRewards.Builder withLoot(ResourceLocation loot) {
-		Builder builder = (new AdvancementRewards.Builder());
-		builder.loot.add(loot);
-		return builder;
 	}
 
 	private Advancement generateAdjectiveAdvancement(String adjective, Advancement parent, Consumer<Advancement> consumer) {
