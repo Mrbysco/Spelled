@@ -132,7 +132,7 @@ dependencies {
     implementation fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
     implementation fg.deobf("xyz.brassgoggledcoders:PatchouliProvider:${patchouli_provider_version}")
 
-    runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:3546593")
+    runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:3641681")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

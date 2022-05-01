@@ -63,7 +63,8 @@ public class LootHandler {
 			String file = name.substring(name.indexOf(prefix) + prefix.length());
 			switch (file) {
 				case "stronghold_library", "jungle_temple", "underwater_ruin_big", "end_city_treasure",
-						"buried_treasure", "woodland_mansion", "bastion_treasure", "village_cartographer" -> event.getTable().addPool(getInjectPool());
+						"buried_treasure", "woodland_mansion", "bastion_treasure", "village_cartographer" ->
+						event.getTable().addPool(getInjectPool());
 				default -> {
 				}
 			}

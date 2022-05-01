@@ -40,7 +40,6 @@ public class CapabilityHandler {
 				futureData.deserializeNBT(originalData.serializeNBT());
 			});
 		});
-
 		if (!newPlayer.level.isClientSide) {
 			SpelledAPI.syncCap((ServerPlayer) newPlayer);
 		}
