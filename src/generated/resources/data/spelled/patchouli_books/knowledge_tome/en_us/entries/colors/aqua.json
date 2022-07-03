@@ -1,13 +1,13 @@
 {
-  "name": "info.spelled.book.colors.aqua.name",
+  "advancement": "spelled:adjective_aqua",
   "category": "spelled:colors",
   "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.colors.aqua.name",
   "pages": [
     {
       "type": "patchouli:text",
       "text": "info.spelled.book.colors.aqua.text"
     }
   ],
-  "advancement": "spelled:adjective_aqua",
   "secret": true
 }

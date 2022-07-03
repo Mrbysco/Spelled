@@ -1,7 +1,8 @@
 {
-  "name": "info.spelled.book.descriptive.fractionis.name",
+  "advancement": "spelled:adjective_fractionis",
   "category": "spelled:descriptions",
   "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.descriptive.fractionis.name",
   "pages": [
     {
       "type": "patchouli:text",
@@ -12,6 +13,5 @@
       "text": "info.spelled.book.descriptive.fractionis.text2"
     }
   ],
-  "advancement": "spelled:adjective_fractionis",
   "secret": true
 }

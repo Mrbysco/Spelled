@@ -1,7 +1,7 @@
 {
-  "name": "info.spelled.book.types.ball.name",
   "category": "spelled:types",
   "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.types.ball.name",
   "pages": [
     {
       "type": "patchouli:text",

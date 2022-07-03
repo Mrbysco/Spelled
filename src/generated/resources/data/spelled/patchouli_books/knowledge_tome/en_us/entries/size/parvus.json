@@ -1,7 +1,8 @@
 {
-  "name": "info.spelled.book.size.parvus.name",
+  "advancement": "spelled:adjective_parvus",
   "category": "spelled:size",
   "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.size.parvus.name",
   "pages": [
     {
       "type": "patchouli:text",
@@ -12,6 +13,5 @@
       "text": "info.spelled.book.size.parvus.text2"
     }
   ],
-  "advancement": "spelled:adjective_parvus",
   "secret": true
 }

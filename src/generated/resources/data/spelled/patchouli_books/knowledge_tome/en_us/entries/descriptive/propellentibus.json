@@ -1,7 +1,8 @@
 {
-  "name": "info.spelled.book.descriptive.propellentibus.name",
+  "advancement": "spelled:adjective_propellentibus",
   "category": "spelled:descriptions",
   "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.descriptive.propellentibus.name",
   "pages": [
     {
       "type": "patchouli:text",
@@ -12,6 +13,5 @@
       "text": "info.spelled.book.descriptive.propellentibus.text2"
     }
   ],
-  "advancement": "spelled:adjective_propellentibus",
   "secret": true
 }

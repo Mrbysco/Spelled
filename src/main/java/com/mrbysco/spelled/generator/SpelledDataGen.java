@@ -37,12 +37,12 @@ public class SpelledDataGen {
 		ExistingFileHelper helper = event.getExistingFileHelper();
 
 		if (event.includeServer()) {
-			generator.addProvider(new Loots(generator));
-			generator.addProvider(new SpelledAdvancements(generator, helper));
-			generator.addProvider(new SpelledPatchouliProvider(generator));
+			generator.addProvider(event.includeServer(), new Loots(generator));
+			generator.addProvider(event.includeServer(), new SpelledAdvancements(generator, helper));
+			generator.addProvider(event.includeServer(), new SpelledPatchouliProvider(generator));
 		}
 		if (event.includeClient()) {
-			generator.addProvider(new Language(generator));
+			generator.addProvider(event.includeServer(), new Language(generator));
             /*
             generator.addProvider(new BlockStates(generator, helper));
             generator.addProvider(new ItemModels(generator, helper));
@@ -119,10 +119,10 @@ public class SpelledDataGen {
 			add("spelled.level_up.fail_item", "You lack the required items to level up!");
 			add("spelled.level_up.fail_xp", "You lack the required xp to level up!");
 
-			add("spelled.spell.cooldown", "* %s failed to cast. Try again in %s second(s)");
-			add("spelled.spell.no_levels", "* %s failed to cast. You do not have enough levels to cast this spell");
-			add("spelled.spell.insufficient_level", "* %s failed to cast. You're level is too low to cast this spell, you need at least level %s, you have %s");
-			add("spelled.spell.too_many_words", "* %s failed to cast. You're level is too low to cast a spell with this many words, your level only allows for %s words");
+			add("spelled.spell.cooldown", "%s failed to cast. Try again in %s second(s)");
+			add("spelled.spell.no_levels", "%s failed to cast. You do not have enough levels to cast this spell");
+			add("spelled.spell.insufficient_level", "%s failed to cast. You're level is too low to cast this spell, you need at least level %s, you have %s");
+			add("spelled.spell.too_many_words", "%s failed to cast. You're level is too low to cast a spell with this many words, your level only allows for %s words");
 
 			addBlock(SpelledRegistry.LEVELING_ALTAR, "Leveling Altar");
 			addItem(SpelledRegistry.KNOWLEDGE_TOME, "Tome Of Ancient Knowledge");
@@ -139,7 +139,7 @@ public class SpelledDataGen {
 			//Spell Book
 			add("spelled.spell_book.insufficient", "You do not know any adjectives");
 
-			add("spelled.spell.cast", "* %s has cast \"%s\"");
+			add("spelled.spell.cast", "%s has cast \"%s\"");
 
 			//Commands
 			add("spelled.commands.level.get.message", "%s is currently level %s");

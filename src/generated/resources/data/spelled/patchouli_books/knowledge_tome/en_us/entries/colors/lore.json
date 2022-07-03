@@ -1,7 +1,8 @@
 {
-  "name": "info.spelled.book.colors.lore.name",
+  "advancement": "spelled:color_lore",
   "category": "spelled:colors",
   "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.colors.lore.name",
   "pages": [
     {
       "type": "patchouli:text",
@@ -12,6 +13,5 @@
       "text": "info.spelled.book.colors.lore.text2"
     }
   ],
-  "advancement": "spelled:color_lore",
   "secret": true
 }

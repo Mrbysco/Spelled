@@ -1,7 +1,8 @@
 {
-  "name": "info.spelled.book.size.immanis.name",
+  "advancement": "spelled:adjective_immanis",
   "category": "spelled:size",
   "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.size.immanis.name",
   "pages": [
     {
       "type": "patchouli:text",
@@ -12,6 +13,5 @@
       "text": "info.spelled.book.size.immanis.text2"
     }
   ],
-  "advancement": "spelled:adjective_immanis",
   "secret": true
 }

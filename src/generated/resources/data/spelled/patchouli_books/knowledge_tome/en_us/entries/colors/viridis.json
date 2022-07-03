@@ -1,13 +1,13 @@
 {
-  "name": "info.spelled.book.colors.viridis.name",
+  "advancement": "spelled:adjective_viridis",
   "category": "spelled:colors",
   "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.colors.viridis.name",
   "pages": [
     {
       "type": "patchouli:text",
       "text": "info.spelled.book.colors.viridis.text"
     }
   ],
-  "advancement": "spelled:adjective_viridis",
   "secret": true
 }

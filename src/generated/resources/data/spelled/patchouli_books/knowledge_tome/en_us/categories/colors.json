@@ -1,6 +1,6 @@
 {
-  "name": "info.spelled.book.colors.name",
   "description": "info.spelled.book.colors.desc",
   "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.colors.name",
   "secret": true
 }

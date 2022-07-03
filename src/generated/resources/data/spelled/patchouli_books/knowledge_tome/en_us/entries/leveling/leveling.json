@@ -1,7 +1,7 @@
 {
-  "name": "info.spelled.book.leveling.entry.name",
   "category": "spelled:leveling",
   "icon": "spelled:leveling_altar",
+  "name": "info.spelled.book.leveling.entry.name",
   "pages": [
     {
       "type": "patchouli:text",

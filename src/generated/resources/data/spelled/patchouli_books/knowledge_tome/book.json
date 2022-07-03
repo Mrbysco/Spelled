@@ -1,16 +1,16 @@
 {
-  "name": "item.spelled.book.name",
-  "landing_text": "info.spelled.book.landing",
-  "book_texture": "spelled:textures/gui/tome.png",
-  "filler_texture": "spelled:textures/gui/page_filler.png",
-  "model": "spelled:knowledge_tome",
-  "show_progress": false,
-  "subtitle": "info.spelled.book.subtitle",
-  "creative_tab": "spelled",
   "advancements_tab": "spelled:root",
+  "book_texture": "spelled:textures/gui/tome.png",
+  "creative_tab": "spelled",
+  "filler_texture": "spelled:textures/gui/page_filler.png",
   "i18n": true,
+  "landing_text": "info.spelled.book.landing",
   "macros": {
     "$(item)": "$(#94fcf5)",
     "$(thing)": "$(#94fcf5)"
-  }
+  },
+  "model": "spelled:knowledge_tome",
+  "name": "item.spelled.book.name",
+  "show_progress": false,
+  "subtitle": "info.spelled.book.subtitle"
 }

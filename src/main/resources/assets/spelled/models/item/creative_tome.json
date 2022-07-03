@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "spelled:item/ancient_knowledge_tome"
+	"layer0": "spelled:item/ancient_knowledge_tome"
   }
 }

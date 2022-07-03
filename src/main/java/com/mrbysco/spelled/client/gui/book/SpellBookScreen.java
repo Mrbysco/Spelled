@@ -16,11 +16,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -37,8 +35,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SpellBookScreen extends Screen {
-	private static final Component EDIT_TITLE_LABEL = new TranslatableComponent("spelled.book.editTitle");
-	private static final Component FINALIZE_WARNING_LABEL = new TranslatableComponent("spelled.book.finalizeWarning");
+	private static final Component EDIT_TITLE_LABEL = Component.translatable("spelled.book.editTitle");
+	private static final Component FINALIZE_WARNING_LABEL = Component.translatable("spelled.book.finalizeWarning");
 	private static final FormattedCharSequence GRAY_CURSOR = FormattedCharSequence.forward("_", Style.EMPTY.withColor(ChatFormatting.GRAY));
 	private static final FormattedCharSequence WHITE_CURSOR = FormattedCharSequence.forward("_", Style.EMPTY.withColor(ChatFormatting.WHITE));
 
@@ -50,7 +48,7 @@ public class SpellBookScreen extends Screen {
 		Button button;
 
 		Component getButtonText() {
-			return new TranslatableComponent("spelled.screen.search." + name().toLowerCase(Locale.ROOT));
+			return Component.translatable("spelled.screen.search." + name().toLowerCase(Locale.ROOT));
 		}
 	}
 
@@ -94,7 +92,7 @@ public class SpellBookScreen extends Screen {
 	private final Component ownerText;
 
 	public SpellBookScreen(List<AdjectiveEntry> entries, Player player, InteractionHand hand) {
-		super(new TranslatableComponent(Reference.MOD_ID + ".spell_book.screen"));
+		super(Component.translatable(Reference.MOD_ID + ".spell_book.screen"));
 		this.hand = hand;
 		this.owner = player;
 		this.stack = player.getItemInHand(hand);
@@ -105,7 +103,7 @@ public class SpellBookScreen extends Screen {
 		this.unsortedAdjectives = Collections.unmodifiableList(sortedEntries);
 		this.adjectives = Collections.unmodifiableList(entries);
 
-		this.ownerText = (new TranslatableComponent("book.byAuthor", player.getName())).withStyle(ChatFormatting.GRAY);
+		this.ownerText = (Component.translatable("book.byAuthor", player.getName())).withStyle(ChatFormatting.GRAY);
 
 		if (stack.hasTag()) {
 			String currentSpell = stack.getTag().getString("spell");
@@ -141,7 +139,7 @@ public class SpellBookScreen extends Screen {
 		int closeButtonWidth = Math.min(structureWidth, 200);
 		int y = this.height - 20 - PADDING;
 		this.addRenderableWidget(this.cancelButton = new Button(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20,
-				new TranslatableComponent("gui.cancel"), b -> {
+				Component.translatable("gui.cancel"), b -> {
 			if (this.isSigning) {
 				this.isSigning = false;
 			} else {
@@ -153,7 +151,7 @@ public class SpellBookScreen extends Screen {
 
 		y -= 18 + PADDING;
 		this.addRenderableWidget(this.insertButton = new Button(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20,
-				new TranslatableComponent("spelled.screen.selection.select"), b -> {
+				Component.translatable("spelled.screen.selection.select"), b -> {
 			if (focused != null) {
 				if (focused.isType()) {
 					typeWord = focused.getAdjectiveName();
@@ -165,7 +163,7 @@ public class SpellBookScreen extends Screen {
 
 		y -= 18 + PADDING;
 		this.addRenderableWidget(this.removeButton = new Button(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20,
-				new TranslatableComponent("spelled.screen.selection.remove"), b -> {
+				Component.translatable("spelled.screen.selection.remove"), b -> {
 			if (selectedAdjectives.size() == 1) {
 				selectedAdjectives.clear();
 			} else {
@@ -177,7 +175,7 @@ public class SpellBookScreen extends Screen {
 
 		y -= 14 + PADDING;
 		search = new EditBox(getFont(), centerWidth - listWidth / 2 + PADDING + 1, y, listWidth - 2, 14,
-				new TranslatableComponent("spelled.screen.search"));
+				Component.translatable("spelled.screen.search"));
 		int fullButtonHeight = (PADDING * 2) + 20;
 
 		y -= 30;
@@ -195,7 +193,7 @@ public class SpellBookScreen extends Screen {
 		x += width + buttonMargin;
 		this.addRenderableWidget(SortType.Z_TO_A.button = new Button(x, PADDING, width - buttonMargin, 20, SortType.Z_TO_A.getButtonText(), b -> resortAdjectives(SortType.Z_TO_A)));
 
-		this.addRenderableWidget(this.signButton = new Button(this.width - (60 + PADDING), PADDING, 60, 20, new TranslatableComponent("book.signButton"), b -> {
+		this.addRenderableWidget(this.signButton = new Button(this.width - (60 + PADDING), PADDING, 60, 20, Component.translatable("book.signButton"), b -> {
 			this.isSigning = true;
 			this.updateButtonVisibility();
 		}, (button, poseStack, mouseX, mouseY) -> {
@@ -212,12 +210,12 @@ public class SpellBookScreen extends Screen {
 				}
 				String errorMessage = builder.toString();
 				if (!errorMessage.isEmpty()) {
-					renderTooltip(poseStack, new TextComponent(errorMessage).withStyle(ChatFormatting.RED), mouseX, mouseY);
+					renderTooltip(poseStack, Component.literal(errorMessage).withStyle(ChatFormatting.RED), mouseX, mouseY);
 				}
 			}
 		}));
 		this.addRenderableWidget(this.finalizeButton = new Button(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20,
-				new TranslatableComponent("spelled.book.finalizeButton"), (button) -> {
+				Component.translatable("spelled.book.finalizeButton"), (button) -> {
 			if (this.isSigning) {
 				this.saveChanges(true);
 				this.minecraft.setScreen((Screen) null);
@@ -290,7 +288,7 @@ public class SpellBookScreen extends Screen {
 		} else {
 			this.adjectiveWidget.render(poseStack, mouseX, mouseY, partialTicks);
 
-			Component text = new TranslatableComponent("spelled.screen.search");
+			Component text = Component.translatable("spelled.screen.search");
 			drawCenteredString(poseStack, font, text, this.width / 2 + PADDING,
 					search.y - font.lineHeight - 2, 16777215);
 
@@ -324,14 +322,14 @@ public class SpellBookScreen extends Screen {
 				} else {
 					selectedAdjectives.forEach((adjective) -> builder.append(adjective).append(" "));
 				}
-				BaseComponent component = new TextComponent(builder.toString());
+				MutableComponent component = Component.literal(builder.toString());
 				StringBuilder builder2 = new StringBuilder();
 				if (typeWord.isEmpty()) {
 					builder2.append(I18n.get("spelled.screen.missing_type"));
 				} else {
 					builder2.append(typeWord);
 				}
-				BaseComponent component2 = new TextComponent(builder2.toString());
+				MutableComponent component2 = Component.literal(builder2.toString());
 
 				if (flag) {
 					component.withStyle(ChatFormatting.RED);

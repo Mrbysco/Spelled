@@ -5,7 +5,6 @@ import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -41,7 +40,7 @@ public class LevelingAltarTile extends BlockEntity implements Nameable {
 
 	@Override
 	public Component getName() {
-		return this.customName != null ? this.customName : new TranslatableComponent(Reference.MOD_PREFIX + "container.altar");
+		return this.customName != null ? this.customName : Component.translatable(Reference.MOD_PREFIX + "container.altar");
 	}
 
 	public void setCustomName(@Nullable Component name) {

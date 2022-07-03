@@ -1,7 +1,8 @@
 {
-  "name": "info.spelled.book.descriptive.dissiliunt.name",
+  "advancement": "spelled:adjective_dissiliunt",
   "category": "spelled:descriptions",
   "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.descriptive.dissiliunt.name",
   "pages": [
     {
       "type": "patchouli:text",
@@ -12,6 +13,5 @@
       "text": "info.spelled.book.descriptive.dissiliunt.text2"
     }
   ],
-  "advancement": "spelled:adjective_dissiliunt",
   "secret": true
 }

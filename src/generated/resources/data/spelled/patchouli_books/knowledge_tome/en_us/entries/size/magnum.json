@@ -1,13 +1,13 @@
 {
-  "name": "info.spelled.book.size.magnum.name",
+  "advancement": "spelled:adjective_magnum",
   "category": "spelled:size",
   "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.size.magnum.name",
   "pages": [
     {
       "type": "patchouli:text",
       "text": "info.spelled.book.size.magnum.text"
     }
   ],
-  "advancement": "spelled:adjective_magnum",
   "secret": true
 }

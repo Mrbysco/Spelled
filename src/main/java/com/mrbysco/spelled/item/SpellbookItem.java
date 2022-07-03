@@ -6,12 +6,9 @@ import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.client.gui.book.AdjectiveEntry;
 import com.mrbysco.spelled.util.SpellUtil;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionHand;
@@ -41,13 +38,14 @@ public class SpellbookItem extends Item {
 				String message = stack.getTag().getString("spell");
 				final String regExp = "^[a-zA-Z\\s]*$";
 				if (!message.isEmpty() && message.matches(regExp)) {
-					Component itextcomponent = new TranslatableComponent("chat.type.text", serverPlayer.getDisplayName(),
+					Component component = Component.translatable("chat.type.text", serverPlayer.getDisplayName(),
 							net.minecraftforge.common.ForgeHooks.newChatWithLinks(message));
-					itextcomponent = SpellUtil.manualCastSpell(serverPlayer, message, itextcomponent);
-					if (itextcomponent == null) {
+
+					component = SpellUtil.manualCastSpell(serverPlayer, message, component);
+					if (component == null) {
 						return InteractionResultHolder.fail(stack);
 					} else {
-						serverPlayer.getServer().getPlayerList().broadcastMessage(itextcomponent, ChatType.CHAT, serverPlayer.getUUID());
+						serverPlayer.getServer().getPlayerList().broadcastSystemMessage(component, ChatType.EMOTE_COMMAND);
 					}
 				}
 			}
@@ -63,7 +61,7 @@ public class SpellbookItem extends Item {
 					}
 				});
 				if (adjectives.isEmpty()) {
-					player.sendMessage(new TranslatableComponent("spelled.spell_book.insufficient"), Util.NIL_UUID);
+					player.sendSystemMessage(Component.translatable("spelled.spell_book.insufficient"));
 				} else {
 					KeywordRegistry.instance().getTypes().forEach((adjective) -> {
 						IKeyword word = KeywordRegistry.instance().getKeywordFromName(adjective);
@@ -109,7 +107,7 @@ public class SpellbookItem extends Item {
 			CompoundTag compoundnbt = stack.getTag();
 			String s = compoundnbt.getString("title");
 			if (!StringUtil.isNullOrEmpty(s)) {
-				return new TextComponent(s);
+				return Component.literal(s);
 			}
 		}
 
@@ -121,7 +119,7 @@ public class SpellbookItem extends Item {
 			CompoundTag compoundnbt = stack.getTag();
 			String s = compoundnbt.getString("author");
 			if (!StringUtil.isNullOrEmpty(s)) {
-				textComponents.add((new TranslatableComponent("book.byAuthor", s)).withStyle(ChatFormatting.GRAY));
+				textComponents.add((Component.translatable("book.byAuthor", s)).withStyle(ChatFormatting.GRAY));
 			}
 		}
 	}

@@ -8,7 +8,6 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.TextComponent;
 
 public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 	private final int listWidth;
@@ -53,7 +52,7 @@ public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 
 		@Override
 		public void render(PoseStack poseStack, int entryIdx, int top, int left, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_, float partialTicks) {
-			Component name = new TextComponent(getAdjectiveName());
+			Component name = Component.literal(getAdjectiveName());
 			Font font = this.parent.getFont();
 
 			font.draw(poseStack, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
@@ -82,7 +81,7 @@ public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 
 		public Component getDescription() {
 			if (isType()) {
-				return new TextComponent("Type: ").withStyle(ChatFormatting.GOLD).append(adjective.getAdjectiveDescription());
+				return Component.literal("Type: ").withStyle(ChatFormatting.GOLD).append(adjective.getAdjectiveDescription());
 			}
 			return adjective.getAdjectiveDescription();
 		}

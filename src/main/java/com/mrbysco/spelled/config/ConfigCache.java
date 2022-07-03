@@ -67,7 +67,7 @@ public class ConfigCache {
 							level = dummyLevel;
 						}
 						if (item == null) {
-							Spelled.LOGGER.error(String.format("Couldn't parse specified item %s, using dummy value: %s", values[1], defaultItem.getRegistryName()));
+							Spelled.LOGGER.error(String.format("Couldn't parse specified item %s, using dummy value: %s", values[1], ForgeRegistries.ITEMS.getKey(defaultItem)));
 							item = defaultItem;
 						}
 						if (itemCost == -1) {

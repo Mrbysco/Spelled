@@ -15,8 +15,6 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.ArrayList;
@@ -61,8 +59,8 @@ public class SpelledCommands {
 		for (ServerPlayer player : EntityArgument.getPlayers(ctx, "player")) {
 			int level = SpelledAPI.getLevel(player);
 			if (level >= 0) {
-				Component levelText = new TextComponent(String.valueOf(level)).withStyle(ChatFormatting.GOLD);
-				Component text = new TranslatableComponent("spelled.commands.level.get.message",
+				Component levelText = Component.literal(String.valueOf(level)).withStyle(ChatFormatting.GOLD);
+				Component text = Component.translatable("spelled.commands.level.get.message",
 						player.getDisplayName(), levelText);
 				ctx.getSource().sendSuccess(text, false);
 			}
@@ -78,13 +76,13 @@ public class SpelledCommands {
 			for (ServerPlayer player : EntityArgument.getPlayers(ctx, "player")) {
 				SpelledAPI.forceSetLevel(player, level);
 				SpelledAPI.syncCap(player);
-				Component levelText = new TextComponent(String.valueOf(level)).withStyle(ChatFormatting.GOLD);
-				Component text = new TranslatableComponent("spelled.commands.level.set.message",
+				Component levelText = Component.literal(String.valueOf(level)).withStyle(ChatFormatting.GOLD);
+				Component text = Component.translatable("spelled.commands.level.set.message",
 						player.getDisplayName(), levelText);
 				ctx.getSource().sendSuccess(text, true);
 			}
 		} else {
-			Component text = new TranslatableComponent("spelled.commands.level.set.invalid", level, SpelledConfig.COMMON.maxLevel)
+			Component text = Component.translatable("spelled.commands.level.set.invalid", level, SpelledConfig.COMMON.maxLevel)
 					.withStyle(ChatFormatting.RED);
 			ctx.getSource().sendSuccess(text, true);
 		}
@@ -104,7 +102,7 @@ public class SpelledCommands {
 					}
 					SpelledAPI.syncCap(player);
 
-					Component text = new TranslatableComponent("spelled.commands.knowledge.unlock.all", player.getDisplayName());
+					Component text = Component.translatable("spelled.commands.knowledge.unlock.all", player.getDisplayName());
 					ctx.getSource().sendSuccess(text, true);
 				}
 			} else if (KeywordRegistry.instance().containsKey(word)) {
@@ -112,13 +110,13 @@ public class SpelledCommands {
 					SpelledAPI.unlockKeyword(player, word);
 					SpelledAPI.syncCap(player);
 
-					Component wordComponent = new TextComponent(word).withStyle(ChatFormatting.GOLD);
-					Component text = new TranslatableComponent("spelled.commands.knowledge.unlock.message", wordComponent, player.getDisplayName());
+					Component wordComponent = Component.literal(word).withStyle(ChatFormatting.GOLD);
+					Component text = Component.translatable("spelled.commands.knowledge.unlock.message", wordComponent, player.getDisplayName());
 					ctx.getSource().sendSuccess(text, true);
 				}
 			}
 		} else {
-			Component text = new TranslatableComponent("spelled.commands.knowledge.unlock.invalid", word)
+			Component text = Component.translatable("spelled.commands.knowledge.unlock.invalid", word)
 					.withStyle(ChatFormatting.RED);
 			ctx.getSource().sendSuccess(text, true);
 		}
@@ -135,7 +133,7 @@ public class SpelledCommands {
 					SpelledAPI.resetUnlocks(player);
 					SpelledAPI.syncCap(player);
 
-					Component text = new TranslatableComponent("spelled.commands.knowledge.reset.message", player.getDisplayName());
+					Component text = Component.translatable("spelled.commands.knowledge.reset.message", player.getDisplayName());
 					ctx.getSource().sendSuccess(text, true);
 				}
 			} else if (KeywordRegistry.instance().containsKey(word)) {
@@ -143,13 +141,13 @@ public class SpelledCommands {
 					SpelledAPI.lockKeyword(player, word);
 					SpelledAPI.syncCap(player);
 
-					Component wordComponent = new TextComponent(word).withStyle(ChatFormatting.GOLD);
-					Component text = new TranslatableComponent("spelled.commands.knowledge.lock.message", wordComponent, player.getDisplayName());
+					Component wordComponent = Component.literal(word).withStyle(ChatFormatting.GOLD);
+					Component text = Component.translatable("spelled.commands.knowledge.lock.message", wordComponent, player.getDisplayName());
 					ctx.getSource().sendSuccess(text, true);
 				}
 			}
 		} else {
-			Component text = new TranslatableComponent("spelled.commands.knowledge.lock.invalid", word)
+			Component text = Component.translatable("spelled.commands.knowledge.lock.invalid", word)
 					.withStyle(ChatFormatting.RED);
 			ctx.getSource().sendSuccess(text, true);
 		}
@@ -163,7 +161,7 @@ public class SpelledCommands {
 			SpelledAPI.resetUnlocks(player);
 			SpelledAPI.syncCap(player);
 
-			Component text = new TranslatableComponent("spelled.commands.knowledge.reset.message", player.getDisplayName());
+			Component text = Component.translatable("spelled.commands.knowledge.reset.message", player.getDisplayName());
 			ctx.getSource().sendSuccess(text, true);
 		}
 

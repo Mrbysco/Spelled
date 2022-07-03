@@ -1,7 +1,8 @@
 {
-  "name": "info.spelled.book.descriptive.praesidium.name",
+  "advancement": "spelled:adjective_praesidium",
   "category": "spelled:descriptions",
   "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.descriptive.praesidium.name",
   "pages": [
     {
       "type": "patchouli:text",
@@ -12,6 +13,5 @@
       "text": "info.spelled.book.descriptive.praesidium.text2"
     }
   ],
-  "advancement": "spelled:adjective_praesidium",
   "secret": true
 }

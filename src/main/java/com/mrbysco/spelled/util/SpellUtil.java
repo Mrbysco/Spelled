@@ -11,15 +11,14 @@ import com.mrbysco.spelled.registry.SpelledRegistry;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword.Type;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
+import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.HoverEvent.Action;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.PlayerChatMessage;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -60,36 +59,36 @@ public class SpellUtil {
 
 					//Do our stuff
 					IKeyword lastKeyword = registry.getKeywordFromName(words.get(words.size() - 1));
-					Level world = player.level;
+					ServerLevel level = player.getLevel();
 
 					if (lastKeyword instanceof TypeKeyword typeKeyword) {
 						SpellEntity spell = constructEntity(player, typeKeyword.getType());
 
 						StringBuilder castText = new StringBuilder();
-						MutableComponent descriptionComponent = new TextComponent("");
+						MutableComponent descriptionComponent = Component.literal("");
 						int cooldown = -1;
 						for (int i = 0; i < (words.size() - 1); i++) {
 							IKeyword keyword = registry.getKeywordFromName(words.get(i));
 							if (keyword != null) {
 								cooldown += keyword.getSlots();
 								castText.append(keyword.getKeyword()).append(" ");
-								descriptionComponent.append(keyword.getDescription()).append(new TextComponent(" "));
+								descriptionComponent.append(keyword.getDescription()).append(Component.literal(" "));
 								int previous = i - 1;
 								if (previous >= 0 && previous < (words.size() - 1))
-									keyword.cast(world, player, spell, registry.getKeywordFromName(words.get(previous)));
+									keyword.cast(level, player, spell, registry.getKeywordFromName(words.get(previous)));
 								else
-									keyword.cast(world, player, spell, null);
+									keyword.cast(level, player, spell, null);
 							}
 						}
 						cooldown = Mth.clamp(cooldown, 1, Integer.MAX_VALUE);
 						castText.append(lastKeyword.getKeyword());
-						TextComponent castComponent = new TextComponent(castText.toString());
+						MutableComponent castComponent = Component.literal(castText.toString());
 						descriptionComponent.append(typeKeyword.getDescription());
 						descriptionComponent.withStyle(ChatFormatting.GOLD);
 						castComponent.setStyle(event.getComponent().getStyle().withHoverEvent(
 								new HoverEvent(Action.SHOW_TEXT, descriptionComponent))).withStyle(ChatFormatting.GOLD);
 
-						MutableComponent finalMessage = new TranslatableComponent("spelled.spell.cast", player.getDisplayName(), castComponent);
+						MutableComponent finalMessage = Component.translatable("spelled.spell.cast", player.getDisplayName(), castComponent);
 						if (spell != null) {
 							if (!player.getAbilities().instabuild) {
 								SpelledAPI.setCooldown(player, cooldown);
@@ -97,7 +96,7 @@ public class SpellUtil {
 							}
 							if (typeKeyword.getType() != Type.SELF) {
 								shootSpell(player, spell);
-								world.addFreshEntity(spell);
+								level.addFreshEntity(spell);
 							} else {
 								spell.handleEntityHit(player);
 								spell.discard();
@@ -106,11 +105,11 @@ public class SpellUtil {
 
 						if (SpelledConfig.COMMON.proximity.get() > 0) {
 							event.setCanceled(true);
-							List<? extends Player> playerEntities = world.players();
-							for (Player nearbyPlayer : playerEntities) {
+							List<ServerPlayer> playerEntities = level.players();
+							for (ServerPlayer nearbyPlayer : playerEntities) {
 								if (nearbyPlayer.getUUID().equals(player.getUUID()) ||
-										(nearbyPlayer.level.dimension() == world.dimension() && player.distanceToSqr(nearbyPlayer) <= SpelledConfig.COMMON.proximity.get())) {
-									player.sendMessage(finalMessage, player.getUUID());
+										(nearbyPlayer.level.dimension() == level.dimension() && player.distanceToSqr(nearbyPlayer) <= SpelledConfig.COMMON.proximity.get())) {
+									nearbyPlayer.sendSystemMessage(finalMessage, ChatType.EMOTE_COMMAND);
 								}
 							}
 						} else {
@@ -152,8 +151,8 @@ public class SpellUtil {
 		int currentLevel = data.getLevel();
 
 		if (currentLevel == 0) {
-			MutableComponent finalMessage = new TranslatableComponent("spelled.spell.no_levels", player.getDisplayName()).withStyle(ChatFormatting.RED);
-			player.sendMessage(finalMessage, Util.NIL_UUID);
+			MutableComponent finalMessage = Component.translatable("spelled.spell.no_levels", player.getDisplayName()).withStyle(ChatFormatting.RED);
+			player.sendSystemMessage(finalMessage);
 			return false;
 		}
 
@@ -165,9 +164,9 @@ public class SpellUtil {
 		}
 
 		if (maxLevelWord > currentLevel) {
-			MutableComponent errorMessage = new TranslatableComponent("spelled.spell.insufficient_level", player.getDisplayName(), maxLevelWord, currentLevel)
+			MutableComponent errorMessage = Component.translatable("spelled.spell.insufficient_level", player.getDisplayName(), maxLevelWord, currentLevel)
 					.withStyle(ChatFormatting.RED);
-			player.sendMessage(errorMessage, Util.NIL_UUID);
+			player.sendSystemMessage(errorMessage);
 			return false;
 		}
 
@@ -175,9 +174,9 @@ public class SpellUtil {
 		if (maxWordCount > 0 && words.size() <= maxWordCount) {
 			return true;
 		} else {
-			MutableComponent errorMessage = new TranslatableComponent("spelled.spell.too_many_words", player.getDisplayName(), maxWordCount)
+			MutableComponent errorMessage = Component.translatable("spelled.spell.too_many_words", player.getDisplayName(), maxWordCount)
 					.withStyle(ChatFormatting.RED);
-			player.sendMessage(errorMessage, Util.NIL_UUID);
+			player.sendSystemMessage(errorMessage);
 			return false;
 		}
 	}
@@ -187,8 +186,8 @@ public class SpellUtil {
 		//Check if player is on cooldown
 		int cooldown = data.getCastCooldown();
 		if (cooldown > 0) {
-			MutableComponent finalMessage = new TranslatableComponent("spelled.spell.cooldown", player.getDisplayName(), cooldown);
-			player.sendMessage(finalMessage, Util.NIL_UUID);
+			MutableComponent finalMessage = Component.translatable("spelled.spell.cooldown", player.getDisplayName(), cooldown);
+			player.sendSystemMessage(finalMessage);
 			return true;
 		}
 		return false;

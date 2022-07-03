@@ -8,8 +8,6 @@ import com.mrbysco.spelled.config.SpelledConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -43,10 +41,10 @@ public class TomeItem extends Item {
 						playerIn.startUsingItem(handIn);
 						SpelledAPI.unlockKeyword((ServerPlayer) playerIn, word);
 						SpelledAPI.syncCap((ServerPlayer) playerIn);
-						playerIn.displayClientMessage(new TranslatableComponent("spelled.tome.success"), true);
+						playerIn.displayClientMessage(Component.translatable("spelled.tome.success"), true);
 						return InteractionResultHolder.consume(itemstack);
 					} else {
-						playerIn.displayClientMessage(new TranslatableComponent("spelled.tome.fail"), true);
+						playerIn.displayClientMessage(Component.translatable("spelled.tome.fail"), true);
 						return InteractionResultHolder.fail(itemstack);
 					}
 				}
@@ -67,9 +65,9 @@ public class TomeItem extends Item {
 		if (!SpelledConfig.COMMON.hideKnowledgeTomeInfo.get()) {
 			if (stack.hasTag() && stack.getTag().contains(Reference.tomeUnlock)) {
 				CompoundTag tag = stack.getTag();
-				tooltip.add(new TranslatableComponent("spelled.tome.description", new TextComponent(tag.getString(Reference.tomeUnlock)).withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.YELLOW));
+				tooltip.add(Component.translatable("spelled.tome.description", Component.literal(tag.getString(Reference.tomeUnlock)).withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.YELLOW));
 			} else {
-				tooltip.add(new TranslatableComponent("spelled.tome.description.invalid").withStyle(ChatFormatting.RED));
+				tooltip.add(Component.translatable("spelled.tome.description.invalid").withStyle(ChatFormatting.RED));
 			}
 		}
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);

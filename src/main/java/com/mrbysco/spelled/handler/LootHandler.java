@@ -7,6 +7,7 @@ import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades.ItemListing;
 import net.minecraft.world.entity.player.Player;
@@ -26,8 +27,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.village.WandererTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.Random;
 
 public class LootHandler {
 
@@ -141,7 +140,7 @@ public class LootHandler {
 			this.priceMultiplier = priceMultiplier;
 		}
 
-		public MerchantOffer getOffer(Entity trader, Random rand) {
+		public MerchantOffer getOffer(Entity trader, RandomSource rand) {
 			ItemStack stack = new ItemStack(this.outputStack.getItem(), this.outputAmount);
 			stack.setTag(this.outputTag);
 			return new MerchantOffer(new ItemStack(Items.EMERALD, this.priceAmount), stack, this.maxUses, this.givenExp, this.priceMultiplier);

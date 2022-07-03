@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[40,)"
+loaderVersion="[41,)"
 issueTrackerURL="https://github.com/Mrbysco/Spelled/issues"
 license="MIT"
 
@@ -16,12 +16,12 @@ It's spelled "Yu Mo Gui Gwai Fai Di Zao"
 [[dependencies.spelled]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.18.2,1.19)"
+versionRange="[1.19,1.20)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.spelled]]
 modId="patchouli"
 mandatory=true
-versionRange="[1.18.2-66,)"
+versionRange="[1.19-73,)"
 ordering="NONE"
 side="BOTH"

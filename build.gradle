@@ -24,7 +24,7 @@ compileJava.options.encoding = 'UTF-8'
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings  channel: "${mcp_channel}", version: "${mcp_mappings}"
+    mappings channel: "${mcp_channel}", version: "${mcp_mappings}"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 //    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -104,16 +104,6 @@ repositories {
     maven {
         name = 'Patchouli maven'
         url = 'https://maven.blamejared.com'
-        content {
-            includeGroup "vazkii.patchouli"
-        }
-    }
-    maven {
-        name = "PatchouliProvider Maven"
-        url = "https://maven.teamacronymcoders.com/"
-        content {
-            includeGroup "xyz.brassgoggledcoders"
-        }
     }
     maven {
         name = 'Curse maven'
@@ -127,25 +117,25 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-    implementation fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+    implementation fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
 
     implementation fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
     implementation fg.deobf("xyz.brassgoggledcoders:PatchouliProvider:${patchouli_provider_version}")
 
-    runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:3641681")
+    runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:3843050")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
     manifest {
         attributes([
-            "Specification-Title": "spelled",
-            "Specification-Vendor": "Mrbysco",
-            "Specification-Version": "1", // We are version 1 of ourselves
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"Mrbysco",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Specification-Title"     : "spelled",
+                "Specification-Vendor"    : "Mrbysco",
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "Mrbysco",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }

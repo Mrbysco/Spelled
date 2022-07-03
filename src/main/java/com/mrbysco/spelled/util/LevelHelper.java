@@ -4,7 +4,7 @@ import com.mrbysco.spelled.config.ConfigCache;
 import com.mrbysco.spelled.config.ConfigCache.ItemCost;
 import com.mrbysco.spelled.config.SpelledConfig;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 public class LevelHelper {
@@ -26,10 +26,10 @@ public class LevelHelper {
 	}
 
 	public static void levelUpFailItems(Player player) {
-		player.displayClientMessage(new TranslatableComponent("spelled.level_up.fail_item").withStyle(ChatFormatting.GOLD), true);
+		player.displayClientMessage(Component.translatable("spelled.level_up.fail_item").withStyle(ChatFormatting.GOLD), true);
 	}
 
 	public static void levelUpFailXP(Player player) {
-		player.displayClientMessage(new TranslatableComponent("spelled.level_up.fail_xp").withStyle(ChatFormatting.GOLD), true);
+		player.displayClientMessage(Component.translatable("spelled.level_up.fail_xp").withStyle(ChatFormatting.GOLD), true);
 	}
 }

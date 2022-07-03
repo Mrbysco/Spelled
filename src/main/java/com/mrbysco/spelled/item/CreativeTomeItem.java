@@ -4,7 +4,6 @@ import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -33,7 +32,7 @@ public class CreativeTomeItem extends Item {
 				SpelledAPI.unlockKeyword((ServerPlayer) playerIn, adjective);
 			}
 			SpelledAPI.syncCap((ServerPlayer) playerIn);
-			playerIn.displayClientMessage(new TranslatableComponent("spelled.tome.success"), true);
+			playerIn.displayClientMessage(Component.translatable("spelled.tome.success"), true);
 			return InteractionResultHolder.consume(itemstack);
 		}
 		return super.use(worldIn, playerIn, handIn);
@@ -51,7 +50,7 @@ public class CreativeTomeItem extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent("spelled.creative_tome.description").withStyle(ChatFormatting.DARK_PURPLE));
+		tooltip.add(Component.translatable("spelled.creative_tome.description").withStyle(ChatFormatting.DARK_PURPLE));
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 }

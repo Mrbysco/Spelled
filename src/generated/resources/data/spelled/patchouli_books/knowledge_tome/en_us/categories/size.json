@@ -1,6 +1,6 @@
 {
-  "name": "info.spelled.book.size.name",
   "description": "info.spelled.book.size.desc",
   "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.size.name",
   "secret": true
 }

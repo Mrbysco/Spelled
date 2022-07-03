@@ -1,23 +1,23 @@
 {
   "parent": "spelled:color_lore",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
   "display": {
-    "icon": {
-      "item": "spelled:ancient_knowledge_tome"
-    },
-    "title": {
-      "translate": "advancement.spelled.ater"
-    },
+    "announce_to_chat": false,
     "description": {
       "translate": "advancement.spelled.ater.desc"
     },
     "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "spelled:ancient_knowledge_tome"
+    },
     "show_toast": false,
-    "announce_to_chat": false,
-    "hidden": false
-  },
-  "criteria": {
-    "impossible": {
-      "trigger": "minecraft:impossible"
+    "title": {
+      "translate": "advancement.spelled.ater"
     }
   },
   "requirements": [

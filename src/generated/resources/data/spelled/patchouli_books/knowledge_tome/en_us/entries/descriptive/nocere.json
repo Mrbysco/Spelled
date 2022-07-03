@@ -1,7 +1,8 @@
 {
-  "name": "info.spelled.book.descriptive.nocere.name",
+  "advancement": "spelled:adjective_nocere",
   "category": "spelled:descriptions",
   "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.descriptive.nocere.name",
   "pages": [
     {
       "type": "patchouli:text",
@@ -12,6 +13,5 @@
       "text": "info.spelled.book.descriptive.nocere.text2"
     }
   ],
-  "advancement": "spelled:adjective_nocere",
   "secret": true
 }

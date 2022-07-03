@@ -1,20 +1,16 @@
 package com.mrbysco.spelled.generator;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mrbysco.spelled.Spelled;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.AdvancementRewards.Builder;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.EnterBlockTrigger;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 import net.minecraft.data.advancements.AdvancementProvider;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -24,7 +20,6 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 public class SpelledAdvancements extends AdvancementProvider {
-	private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
 	private final DataGenerator dataGenerator;
 
 	public Advancement root;
@@ -69,12 +64,12 @@ public class SpelledAdvancements extends AdvancementProvider {
 	}
 
 	@Override
-	public void run(HashCache cache) {
+	public void run(CachedOutput cache) {
 		Path outputFolder = this.dataGenerator.getOutputFolder();
 		Consumer<Advancement> consumer = advancement -> {
 			Path path = outputFolder.resolve("data/" + advancement.getId().getNamespace() + "/advancements/" + advancement.getId().getPath() + ".json");
 			try {
-				DataProvider.save(GSON, cache, advancement.deconstruct().serializeToJson(), path);
+				DataProvider.saveStable(cache, advancement.deconstruct().serializeToJson(), path);
 			} catch (IOException e) {
 				Spelled.LOGGER.trace("Failed to save", e);
 			}
@@ -85,16 +80,16 @@ public class SpelledAdvancements extends AdvancementProvider {
 	private void registerAdvancements(Consumer<Advancement> consumer) {
 		root = Advancement.Builder.advancement()
 				.display(SpelledRegistry.KNOWLEDGE_TOME.get(),
-						new TranslatableComponent("advancement.spelled.root"),
-						new TranslatableComponent("advancement.spelled.root.desc"),
+						Component.translatable("advancement.spelled.root"),
+						Component.translatable("advancement.spelled.root.desc"),
 						new ResourceLocation("minecraft:textures/block/bookshelf.png"), FrameType.TASK, true, false, false)
 				.addCriterion("air", EnterBlockTrigger.TriggerInstance.entersBlock(Blocks.AIR))
 				.save(consumer, "spelled:root");
 
 		color_lore = Advancement.Builder.advancement()
 				.display(SpelledRegistry.KNOWLEDGE_TOME.get(),
-						new TranslatableComponent("advancement.spelled.color_lore"),
-						new TranslatableComponent("advancement.spelled.color_lore.desc"),
+						Component.translatable("advancement.spelled.color_lore"),
+						Component.translatable("advancement.spelled.color_lore.desc"),
 						null, FrameType.TASK, false, false, false)
 				.parent(root)
 				.addCriterion("impossible", new ImpossibleTrigger.TriggerInstance())
@@ -130,8 +125,8 @@ public class SpelledAdvancements extends AdvancementProvider {
 	private Advancement generateAdjectiveAdvancement(String adjective, Advancement parent, Consumer<Advancement> consumer) {
 		return Advancement.Builder.advancement()
 				.display(SpelledRegistry.KNOWLEDGE_TOME.get(),
-						new TranslatableComponent(String.format("advancement.spelled.%s", adjective)),
-						new TranslatableComponent(String.format("advancement.spelled.%s.desc", adjective)),
+						Component.translatable(String.format("advancement.spelled.%s", adjective)),
+						Component.translatable(String.format("advancement.spelled.%s.desc", adjective)),
 						null, FrameType.TASK, false, false, false)
 				.parent(parent)
 				.addCriterion("impossible", new ImpossibleTrigger.TriggerInstance())

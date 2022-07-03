@@ -267,7 +267,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 	}
 
 	@Override
-	public float getBrightness() {
+	public float getLightLevelDependentMagicValue() {
 		return (isFiery() || isLava()) ? 1.0F : 0.5F;
 	}
 

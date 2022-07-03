@@ -2,7 +2,6 @@ package com.mrbysco.spelled.api.keywords;
 
 import com.mrbysco.spelled.entity.SpellEntity;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
@@ -31,7 +30,7 @@ public class BaseKeyword implements IKeyword {
 
 	@Override
 	public Component getDescription() {
-		return new TranslatableComponent("spelled.keyword." + this.keyword + ".description");
+		return Component.translatable("spelled.keyword." + this.keyword + ".description");
 	}
 
 	@Override

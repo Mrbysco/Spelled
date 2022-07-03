@@ -21,7 +21,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
@@ -218,12 +217,12 @@ public class AltarScreen extends AbstractContainerScreen<AltarContainer> {
 
 			MutableComponent iformattabletextcomponent;
 			if (noXP) {
-				iformattabletextcomponent = new TranslatableComponent(Reference.MOD_PREFIX + "container.altar.level.requirement", levelCost);
+				iformattabletextcomponent = Component.translatable(Reference.MOD_PREFIX + "container.altar.level.requirement", levelCost);
 			} else {
 				if (levelCost == 1) {
-					iformattabletextcomponent = new TranslatableComponent(Reference.MOD_PREFIX + "container.altar.level.one");
+					iformattabletextcomponent = Component.translatable(Reference.MOD_PREFIX + "container.altar.level.one");
 				} else {
-					iformattabletextcomponent = new TranslatableComponent(Reference.MOD_PREFIX + "container.altar.level.many", levelCost);
+					iformattabletextcomponent = Component.translatable(Reference.MOD_PREFIX + "container.altar.level.many", levelCost);
 				}
 			}
 
@@ -236,9 +235,9 @@ public class AltarScreen extends AbstractContainerScreen<AltarContainer> {
 				list.add(iformattabletextcomponent.withStyle(noXP ? ChatFormatting.RED : ChatFormatting.GREEN));
 				MutableComponent iformattabletextcomponent1;
 				if (noItems) {
-					iformattabletextcomponent1 = new TranslatableComponent(Reference.MOD_PREFIX + "container.altar.item.requirement", itemAmountCost, itemCost.getDescription());
+					iformattabletextcomponent1 = Component.translatable(Reference.MOD_PREFIX + "container.altar.item.requirement", itemAmountCost, itemCost.getDescription());
 				} else {
-					iformattabletextcomponent1 = new TranslatableComponent(Reference.MOD_PREFIX + "container.altar.item", itemAmountCost, itemCost.getDescription());
+					iformattabletextcomponent1 = Component.translatable(Reference.MOD_PREFIX + "container.altar.item", itemAmountCost, itemCost.getDescription());
 				}
 
 				list.add(iformattabletextcomponent1.withStyle(noItems ? ChatFormatting.RED : ChatFormatting.GREEN));

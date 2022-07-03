@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "spelled:item/spell_book"
+	"layer0": "spelled:item/spell_book"
   }
 }
