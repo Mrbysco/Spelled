@@ -5,6 +5,7 @@
 		"0": "spelled:block/leveling_altar",
 		"particle": "spelled:block/leveling_altar"
 	},
+  	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"from": [8.08182, 0.75, 7.42366],

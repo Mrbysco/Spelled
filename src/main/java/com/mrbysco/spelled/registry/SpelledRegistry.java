@@ -29,9 +29,9 @@ import net.minecraftforge.registries.RegistryObject;
 public class SpelledRegistry {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MOD_ID);
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
-	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, Reference.MOD_ID);
-	public static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Reference.MOD_ID);
-	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Reference.MOD_ID);
+	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Reference.MOD_ID);
+	public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Reference.MOD_ID);
+	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Reference.MOD_ID);
 	public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Reference.MOD_ID);
 
 	public static final RegistryObject<SoundEvent> SHOOT_SPELL = SOUND_EVENTS.register("shoot.spell", () ->
@@ -45,10 +45,10 @@ public class SpelledRegistry {
 	public static final RegistryObject<Item> CREATIVE_TOME = ITEMS.register("creative_tome", () -> new CreativeTomeItem(itemBuilder().tab(SpelledTab.TAB)));
 	public static final RegistryObject<Item> SPELL_BOOK = ITEMS.register("spell_book", () -> new SpellbookItem(itemBuilder().stacksTo(1).tab(SpelledTab.TAB)));
 
-	public static final RegistryObject<BlockEntityType<LevelingAltarTile>> LEVELING_ALTAR_TILE = BLOCK_ENTITIES.register("leveling_altar_tile", () -> BlockEntityType.Builder.of(LevelingAltarTile::new, LEVELING_ALTAR.get()).build(null));
-	public static final RegistryObject<MenuType<AltarContainer>> ALTAR_CONTAINER = CONTAINERS.register("leveling_altar", () -> IForgeMenuType.create((windowId, inv, data) -> new AltarContainer(windowId, inv)));
+	public static final RegistryObject<BlockEntityType<LevelingAltarTile>> LEVELING_ALTAR_TILE = BLOCK_ENTITY_TYPES.register("leveling_altar_tile", () -> BlockEntityType.Builder.of(LevelingAltarTile::new, LEVELING_ALTAR.get()).build(null));
+	public static final RegistryObject<MenuType<AltarContainer>> ALTAR_CONTAINER = MENU_TYPES.register("leveling_altar", () -> IForgeMenuType.create((windowId, inv, data) -> new AltarContainer(windowId, inv)));
 
-	public static final RegistryObject<EntityType<SpellEntity>> SPELL = ENTITIES.register("spell", () ->
+	public static final RegistryObject<EntityType<SpellEntity>> SPELL = ENTITY_TYPES.register("spell", () ->
 			register("spell", EntityType.Builder.<SpellEntity>of(SpellEntity::new, MobCategory.MISC)
 					.sized(0.25F, 0.25F)
 					.clientTrackingRange(4).updateInterval(20)

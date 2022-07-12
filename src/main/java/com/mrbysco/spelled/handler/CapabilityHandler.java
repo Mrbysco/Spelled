@@ -23,7 +23,7 @@ public class CapabilityHandler {
 
 	@SubscribeEvent
 	public void playerLoggedInEvent(PlayerLoggedInEvent event) {
-		Player player = event.getPlayer();
+		Player player = event.getEntity();
 		if (!player.level.isClientSide) {
 			SpelledAPI.syncCap((ServerPlayer) player);
 		}
@@ -32,7 +32,7 @@ public class CapabilityHandler {
 	@SubscribeEvent
 	public void onDeath(PlayerEvent.Clone event) {
 		Player original = event.getOriginal();
-		Player newPlayer = event.getPlayer();
+		Player newPlayer = event.getEntity();
 
 		final Capability<ISpellData> capability = SpelledAPI.SPELL_DATA_CAP;
 		original.getCapability(capability).ifPresent(originalData -> {

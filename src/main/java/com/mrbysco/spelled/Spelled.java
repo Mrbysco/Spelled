@@ -38,10 +38,10 @@ public class Spelled {
 		eventBus.register(SpelledConfig.class);
 
 		SpelledRegistry.BLOCKS.register(eventBus);
-		SpelledRegistry.BLOCK_ENTITIES.register(eventBus);
-		SpelledRegistry.CONTAINERS.register(eventBus);
+		SpelledRegistry.BLOCK_ENTITY_TYPES.register(eventBus);
+		SpelledRegistry.MENU_TYPES.register(eventBus);
 		SpelledRegistry.ITEMS.register(eventBus);
-		SpelledRegistry.ENTITIES.register(eventBus);
+		SpelledRegistry.ENTITY_TYPES.register(eventBus);
 		SpelledRegistry.SOUND_EVENTS.register(eventBus);
 
 		eventBus.addListener(this::setup);
