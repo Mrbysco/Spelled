@@ -41,13 +41,13 @@ public class SpellbookItem extends Item {
 				String message = stack.getTag().getString("spell");
 				final String regExp = "^[a-zA-Z\\s]*$";
 				if (!message.isEmpty() && message.matches(regExp)) {
-					Component itextcomponent = new TranslatableComponent("chat.type.text", serverPlayer.getDisplayName(),
+					Component component = new TranslatableComponent("chat.type.text", serverPlayer.getDisplayName(),
 							net.minecraftforge.common.ForgeHooks.newChatWithLinks(message));
-					itextcomponent = SpellUtil.manualCastSpell(serverPlayer, message, itextcomponent);
-					if (itextcomponent == null) {
+					component = SpellUtil.manualCastSpell(serverPlayer, message, component);
+					if (component == null) {
 						return InteractionResultHolder.fail(stack);
 					} else {
-						serverPlayer.getServer().getPlayerList().broadcastMessage(itextcomponent, ChatType.CHAT, serverPlayer.getUUID());
+						serverPlayer.getServer().getPlayerList().broadcastMessage(component, ChatType.CHAT, serverPlayer.getUUID());
 					}
 				}
 			}
