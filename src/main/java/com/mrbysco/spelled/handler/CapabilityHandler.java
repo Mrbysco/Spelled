@@ -2,12 +2,10 @@ package com.mrbysco.spelled.handler;
 
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.api.SpelledAPI;
-import com.mrbysco.spelled.api.capability.ISpellData;
 import com.mrbysco.spelled.api.capability.SpellDataCapability;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
@@ -31,15 +29,17 @@ public class CapabilityHandler {
 
 	@SubscribeEvent
 	public void onDeath(PlayerEvent.Clone event) {
-		Player original = event.getOriginal();
 		Player newPlayer = event.getEntity();
+		if (event.isWasDeath() && !newPlayer.level.isClientSide) {
+			Player original = event.getOriginal();
+			original.reviveCaps();
 
-		final Capability<ISpellData> capability = SpelledAPI.SPELL_DATA_CAP;
-		original.getCapability(capability).ifPresent(originalData -> {
-			newPlayer.getCapability(capability).ifPresent(futureData -> {
-				futureData.deserializeNBT(originalData.serializeNBT());
-			});
-		});
+			newPlayer.getCapability(SpelledAPI.SPELL_DATA_CAP).ifPresent(cap ->
+					original.getCapability(SpelledAPI.SPELL_DATA_CAP).ifPresent(oldCap -> {
+						cap.deserializeNBT(oldCap.serializeNBT());
+					}));
+			original.invalidateCaps();
+		}
 		if (!newPlayer.level.isClientSide) {
 			SpelledAPI.syncCap((ServerPlayer) newPlayer);
 		}

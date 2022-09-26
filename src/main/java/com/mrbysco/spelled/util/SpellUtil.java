@@ -11,7 +11,6 @@ import com.mrbysco.spelled.registry.SpelledRegistry;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword.Type;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.HoverEvent.Action;
@@ -31,19 +30,19 @@ import java.util.Locale;
 public class SpellUtil {
 
 	public static Component manualCastSpell(ServerPlayer player, String spell, Component comp) {
-		ServerChatEvent event = new ServerChatEvent(player, spell, comp);
+		ServerChatEvent event = new ServerChatEvent.Submitted(player, spell, comp, true);
 		castSpell(event);
 		if (event.isCanceled()) {
 			return null;
 		}
-		return event.getComponent();
+		return event.getMessage();
 	}
 
 	public static void castSpell(ServerChatEvent event) {
 		ServerPlayer player = event.getPlayer();
 		SpelledAPI.getSpellDataCap(player).ifPresent(data -> {
 			KeywordRegistry registry = KeywordRegistry.instance();
-			String message = event.getMessage().toLowerCase(Locale.ROOT);
+			String message = event.getRawText().toLowerCase(Locale.ROOT);
 			String[] wordArray = message.split("\\s+");
 			List<String> words = Arrays.asList(wordArray);
 
@@ -83,7 +82,7 @@ public class SpellUtil {
 						MutableComponent castComponent = Component.literal(castText.toString());
 						descriptionComponent.append(typeKeyword.getDescription());
 						descriptionComponent.withStyle(ChatFormatting.GOLD);
-						castComponent.setStyle(event.getComponent().getStyle().withHoverEvent(
+						castComponent.setStyle(event.getMessage().getStyle().withHoverEvent(
 								new HoverEvent(Action.SHOW_TEXT, descriptionComponent))).withStyle(ChatFormatting.GOLD);
 
 						MutableComponent finalMessage = Component.translatable("spelled.spell.cast", player.getDisplayName(), castComponent);
@@ -107,11 +106,11 @@ public class SpellUtil {
 							for (ServerPlayer nearbyPlayer : playerEntities) {
 								if (nearbyPlayer.getUUID().equals(player.getUUID()) ||
 										(nearbyPlayer.level.dimension() == level.dimension() && player.distanceToSqr(nearbyPlayer) <= SpelledConfig.COMMON.proximity.get())) {
-									nearbyPlayer.sendSystemMessage(finalMessage, ChatType.EMOTE_COMMAND);
+									nearbyPlayer.sendSystemMessage(finalMessage, true);
 								}
 							}
 						} else {
-							event.setComponent(finalMessage);
+							event.setMessage(finalMessage);
 						}
 					}
 				} else {

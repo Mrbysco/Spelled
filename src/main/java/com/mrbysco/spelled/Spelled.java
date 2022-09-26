@@ -15,6 +15,7 @@ import com.mrbysco.spelled.packets.PacketHandler;
 import com.mrbysco.spelled.registry.ReloadManager;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -36,6 +37,8 @@ public class Spelled {
 		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		ModLoadingContext.get().registerConfig(Type.COMMON, SpelledConfig.commonSpec);
 		eventBus.register(SpelledConfig.class);
+
+		ForgeMod.enableServerChatPreview();
 
 		SpelledRegistry.BLOCKS.register(eventBus);
 		SpelledRegistry.BLOCK_ENTITY_TYPES.register(eventBus);

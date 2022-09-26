@@ -45,7 +45,7 @@ public class SpellbookItem extends Item {
 					if (component == null) {
 						return InteractionResultHolder.fail(stack);
 					} else {
-						serverPlayer.getServer().getPlayerList().broadcastSystemMessage(component, ChatType.EMOTE_COMMAND);
+						serverPlayer.getServer().getPlayerList().broadcastSystemMessage(component, true);
 					}
 				}
 			}
