@@ -1,5 +1,6 @@
 package com.mrbysco.spelled.registry.behavior;
 
+import com.mrbysco.spelled.Spelled;
 import com.mrbysco.spelled.api.behavior.BaseBehavior;
 import com.mrbysco.spelled.entity.SpellEntity;
 import net.minecraft.core.BlockPos;
@@ -22,7 +23,7 @@ public class HarvestBehavior extends BaseBehavior {
 		Level world = spell.level;
 		BlockState hitState = world.getBlockState(pos);
 		float hardness = hitState.getDestroySpeed(world, pos);
-		if (hardness > 0.0F && hitState.getBlock().getExplosionResistance() <= 2) {
+		if (hardness > 0.0F && hitState.getBlock().getExplosionResistance() <= 6.0D) {
 			spell.level.destroyBlock(pos, true);
 		}
 	}

@@ -30,7 +30,7 @@ import java.util.Locale;
 public class SpellUtil {
 
 	public static Component manualCastSpell(ServerPlayer player, String spell, Component comp) {
-		ServerChatEvent event = new ServerChatEvent.Submitted(player, spell, comp, true);
+		ServerChatEvent event = new ServerChatEvent(player, spell, comp);
 		castSpell(event);
 		if (event.isCanceled()) {
 			return null;

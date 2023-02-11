@@ -6,11 +6,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.config.SpelledConfig;
-import com.mrbysco.spelled.container.AltarContainer;
+import com.mrbysco.spelled.menu.AltarMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -28,11 +27,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.joml.Matrix4f;
 
 import java.util.List;
 import java.util.Random;
 
-public class AltarScreen extends AbstractContainerScreen<AltarContainer> {
+public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
 	private static final ResourceLocation ALTAR_GUI_TEXTURE = new ResourceLocation(Reference.MOD_PREFIX + "textures/gui/container/leveling_altar.png");
 	private static final ResourceLocation ALTAR_GUI_SLOTLESS_TEXTURE = new ResourceLocation(Reference.MOD_PREFIX + "textures/gui/container/leveling_altar_no_slot.png");
 
@@ -51,7 +51,7 @@ public class AltarScreen extends AbstractContainerScreen<AltarContainer> {
 	public float oOpen;
 	private ItemStack last = ItemStack.EMPTY;
 
-	public AltarScreen(AltarContainer container, Inventory playerInventory, Component textComponent) {
+	public AltarScreen(AltarMenu container, Inventory playerInventory, Component textComponent) {
 		super(container, playerInventory, textComponent);
 	}
 
@@ -95,24 +95,21 @@ public class AltarScreen extends AbstractContainerScreen<AltarContainer> {
 		this.blit(poseStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
 		int k = (int) this.minecraft.getWindow().getGuiScale();
 		RenderSystem.viewport((this.width - 320) / 2 * k, (this.height - 240) / 2 * k, 320 * k, 240 * k);
-		Matrix4f matrix4f = Matrix4f.createTranslateMatrix(-0.34F, 0.23F, 0.0F);
-		matrix4f.multiply(Matrix4f.perspective(90.0D, 1.3333334F, 9.0F, 80.0F));
+		Matrix4f matrix4f = (new Matrix4f()).translation(-0.34F, 0.23F, 0.0F).perspective(((float) Math.PI / 2F), 1.3333334F, 9.0F, 80.0F);
 		RenderSystem.backupProjectionMatrix();
 		RenderSystem.setProjectionMatrix(matrix4f);
 		poseStack.pushPose();
-		PoseStack.Pose last = poseStack.last();
-		last.pose().setIdentity();
-		last.normal().setIdentity();
+		poseStack.setIdentity();
 		poseStack.translate(0.0D, (double) 3.3F, 1984.0D);
 		float f = 5.0F;
 		poseStack.scale(5.0F, 5.0F, 5.0F);
-		poseStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
-		poseStack.mulPose(Vector3f.XP.rotationDegrees(20.0F));
+		poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+		poseStack.mulPose(Axis.XP.rotationDegrees(20.0F));
 		float f1 = Mth.lerp(partialTicks, this.oOpen, this.open);
 		poseStack.translate((double) ((1.0F - f1) * 0.2F), (double) ((1.0F - f1) * 0.1F), (double) ((1.0F - f1) * 0.25F));
 		float f2 = -(1.0F - f1) * 90.0F - 90.0F;
-		poseStack.mulPose(Vector3f.YP.rotationDegrees(f2));
-		poseStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
+		poseStack.mulPose(Axis.YP.rotationDegrees(f2));
+		poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
 		float f3 = Mth.lerp(partialTicks, this.oFlip, this.flip) + 0.25F;
 		float f4 = Mth.lerp(partialTicks, this.oFlip, this.flip) + 0.75F;
 		f3 = (f3 - (float) Mth.fastFloor((double) f3)) * 1.6F - 0.3F;

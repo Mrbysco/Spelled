@@ -1,8 +1,9 @@
-package com.mrbysco.spelled.generator;
+package com.mrbysco.spelled.generator.data;
 
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import xyz.brassgoggledcoders.patchouliprovider.BookBuilder;
 import xyz.brassgoggledcoders.patchouliprovider.CategoryBuilder;
@@ -12,8 +13,8 @@ import xyz.brassgoggledcoders.patchouliprovider.PatchouliBookProvider;
 import java.util.function.Consumer;
 
 public class SpelledPatchouliProvider extends PatchouliBookProvider {
-	public SpelledPatchouliProvider(DataGenerator gen) {
-		super(gen, Reference.MOD_ID, "en_us");
+	public SpelledPatchouliProvider(PackOutput packOutput) {
+		super(packOutput, Reference.MOD_ID, "en_us");
 	}
 
 	@Override

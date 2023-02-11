@@ -7,6 +7,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -242,7 +243,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
@@ -318,7 +319,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 	public void explode() {
 		boolean flag = !(isSnow() || isWater()) && isFiery();
 		int size = (int) Math.ceil(1 * getSizeMultiplier());
-		this.level.explode(this, this.getX(), this.getY(), this.getZ(), (float) size, flag, flag ? BlockInteraction.DESTROY : BlockInteraction.BREAK);
+		this.level.explode(this, this.getX(), this.getY(), this.getZ(), (float) size, flag, flag ? Level.ExplosionInteraction.NONE : Level.ExplosionInteraction.BLOCK);
 	}
 
 	public List<BlockPos> getSizedPos(BlockPos pos) {

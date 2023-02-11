@@ -14,8 +14,8 @@ import com.mrbysco.spelled.handler.SpellHandler;
 import com.mrbysco.spelled.packets.PacketHandler;
 import com.mrbysco.spelled.registry.ReloadManager;
 import com.mrbysco.spelled.registry.SpelledRegistry;
+import com.mrbysco.spelled.registry.SpelledTab;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -38,8 +38,6 @@ public class Spelled {
 		ModLoadingContext.get().registerConfig(Type.COMMON, SpelledConfig.commonSpec);
 		eventBus.register(SpelledConfig.class);
 
-		ForgeMod.enableServerChatPreview();
-
 		SpelledRegistry.BLOCKS.register(eventBus);
 		SpelledRegistry.BLOCK_ENTITY_TYPES.register(eventBus);
 		SpelledRegistry.MENU_TYPES.register(eventBus);
@@ -47,6 +45,7 @@ public class Spelled {
 		SpelledRegistry.ENTITY_TYPES.register(eventBus);
 		SpelledRegistry.SOUND_EVENTS.register(eventBus);
 
+		eventBus.register(new SpelledTab());
 		eventBus.addListener(this::setup);
 		eventBus.addListener(this::onCapabilityRegister);
 

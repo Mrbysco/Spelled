@@ -1,4 +1,4 @@
-package com.mrbysco.spelled.container;
+package com.mrbysco.spelled.menu;
 
 import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.config.ConfigCache.ItemCost;
@@ -20,7 +20,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class AltarContainer extends AbstractContainerMenu {
+public class AltarMenu extends AbstractContainerMenu {
 
 	private final Container tableInventory = new SimpleContainer(1) {
 		/**
@@ -29,7 +29,7 @@ public class AltarContainer extends AbstractContainerMenu {
 		 */
 		public void setChanged() {
 			super.setChanged();
-			AltarContainer.this.slotsChanged(this);
+			AltarMenu.this.slotsChanged(this);
 		}
 	};
 	private final ContainerLevelAccess worldPosCallable;
@@ -39,11 +39,11 @@ public class AltarContainer extends AbstractContainerMenu {
 	public final int[] itemAmountCosts = new int[SpelledConfig.COMMON.maxLevel.get()];
 	public final Item[] itemCosts = new Item[SpelledConfig.COMMON.maxLevel.get()];
 
-	public AltarContainer(int id, Inventory playerInventory) {
+	public AltarMenu(int id, Inventory playerInventory) {
 		this(id, playerInventory, ContainerLevelAccess.NULL, 0);
 	}
 
-	public AltarContainer(int id, Inventory playerInventory, ContainerLevelAccess worldPosCallable, int currentLevel) {
+	public AltarMenu(int id, Inventory playerInventory, ContainerLevelAccess worldPosCallable, int currentLevel) {
 		super(SpelledRegistry.ALTAR_CONTAINER.get(), id);
 		this.worldPosCallable = worldPosCallable;
 

@@ -2,9 +2,7 @@ package com.mrbysco.spelled.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.entity.SpellEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -14,8 +12,10 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class SpellRenderer extends EntityRenderer<SpellEntity> {
 	private static final ResourceLocation PROJECTILE_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/item/projectile.png");
@@ -37,7 +37,7 @@ public class SpellRenderer extends EntityRenderer<SpellEntity> {
 		poseStack.pushPose();
 		this.preRenderCallback(entityIn, poseStack, partialTicks);
 		poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
-		poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+		poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 		PoseStack.Pose last = poseStack.last();
 		Matrix4f pose = last.pose();
 		Matrix3f normal = last.normal();

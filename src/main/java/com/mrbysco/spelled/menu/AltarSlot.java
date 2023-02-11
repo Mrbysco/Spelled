@@ -1,4 +1,4 @@
-package com.mrbysco.spelled.container;
+package com.mrbysco.spelled.menu;
 
 import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.util.LevelHelper;

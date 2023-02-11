@@ -1,8 +1,8 @@
 package com.mrbysco.spelled.block;
 
 import com.mrbysco.spelled.api.SpelledAPI;
-import com.mrbysco.spelled.container.AltarContainer;
-import com.mrbysco.spelled.tile.LevelingAltarTile;
+import com.mrbysco.spelled.menu.AltarMenu;
+import com.mrbysco.spelled.blockentity.LevelingAltarBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -132,7 +132,7 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new LevelingAltarTile(pos, state);
+		return new LevelingAltarBlockEntity(pos, state);
 	}
 
 	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
@@ -147,11 +147,11 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 	@Nullable
 	public MenuProvider getMenuProvider(BlockState state, Level worldIn, BlockPos pos) {
 		BlockEntity blockEntity = worldIn.getBlockEntity(pos);
-		if (blockEntity instanceof LevelingAltarTile) {
+		if (blockEntity instanceof LevelingAltarBlockEntity) {
 			Component itextcomponent = ((Nameable) blockEntity).getDisplayName();
 			return new SimpleMenuProvider((id, inventory, player) -> {
 				int level = worldIn.isClientSide ? 0 : SpelledAPI.getLevel((ServerPlayer) player);
-				return new AltarContainer(id, inventory, ContainerLevelAccess.create(worldIn, pos), level);
+				return new AltarMenu(id, inventory, ContainerLevelAccess.create(worldIn, pos), level);
 			}, itextcomponent);
 		} else {
 			return null;
@@ -164,8 +164,8 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 	public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 		if (stack.hasCustomHoverName()) {
 			BlockEntity blockEntity = worldIn.getBlockEntity(pos);
-			if (blockEntity instanceof LevelingAltarTile) {
-				((LevelingAltarTile) blockEntity).setCustomName(stack.getHoverName());
+			if (blockEntity instanceof LevelingAltarBlockEntity) {
+				((LevelingAltarBlockEntity) blockEntity).setCustomName(stack.getHoverName());
 			}
 		}
 

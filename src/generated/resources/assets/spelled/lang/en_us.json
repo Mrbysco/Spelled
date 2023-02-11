@@ -139,7 +139,7 @@
   "item.spelled.book.name": "Tome Of Knowledge",
   "item.spelled.creative_tome": "Tome Of Creative Knowledge",
   "item.spelled.spell_book": "Spell Book",
-  "itemGroup.spelled": "Spelled",
+  "itemGroup.spelled.tab": "Spelled",
   "key.spelled.category": "Spelled",
   "key.spelled.use": "Use Spell",
   "spelled.book.editTitle": "Enter Spell Name:",

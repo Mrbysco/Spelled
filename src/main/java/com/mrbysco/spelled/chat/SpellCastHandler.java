@@ -2,7 +2,6 @@ package com.mrbysco.spelled.chat;
 
 import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.util.SpellUtil;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.ServerChatEvent;
@@ -28,7 +27,7 @@ public class SpellCastHandler {
 	}
 
 	@SubscribeEvent
-	public void onChatEvent(ServerChatEvent.Submitted event) {
+	public void onChatEvent(ServerChatEvent event) {
 		final String regExp = "^[a-zA-Z\\s]*$";
 		String actualMessage = event.getRawText();
 		if (!actualMessage.isEmpty() && actualMessage.matches(regExp)) {

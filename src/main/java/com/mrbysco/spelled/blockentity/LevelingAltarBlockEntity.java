@@ -1,4 +1,4 @@
-package com.mrbysco.spelled.tile;
+package com.mrbysco.spelled.blockentity;
 
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.registry.SpelledRegistry;
@@ -12,14 +12,14 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 
-public class LevelingAltarTile extends BlockEntity implements Nameable {
+public class LevelingAltarBlockEntity extends BlockEntity implements Nameable {
 	private Component customName;
 
-	public LevelingAltarTile(BlockEntityType<?> entityType, BlockPos pos, BlockState state) {
+	public LevelingAltarBlockEntity(BlockEntityType<?> entityType, BlockPos pos, BlockState state) {
 		super(entityType, pos, state);
 	}
 
-	public LevelingAltarTile(BlockPos pos, BlockState state) {
+	public LevelingAltarBlockEntity(BlockPos pos, BlockState state) {
 		this(SpelledRegistry.LEVELING_ALTAR_TILE.get(), pos, state);
 	}
 

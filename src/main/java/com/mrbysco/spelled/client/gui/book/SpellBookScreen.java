@@ -11,11 +11,13 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.font.TextFieldHelper;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -127,7 +129,6 @@ public class SpellBookScreen extends Screen {
 
 	@Override
 	protected void init() {
-		this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
 		int centerWidth = this.width / 2;
 		int listWidth = 0;
 		for (AdjectiveEntry adjectiveEntry : adjectives) {
@@ -138,8 +139,7 @@ public class SpellBookScreen extends Screen {
 		int structureWidth = this.width - listWidth - (PADDING * 3);
 		int closeButtonWidth = Math.min(structureWidth, 200);
 		int y = this.height - 20 - PADDING;
-		this.addRenderableWidget(this.cancelButton = new Button(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20,
-				Component.translatable("gui.cancel"), b -> {
+		this.cancelButton = this.addRenderableWidget(Button.builder(CommonComponents.GUI_CANCEL, (button) -> {
 			if (this.isSigning) {
 				this.isSigning = false;
 			} else {
@@ -147,11 +147,10 @@ public class SpellBookScreen extends Screen {
 			}
 
 			this.updateButtonVisibility();
-		}));
+		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
 
 		y -= 18 + PADDING;
-		this.addRenderableWidget(this.insertButton = new Button(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20,
-				Component.translatable("spelled.screen.selection.select"), b -> {
+		this.insertButton = this.addRenderableWidget(Button.builder(Component.translatable("spelled.screen.selection.select"), (button) -> {
 			if (focused != null) {
 				if (focused.isType()) {
 					typeWord = focused.getAdjectiveName();
@@ -159,11 +158,10 @@ public class SpellBookScreen extends Screen {
 					selectedAdjectives.add(focused.getAdjectiveName());
 				}
 			}
-		}));
+		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
 
 		y -= 18 + PADDING;
-		this.addRenderableWidget(this.removeButton = new Button(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20,
-				Component.translatable("spelled.screen.selection.remove"), b -> {
+		this.removeButton = this.addRenderableWidget(Button.builder(Component.translatable("spelled.screen.selection.remove"), (button) -> {
 			if (selectedAdjectives.size() == 1) {
 				selectedAdjectives.clear();
 			} else {
@@ -171,7 +169,7 @@ public class SpellBookScreen extends Screen {
 					selectedAdjectives.remove(selectedAdjectives.size() - 1);
 				}
 			}
-		}));
+		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
 
 		y -= 14 + PADDING;
 		search = new EditBox(getFont(), centerWidth - listWidth / 2 + PADDING + 1, y, listWidth - 2, 14,
@@ -189,42 +187,47 @@ public class SpellBookScreen extends Screen {
 
 		final int width = listWidth / numButtons;
 		int x = centerWidth + PADDING - width;
-		this.addRenderableWidget(SortType.A_TO_Z.button = new Button(x, PADDING, width - buttonMargin, 20, SortType.A_TO_Z.getButtonText(), b -> resortAdjectives(SortType.A_TO_Z)));
+		SortType.A_TO_Z.button = this.addRenderableWidget(Button.builder(SortType.A_TO_Z.getButtonText(), (button) -> {
+			resortAdjectives(SortType.A_TO_Z);
+		}).bounds(x, PADDING, width - buttonMargin, 20).build());
 		x += width + buttonMargin;
-		this.addRenderableWidget(SortType.Z_TO_A.button = new Button(x, PADDING, width - buttonMargin, 20, SortType.Z_TO_A.getButtonText(), b -> resortAdjectives(SortType.Z_TO_A)));
+		SortType.Z_TO_A.button = this.addRenderableWidget(Button.builder(SortType.Z_TO_A.getButtonText(), (button) -> {
+			resortAdjectives(SortType.Z_TO_A);
+		}).bounds(x, PADDING, width - buttonMargin, 20).build());
 
-		this.addRenderableWidget(this.signButton = new Button(this.width - (60 + PADDING), PADDING, 60, 20, Component.translatable("book.signButton"), b -> {
+		this.signButton = this.addRenderableWidget(Button.builder(Component.translatable("spelled.screen.finalizeButton"), (button) -> {
 			this.isSigning = true;
 			this.updateButtonVisibility();
-		}, (button, poseStack, mouseX, mouseY) -> {
-			boolean flag = selectedAdjectives.isEmpty();
-			boolean flag2 = typeWord.isEmpty();
+		}).bounds(this.width - (60 + PADDING), PADDING, 60, 20).build());
 
-			if (flag || flag2) {
-				StringBuilder builder = new StringBuilder();
-				if (flag) {
-					builder.append(I18n.get("spelled.screen.missing_adjectives")).append(" ");
-				}
-				if (flag2) {
-					builder.append(I18n.get("spelled.screen.missing_type"));
-				}
-				String errorMessage = builder.toString();
-				if (!errorMessage.isEmpty()) {
-					renderTooltip(poseStack, Component.literal(errorMessage).withStyle(ChatFormatting.RED), mouseX, mouseY);
-				}
-			}
-		}));
-		this.addRenderableWidget(this.finalizeButton = new Button(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20,
-				Component.translatable("spelled.book.finalizeButton"), (button) -> {
+		this.finalizeButton = this.addRenderableWidget(Button.builder(Component.translatable("book.signButton"), (button) -> {
 			if (this.isSigning) {
 				this.saveChanges(true);
 				this.minecraft.setScreen((Screen) null);
 			}
-		}));
+		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
 
 		this.updateButtonVisibility();
 		resortAdjectives(SortType.A_TO_Z);
 		updateCache();
+	}
+
+	private Component getFinalizeTooltip() {
+		boolean flag = selectedAdjectives.isEmpty();
+		boolean flag2 = typeWord.isEmpty();
+
+		if (flag || flag2) {
+			StringBuilder builder = new StringBuilder();
+			if (flag) {
+				builder.append(I18n.get("spelled.screen.missing_adjectives")).append(" ");
+			}
+			if (flag2) {
+				builder.append(I18n.get("spelled.screen.missing_type"));
+			}
+			String errorMessage = builder.toString();
+			return Component.literal(errorMessage);
+		}
+		return Component.empty();
 	}
 
 	private void updateButtonVisibility() {
@@ -239,6 +242,8 @@ public class SpellBookScreen extends Screen {
 
 	@Override
 	public void tick() {
+		this.signButton.setTooltip(Tooltip.create(getFinalizeTooltip()));
+
 		super.tick();
 		++this.frameTick;
 		if (!isSigning) {
@@ -290,7 +295,7 @@ public class SpellBookScreen extends Screen {
 
 			Component text = Component.translatable("spelled.screen.search");
 			drawCenteredString(poseStack, font, text, this.width / 2 + PADDING,
-					search.y - font.lineHeight - 2, 16777215);
+					search.getY() - font.lineHeight - 2, 16777215);
 
 			this.search.render(poseStack, mouseX, mouseY, partialTicks);
 
@@ -481,7 +486,6 @@ public class SpellBookScreen extends Screen {
 
 	@Override
 	public void removed() {
-		this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
 		super.removed();
 	}
 }
