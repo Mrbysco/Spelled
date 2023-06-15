@@ -195,7 +195,7 @@ public class SpellBookScreen extends Screen {
 			resortAdjectives(SortType.Z_TO_A);
 		}).bounds(x, PADDING, width - buttonMargin, 20).build());
 
-		this.signButton = this.addRenderableWidget(Button.builder(Component.translatable("spelled.screen.finalizeButton"), (button) -> {
+		this.signButton = this.addRenderableWidget(Button.builder(Component.translatable("spelled.book.finalizeButton"), (button) -> {
 			this.isSigning = true;
 			this.updateButtonVisibility();
 		}).bounds(this.width - (60 + PADDING), PADDING, 60, 20).build());
@@ -289,7 +289,7 @@ public class SpellBookScreen extends Screen {
 			this.font.draw(poseStack, ireorderingprocessor, (float) (i + 36 + (114 - l) / 2), 50.0F + j, 16777215);
 			int i1 = this.font.width(this.ownerText);
 			this.font.draw(poseStack, this.ownerText, (float) (i + 36 + (114 - i1) / 2), 60.0F + j, 16777215);
-			this.font.drawWordWrap(FINALIZE_WARNING_LABEL, i + 36, 82 + j, 114, 16777215);
+			this.font.drawWordWrap(poseStack, FINALIZE_WARNING_LABEL, i + 36, 82 + j, 114, 16777215);
 		} else {
 			this.adjectiveWidget.render(poseStack, mouseX, mouseY, partialTicks);
 
@@ -302,7 +302,7 @@ public class SpellBookScreen extends Screen {
 			this.font.draw(poseStack, this.getTitle(), 5, 5, 16777215);
 
 			poseStack.pushPose();
-			this.itemRenderer.blitOffset = 100.0F;
+			poseStack.translate(0.0F, 0.0F, 100.0F);
 
 			RenderSystem.enableDepthTest();
 			int itemX = width / 2 - 2;
@@ -312,8 +312,8 @@ public class SpellBookScreen extends Screen {
 			RenderSystem.setShaderTexture(0, STATS_ICON_LOCATION);
 			blit(poseStack, itemX - 1, itemY - 1, 0, 0, 18, 18, 128, 128);
 
-			this.itemRenderer.renderAndDecorateItem(stack, itemX, itemY);
-			this.itemRenderer.renderGuiItemDecorations(this.font, stack, itemX, itemY, null);
+			this.itemRenderer.renderAndDecorateItem(poseStack, stack, itemX, itemY);
+			this.itemRenderer.renderGuiItemDecorations(poseStack, this.font, stack, itemX, itemY, null);
 			RenderSystem.disableDepthTest();
 			poseStack.popPose();
 

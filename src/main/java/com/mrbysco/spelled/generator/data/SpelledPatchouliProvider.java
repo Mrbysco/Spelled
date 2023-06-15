@@ -2,7 +2,6 @@ package com.mrbysco.spelled.generator.data;
 
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import xyz.brassgoggledcoders.patchouliprovider.BookBuilder;
@@ -29,6 +28,7 @@ public class SpelledPatchouliProvider extends PatchouliBookProvider {
 				.setI18n(true)
 //                .setUseBlockyFont(true)
 				.setFillerTexture("spelled:textures/gui/page_filler.png")
+				.setUseResourcePack(true)
 				.addMacro("$(item)", "$(#94fcf5)")
 				.addMacro("$(thing)", "$(#94fcf5)")
 

@@ -112,8 +112,8 @@ public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
 		poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
 		float f3 = Mth.lerp(partialTicks, this.oFlip, this.flip) + 0.25F;
 		float f4 = Mth.lerp(partialTicks, this.oFlip, this.flip) + 0.75F;
-		f3 = (f3 - (float) Mth.fastFloor((double) f3)) * 1.6F - 0.3F;
-		f4 = (f4 - (float) Mth.fastFloor((double) f4)) * 1.6F - 0.3F;
+		f3 = (f3 - (float) Mth.floor((double) f3)) * 1.6F - 0.3F;
+		f4 = (f4 - (float) Mth.floor((double) f4)) * 1.6F - 0.3F;
 		if (f3 < 0.0F) {
 			f3 = 0.0F;
 		}
@@ -174,7 +174,6 @@ public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
 
 		int j1 = i + 60;
 		int k1 = j1 + 20;
-		this.setBlitOffset(0);
 		RenderSystem.setShaderTexture(0, ALTAR_GUI_TEXTURE);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		String s = "";

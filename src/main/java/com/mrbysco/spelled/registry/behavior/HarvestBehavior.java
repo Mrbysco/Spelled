@@ -1,6 +1,5 @@
 package com.mrbysco.spelled.registry.behavior;
 
-import com.mrbysco.spelled.Spelled;
 import com.mrbysco.spelled.api.behavior.BaseBehavior;
 import com.mrbysco.spelled.entity.SpellEntity;
 import net.minecraft.core.BlockPos;

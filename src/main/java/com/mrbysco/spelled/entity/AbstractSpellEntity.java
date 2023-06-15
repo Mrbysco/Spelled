@@ -20,7 +20,6 @@ import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.ClipContext.Fluid;
-import net.minecraft.world.level.Explosion.BlockInteraction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -324,7 +323,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 
 	public List<BlockPos> getSizedPos(BlockPos pos) {
 		if (getSizeMultiplier() > 1) {
-			double offset = getSizeMultiplier() * 0.5f;
+			int offset = Math.round(getSizeMultiplier() * 0.5f);
 			List<BlockPos> positionList = new ArrayList<>();
 			Iterable<BlockPos> positions = BlockPos.betweenClosed(pos.offset(-offset, -offset, -offset), pos.offset(offset, offset, offset));
 			for (BlockPos position : positions) {

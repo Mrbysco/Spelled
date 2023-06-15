@@ -50,6 +50,8 @@
   "advancement.spelled.viridis": "Viridis",
   "advancement.spelled.viridis.desc": "Green",
   "block.spelled.leveling_altar": "Leveling Altar",
+  "death.attack.spelled.magic": "%1$s was killed by %2$s using a magic projectile",
+  "entity.spelled.spell": "Spell projectile",
   "info.spelled.book.colors.albus.name": "Albus",
   "info.spelled.book.colors.albus.text": "You've learned how to say \"White\" in Latin",
   "info.spelled.book.colors.aqua.name": "Aqua",

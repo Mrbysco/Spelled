@@ -1,9 +1,9 @@
 package com.mrbysco.spelled;
 
 import com.mrbysco.spelled.entity.AbstractSpellEntity;
+import com.mrbysco.spelled.registry.SpelledDamageTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
 
 public class Reference {
 	public static final String MOD_ID = "spelled";
@@ -18,6 +18,6 @@ public class Reference {
 	public static final String Phrase = "Yu Mo Gui Gwai Fai Di Zao";
 
 	public static DamageSource causeMagicDamage(AbstractSpellEntity spell) {
-		return new EntityDamageSource(MOD_PREFIX + "magic", spell);
+		return spell.damageSources().source(SpelledDamageTypes.MAGIC, spell.getEffectSource());
 	}
 }

@@ -2,12 +2,12 @@ package com.mrbysco.spelled.registry;
 
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.block.LevelingAltarBlock;
-import com.mrbysco.spelled.menu.AltarMenu;
+import com.mrbysco.spelled.blockentity.LevelingAltarBlockEntity;
 import com.mrbysco.spelled.entity.SpellEntity;
 import com.mrbysco.spelled.item.CreativeTomeItem;
 import com.mrbysco.spelled.item.SpellbookItem;
 import com.mrbysco.spelled.item.TomeItem;
-import com.mrbysco.spelled.blockentity.LevelingAltarBlockEntity;
+import com.mrbysco.spelled.menu.AltarMenu;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;

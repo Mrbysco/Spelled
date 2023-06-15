@@ -8,7 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
-import java.awt.Color;
+import java.awt.*;
 
 public class ColorKeyword extends BaseKeyword {
 	private final ChatFormatting color;

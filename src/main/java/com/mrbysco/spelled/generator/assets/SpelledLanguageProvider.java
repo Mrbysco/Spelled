@@ -8,7 +8,7 @@ import net.minecraftforge.common.data.LanguageProvider;
 
 import java.util.function.Supplier;
 
-public class SpelledLanguageProvider  extends LanguageProvider {
+public class SpelledLanguageProvider extends LanguageProvider {
 	public SpelledLanguageProvider(PackOutput packOutput) {
 		super(packOutput, Reference.MOD_ID, "en_us");
 	}
@@ -52,10 +52,14 @@ public class SpelledLanguageProvider  extends LanguageProvider {
 		add("spelled.spell.insufficient_level", "%s failed to cast. You're level is too low to cast this spell, you need at least level %s, you have %s");
 		add("spelled.spell.too_many_words", "%s failed to cast. You're level is too low to cast a spell with this many words, your level only allows for %s words");
 
+		add("death.attack.spelled.magic", "%1$s was killed by %2$s using a magic projectile");
+
 		addBlock(SpelledRegistry.LEVELING_ALTAR, "Leveling Altar");
 		addItem(SpelledRegistry.KNOWLEDGE_TOME, "Tome Of Ancient Knowledge");
 		addItem(SpelledRegistry.CREATIVE_TOME, "Tome Of Creative Knowledge");
 		addItem(SpelledRegistry.SPELL_BOOK, "Spell Book");
+
+		addEntityType(SpelledRegistry.SPELL, "Spell projectile");
 
 		//Tome
 		add("spelled.tome.description", "Contains knowledge about \"%s\"");

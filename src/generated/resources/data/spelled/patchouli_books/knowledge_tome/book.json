@@ -12,5 +12,6 @@
   "model": "spelled:knowledge_tome",
   "name": "item.spelled.book.name",
   "show_progress": false,
-  "subtitle": "info.spelled.book.subtitle"
+  "subtitle": "info.spelled.book.subtitle",
+  "use_resource_pack": true
 }

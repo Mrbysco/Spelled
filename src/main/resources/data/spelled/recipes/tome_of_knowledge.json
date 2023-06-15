@@ -4,6 +4,7 @@
     "item": "patchouli:guide_book",
     "nbt": "{\"patchouli:book\": \"spelled:knowledge_tome\"}"
   },
+  "category": "misc",
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {

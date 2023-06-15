@@ -20,7 +20,7 @@ public class SpelledTab {
 		TAB = event.registerCreativeModeTab(new ResourceLocation(Reference.MOD_ID, "tab"), builder ->
 				builder.icon(() -> new ItemStack(SpelledRegistry.LEVELING_ALTAR_ITEM.get()))
 						.title(Component.translatable("itemGroup.spelled.tab"))
-						.displayItems((features, output, hasPermissions) -> {
+						.displayItems((displayParameters, output) -> {
 							List<ItemStack> stacks = SpelledRegistry.ITEMS.getEntries().stream().map(reg -> new ItemStack(reg.get())).toList();
 							output.acceptAll(stacks);
 

@@ -47,7 +47,7 @@ public class RayTraceHelper {
 		Entity nearest = null;
 		double distance = 0;
 
-		AABB bb = new AABB(new BlockPos(from), new BlockPos(to))
+		AABB bb = new AABB(BlockPos.containing(from), BlockPos.containing(to))
 				.expandTowards(aaExpansion.x, aaExpansion.y, aaExpansion.z)
 				.inflate(aaGrowth);
 		List<E> entities = world.getEntitiesOfClass(clazz, bb, predicate);

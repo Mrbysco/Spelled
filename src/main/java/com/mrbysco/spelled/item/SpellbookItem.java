@@ -7,7 +7,6 @@ import com.mrbysco.spelled.client.gui.book.AdjectiveEntry;
 import com.mrbysco.spelled.util.SpellUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringUtil;

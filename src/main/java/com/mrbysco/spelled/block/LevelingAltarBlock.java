@@ -1,8 +1,8 @@
 package com.mrbysco.spelled.block;
 
 import com.mrbysco.spelled.api.SpelledAPI;
-import com.mrbysco.spelled.menu.AltarMenu;
 import com.mrbysco.spelled.blockentity.LevelingAltarBlockEntity;
+import com.mrbysco.spelled.menu.AltarMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;

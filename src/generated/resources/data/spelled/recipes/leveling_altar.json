@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "B": {
+      "item": "minecraft:book"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "R": {
+      "tag": "forge:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "IRI",
+    "RBR",
+    "IRI"
+  ],
+  "result": {
+    "item": "spelled:leveling_altar"
+  },
+  "show_notification": true
+}
