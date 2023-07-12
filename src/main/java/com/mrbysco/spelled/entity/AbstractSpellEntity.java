@@ -46,12 +46,12 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 	private static final EntityDataAccessor<Boolean> INKY = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Float> SIZE_MULTIPLIER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.FLOAT);
 
-	public AbstractSpellEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level worldIn) {
-		super(entityType, worldIn);
+	public AbstractSpellEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level level) {
+		super(entityType, level);
 	}
 
-	public AbstractSpellEntity(EntityType<? extends AbstractHurtingProjectile> entityType, LivingEntity shooter, Level worldIn) {
-		super(SpelledRegistry.SPELL.get(), worldIn);
+	public AbstractSpellEntity(EntityType<? extends AbstractHurtingProjectile> entityType, LivingEntity shooter, Level level) {
+		super(SpelledRegistry.SPELL.get(), level);
 		this.setPos(shooter.getX(), shooter.getEyeY() - (double) 0.1F, shooter.getZ());
 		this.setOwner(shooter);
 	}
@@ -279,7 +279,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 
 		if (isCold() || isWater()) {
 			Entity entity = this.getOwner();
-			if (this.level.isClientSide || (entity == null || entity.isAlive()) && this.level.hasChunkAt(this.blockPosition())) {
+			if (this.level().isClientSide || (entity == null || entity.isAlive()) && this.level().hasChunkAt(this.blockPosition())) {
 				HitResult raytraceresult = rayTraceWater(this::canHitEntity);
 				if (raytraceresult.getType() != HitResult.Type.MISS) {
 					this.onHit(raytraceresult);
@@ -299,15 +299,15 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 
 	public HitResult rayTraceWater(Predicate<Entity> entityPredicate) {
 		Vec3 vector3d = this.getDeltaMovement();
-		Level world = this.level;
+		Level level = this.level();
 		Vec3 vector3d1 = this.position();
 		Vec3 vector3d2 = vector3d1.add(vector3d);
-		HitResult raytraceresult = world.clip(new ClipContext(vector3d1, vector3d2, ClipContext.Block.COLLIDER, Fluid.SOURCE_ONLY, this));
+		HitResult raytraceresult = level.clip(new ClipContext(vector3d1, vector3d2, ClipContext.Block.COLLIDER, Fluid.SOURCE_ONLY, this));
 		if (raytraceresult.getType() != HitResult.Type.MISS) {
 			vector3d2 = raytraceresult.getLocation();
 		}
 
-		HitResult raytraceresult1 = ProjectileUtil.getEntityHitResult(world, this, vector3d1, vector3d2, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), entityPredicate);
+		HitResult raytraceresult1 = ProjectileUtil.getEntityHitResult(level, this, vector3d1, vector3d2, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), entityPredicate);
 		if (raytraceresult1 != null) {
 			raytraceresult = raytraceresult1;
 		}
@@ -318,7 +318,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 	public void explode() {
 		boolean flag = !(isSnow() || isWater()) && isFiery();
 		int size = (int) Math.ceil(1 * getSizeMultiplier());
-		this.level.explode(this, this.getX(), this.getY(), this.getZ(), (float) size, flag, flag ? Level.ExplosionInteraction.NONE : Level.ExplosionInteraction.BLOCK);
+		this.level().explode(this, this.getX(), this.getY(), this.getZ(), (float) size, flag, flag ? Level.ExplosionInteraction.NONE : Level.ExplosionInteraction.BLOCK);
 	}
 
 	public List<BlockPos> getSizedPos(BlockPos pos) {
@@ -342,7 +342,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 			AABB hitbox = new AABB(hitEntity.getX() - 0.5f, hitEntity.getY() - 0.5f, hitEntity.getZ() - 0.5f, hitEntity.getX() + 0.5f, hitEntity.getY() + 0.5f, hitEntity.getZ() + 0.5f)
 					.expandTowards(-offset, -offset, -offset).expandTowards(offset, offset, offset);
 
-			return level.getEntities(this, hitbox, Entity::isAlive);
+			return this.level().getEntities(this, hitbox, Entity::isAlive);
 		}
 		return Collections.singletonList(hitEntity);
 	}

@@ -4,6 +4,7 @@ import com.mrbysco.spelled.api.behavior.BaseBehavior;
 import com.mrbysco.spelled.entity.SpellEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
@@ -17,10 +18,11 @@ public class LavaBehavior extends BaseBehavior {
 
 	@Override
 	public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
-		BlockState offState = spell.level.getBlockState(offPos);
+		Level level = spell.level();
+		BlockState offState = level.getBlockState(offPos);
 
 		if (offState.canBeReplaced(Fluids.LAVA)) {
-			spell.level.setBlockAndUpdate(offPos, Blocks.LAVA.defaultBlockState());
+			level.setBlockAndUpdate(offPos, Blocks.LAVA.defaultBlockState());
 		}
 	}
 

@@ -95,7 +95,7 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 		return RenderShape.MODEL;
 	}
 
-	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 		Direction direction = state.getValue(HORIZONTAL_FACING);
 		if (SHAPE != null && SHAPE_2 != null) return direction.getAxis() == Direction.Axis.X ? SHAPE_2 : SHAPE;
 
@@ -103,8 +103,8 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, RandomSource rand) {
-		super.animateTick(stateIn, worldIn, pos, rand);
+	public void animateTick(BlockState stateIn, Level level, BlockPos pos, RandomSource rand) {
+		super.animateTick(stateIn, level, pos, rand);
 
 		for (int i = -2; i <= 2; ++i) {
 			for (int j = -2; j <= 2; ++j) {
@@ -115,12 +115,12 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 				if (rand.nextInt(16) == 0) {
 					for (int k = 0; k <= 1; ++k) {
 						BlockPos blockpos = pos.offset(i, k, j);
-						if (worldIn.getBlockState(blockpos).getEnchantPowerBonus(worldIn, blockpos) > 0) {
-							if (!worldIn.isEmptyBlock(pos.offset(i / 2, 0, j / 2))) {
+						if (level.getBlockState(blockpos).getEnchantPowerBonus(level, blockpos) > 0) {
+							if (!level.isEmptyBlock(pos.offset(i / 2, 0, j / 2))) {
 								break;
 							}
 
-							worldIn.addParticle(ParticleTypes.ENCHANT, (double) pos.getX() + 0.5D, (double) pos.getY() + 2.0D, (double) pos.getZ() + 0.5D, (double) ((float) i + rand.nextFloat()) - 0.5D, (double) ((float) k - rand.nextFloat() - 1.0F), (double) ((float) j + rand.nextFloat()) - 0.5D);
+							level.addParticle(ParticleTypes.ENCHANT, (double) pos.getX() + 0.5D, (double) pos.getY() + 2.0D, (double) pos.getZ() + 0.5D, (double) ((float) i + rand.nextFloat()) - 0.5D, (double) ((float) k - rand.nextFloat() - 1.0F), (double) ((float) j + rand.nextFloat()) - 0.5D);
 						}
 					}
 				}
@@ -135,23 +135,23 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 		return new LevelingAltarBlockEntity(pos, state);
 	}
 
-	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-		if (worldIn.isClientSide) {
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+		if (level.isClientSide) {
 			return InteractionResult.SUCCESS;
 		} else {
-			player.openMenu(state.getMenuProvider(worldIn, pos));
+			player.openMenu(state.getMenuProvider(level, pos));
 			return InteractionResult.CONSUME;
 		}
 	}
 
 	@Nullable
-	public MenuProvider getMenuProvider(BlockState state, Level worldIn, BlockPos pos) {
-		BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+	public MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
+		BlockEntity blockEntity = level.getBlockEntity(pos);
 		if (blockEntity instanceof LevelingAltarBlockEntity) {
 			Component itextcomponent = ((Nameable) blockEntity).getDisplayName();
 			return new SimpleMenuProvider((id, inventory, player) -> {
-				int level = worldIn.isClientSide ? 0 : SpelledAPI.getLevel((ServerPlayer) player);
-				return new AltarMenu(id, inventory, ContainerLevelAccess.create(worldIn, pos), level);
+				int playerLevel = level.isClientSide ? 0 : SpelledAPI.getLevel((ServerPlayer) player);
+				return new AltarMenu(id, inventory, ContainerLevelAccess.create(level, pos), playerLevel);
 			}, itextcomponent);
 		} else {
 			return null;
@@ -161,9 +161,9 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 	/**
 	 * Called by ItemBlocks after a block is set in the world, to allow post-place logic
 	 */
-	public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+	public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 		if (stack.hasCustomHoverName()) {
-			BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+			BlockEntity blockEntity = level.getBlockEntity(pos);
 			if (blockEntity instanceof LevelingAltarBlockEntity) {
 				((LevelingAltarBlockEntity) blockEntity).setCustomName(stack.getHoverName());
 			}
@@ -171,7 +171,7 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 
 	}
 
-	public boolean isPathfindable(BlockState state, BlockGetter worldIn, BlockPos pos, PathComputationType type) {
+	public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
 		return false;
 	}
 

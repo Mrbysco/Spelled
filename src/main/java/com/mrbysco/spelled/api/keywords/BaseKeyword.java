@@ -19,7 +19,7 @@ public class BaseKeyword implements IKeyword {
 	}
 
 	@Override
-	public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
+	public void cast(Level level, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
 		//Do stuff
 	}
 

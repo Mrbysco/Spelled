@@ -7,6 +7,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,19 +21,20 @@ public class SnowBehavior extends BaseBehavior {
 
 	@Override
 	public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
-		BlockState hitState = spell.level.getBlockState(pos);
-		BlockState offState = spell.level.getBlockState(offPos);
+		Level level = spell.level();
+		BlockState hitState = level.getBlockState(pos);
+		BlockState offState = level.getBlockState(offPos);
 
 		if (offState.getBlock() instanceof SnowLayerBlock && offState.getValue(SnowLayerBlock.LAYERS) < 8) {
 			int layers = offState.getValue(SnowLayerBlock.LAYERS);
-			spell.level.setBlockAndUpdate(offPos, offState.getBlock().defaultBlockState().setValue(SnowLayerBlock.LAYERS, layers + 1));
+			level.setBlockAndUpdate(offPos, offState.getBlock().defaultBlockState().setValue(SnowLayerBlock.LAYERS, layers + 1));
 		} else if (hitState.getBlock() instanceof SnowLayerBlock && hitState.getValue(SnowLayerBlock.LAYERS) < 8) {
 			int layers = hitState.getValue(SnowLayerBlock.LAYERS);
-			spell.level.setBlockAndUpdate(pos, hitState.getBlock().defaultBlockState().setValue(SnowLayerBlock.LAYERS, layers + 1));
+			level.setBlockAndUpdate(pos, hitState.getBlock().defaultBlockState().setValue(SnowLayerBlock.LAYERS, layers + 1));
 		} else {
 			BlockState snowState = Blocks.SNOW.defaultBlockState();
-			if (offState.getMaterial().isReplaceable() && snowState.canSurvive(spell.level, offPos))
-				spell.level.setBlockAndUpdate(offPos, snowState);
+			if (offState.canBeReplaced() && snowState.canSurvive(level, offPos))
+				level.setBlockAndUpdate(offPos, snowState);
 		}
 	}
 

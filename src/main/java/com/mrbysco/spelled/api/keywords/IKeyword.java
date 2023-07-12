@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 
 public interface IKeyword {
 
-	void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective);
+	void cast(Level level, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective);
 
 	/*
 	 * @return keyword

@@ -23,8 +23,8 @@ public class CreativeTomeItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
-		if (!worldIn.isClientSide) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player playerIn, InteractionHand handIn) {
+		if (!level.isClientSide) {
 			ItemStack itemstack = playerIn.getItemInHand(handIn);
 			playerIn.startUsingItem(handIn);
 			List<String> adjectives = KeywordRegistry.instance().getAdjectives();
@@ -35,7 +35,7 @@ public class CreativeTomeItem extends Item {
 			playerIn.displayClientMessage(Component.translatable("spelled.tome.success"), true);
 			return InteractionResultHolder.consume(itemstack);
 		}
-		return super.use(worldIn, playerIn, handIn);
+		return super.use(level, playerIn, handIn);
 	}
 
 	@Override
@@ -49,8 +49,8 @@ public class CreativeTomeItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flagIn) {
 		tooltip.add(Component.translatable("spelled.creative_tome.description").withStyle(ChatFormatting.DARK_PURPLE));
-		super.appendHoverText(stack, worldIn, tooltip, flagIn);
+		super.appendHoverText(stack, level, tooltip, flagIn);
 	}
 }

@@ -14,7 +14,7 @@ public class LiquidKeyword extends BaseKeyword {
 	}
 
 	@Override
-	public void cast(Level worldIn, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
+	public void cast(Level level, ServerPlayer caster, SpellEntity spell, @Nullable IKeyword adjective) {
 		if (spell != null) {
 			spell.insertAction("extinguish");
 			if (adjective instanceof FireKeyword) {

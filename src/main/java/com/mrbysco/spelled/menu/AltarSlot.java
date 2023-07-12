@@ -17,7 +17,7 @@ public class AltarSlot extends Slot {
 	}
 
 	public boolean mayPlace(ItemStack stack) {
-		int currentLevel = !player.level.isClientSide ? SpelledAPI.getLevel((ServerPlayer) player) : 0;
+		int currentLevel = !player.level().isClientSide ? SpelledAPI.getLevel((ServerPlayer) player) : 0;
 		return stack.getItem() == LevelHelper.getItemCost(currentLevel + 1).getItem();
 	}
 }

@@ -7,6 +7,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.IceBlock;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -22,11 +23,12 @@ public class ColdBehavior extends BaseBehavior {
 
 	@Override
 	public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
-		BlockState hitState = spell.level.getBlockState(pos);
+		Level level = spell.level();
+		BlockState hitState = level.getBlockState(pos);
 		if (hitState.getBlock() instanceof LiquidBlock && ((LiquidBlock) hitState.getBlock()).getFluid() == Fluids.WATER)
-			spell.level.setBlockAndUpdate(pos, Blocks.ICE.defaultBlockState());
+			level.setBlockAndUpdate(pos, Blocks.ICE.defaultBlockState());
 		if (hitState.getBlock() instanceof IceBlock)
-			spell.level.setBlockAndUpdate(pos, Blocks.PACKED_ICE.defaultBlockState());
+			level.setBlockAndUpdate(pos, Blocks.PACKED_ICE.defaultBlockState());
 	}
 
 	@Override

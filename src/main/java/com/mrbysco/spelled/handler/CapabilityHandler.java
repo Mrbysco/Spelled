@@ -22,7 +22,7 @@ public class CapabilityHandler {
 	@SubscribeEvent
 	public void playerLoggedInEvent(PlayerLoggedInEvent event) {
 		Player player = event.getEntity();
-		if (!player.level.isClientSide) {
+		if (!player.level().isClientSide) {
 			SpelledAPI.syncCap((ServerPlayer) player);
 		}
 	}
@@ -30,7 +30,7 @@ public class CapabilityHandler {
 	@SubscribeEvent
 	public void onDeath(PlayerEvent.Clone event) {
 		Player newPlayer = event.getEntity();
-		if (event.isWasDeath() && !newPlayer.level.isClientSide) {
+		if (event.isWasDeath() && !newPlayer.level().isClientSide) {
 			Player original = event.getOriginal();
 			original.reviveCaps();
 
@@ -40,7 +40,7 @@ public class CapabilityHandler {
 					}));
 			original.invalidateCaps();
 		}
-		if (!newPlayer.level.isClientSide) {
+		if (!newPlayer.level().isClientSide) {
 			SpelledAPI.syncCap((ServerPlayer) newPlayer);
 		}
 	}

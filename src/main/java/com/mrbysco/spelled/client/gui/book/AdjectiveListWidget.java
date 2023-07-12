@@ -1,9 +1,9 @@
 package com.mrbysco.spelled.client.gui.book;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrbysco.spelled.client.gui.book.AdjectiveListWidget.ListEntry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -37,8 +37,8 @@ public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 	}
 
 	@Override
-	protected void renderBackground(PoseStack poseSTack) {
-		this.parent.renderBackground(poseSTack);
+	protected void renderBackground(GuiGraphics guiGraphics) {
+		this.parent.renderBackground(guiGraphics);
 	}
 
 	public class ListEntry extends ObjectSelectionList.Entry<ListEntry> {
@@ -51,15 +51,15 @@ public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 		}
 
 		@Override
-		public void render(PoseStack poseStack, int entryIdx, int top, int left, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_, float partialTicks) {
+		public void render(GuiGraphics guiGraphics, int entryIdx, int top, int left, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_, float partialTicks) {
 			Component name = Component.literal(getAdjectiveName());
 			Font font = this.parent.getFont();
 
-			font.draw(poseStack, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
-					(this.parent.width / 2) - (font.width(name) / 2) + 3, top + 6, 0xFFFFFF);
+			guiGraphics.drawString(font, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
+					(this.parent.width / 2) - (font.width(name) / 2) + 3, top + 6, 0xFFFFFF, false);
 
 			if (isMouseOver(mouseX, mouseY)) {
-				parent.renderTooltip(poseStack, getDescription(), mouseX, mouseY);
+				guiGraphics.renderTooltip(font, getDescription(), mouseX, mouseY);
 			}
 		}
 

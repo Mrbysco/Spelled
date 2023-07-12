@@ -18,23 +18,23 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SpellEntity extends AbstractSpellEntity {
-	public SpellEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level world) {
-		super(entityType, world);
+	public SpellEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level level) {
+		super(entityType, level);
 	}
 
-	public SpellEntity(LivingEntity shooter, Level worldIn) {
-		super(SpelledRegistry.SPELL.get(), shooter, worldIn);
+	public SpellEntity(LivingEntity shooter, Level level) {
+		super(SpelledRegistry.SPELL.get(), shooter, level);
 	}
 
-	public SpellEntity(SpawnEntity spawnEntity, Level worldIn) {
-		this(SpelledRegistry.SPELL.get(), worldIn);
+	public SpellEntity(SpawnEntity spawnEntity, Level level) {
+		this(SpelledRegistry.SPELL.get(), level);
 	}
 
 	@Override
 	protected void onHit(HitResult result) {
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			super.onHit(result);
-			this.level.addParticle(getTrailParticle(), this.getX(), this.getY(), this.getZ(), 1.0D, 0.0D, 0.0D);
+			this.level().addParticle(getTrailParticle(), this.getX(), this.getY(), this.getZ(), 1.0D, 0.0D, 0.0D);
 			this.discard();
 		}
 	}

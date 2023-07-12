@@ -25,7 +25,7 @@ public class RayTraceHelper {
 	public static <E extends Entity> HitResult getLookingAt(Class<E> clazz, final Entity mainEntity, double distance, final Predicate<E> entityPredicate) {
 		Predicate<E> finalFilter = e -> e != mainEntity && defaultFilter.test(e) && e.isPickable() && entityPredicate.test(e);
 		HitResult position = null;
-		if (mainEntity.level != null) {
+		if (mainEntity.level() != null) {
 			Vec3 look = mainEntity.getLookAngle().scale(distance);
 			Vec3 from = mainEntity.position().add(0, mainEntity.getEyeHeight(), 0);
 			Vec3 to = from.add(look);
@@ -39,7 +39,7 @@ public class RayTraceHelper {
 		return entity.getCommandSenderWorld().clip(context);
 	}
 
-	public static <E extends Entity> EntityHitResult rayTraceEntities(Class<E> clazz, Level world, Vec3 from, Vec3 to, Vec3 aaExpansion, float aaGrowth,
+	public static <E extends Entity> EntityHitResult rayTraceEntities(Class<E> clazz, Level level, Vec3 from, Vec3 to, Vec3 aaExpansion, float aaGrowth,
 																	  float entityExpansion, final Predicate<E> filter) {
 
 		Predicate<E> predicate = input -> defaultFilter.test(input) && filter.test(input);
@@ -50,7 +50,7 @@ public class RayTraceHelper {
 		AABB bb = new AABB(BlockPos.containing(from), BlockPos.containing(to))
 				.expandTowards(aaExpansion.x, aaExpansion.y, aaExpansion.z)
 				.inflate(aaGrowth);
-		List<E> entities = world.getEntitiesOfClass(clazz, bb, predicate);
+		List<E> entities = level.getEntitiesOfClass(clazz, bb, predicate);
 		for (Entity entity : entities) {
 			AABB entityBB = entity.getBoundingBox().inflate(entityExpansion);
 			Optional<Vec3> intercept = entityBB.clip(from, to);

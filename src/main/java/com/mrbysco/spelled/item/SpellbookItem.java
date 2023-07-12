@@ -29,10 +29,10 @@ public class SpellbookItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (stack.hasTag() && stack.getTag().getBoolean("sealed")) {
-			if (!world.isClientSide) {
+			if (!level.isClientSide) {
 				ServerPlayer serverPlayer = (ServerPlayer) player;
 				String message = stack.getTag().getString("spell");
 				final String regExp = "^[a-zA-Z\\s]*$";
@@ -49,7 +49,7 @@ public class SpellbookItem extends Item {
 				}
 			}
 		} else {
-			if (world.isClientSide) {
+			if (level.isClientSide) {
 				List<AdjectiveEntry> adjectives = new ArrayList<>();
 				SpelledAPI.getUnlocks(player).forEach((adjective) -> {
 					if (!adjective.isEmpty()) {
@@ -70,7 +70,7 @@ public class SpellbookItem extends Item {
 				}
 			}
 		}
-		return super.use(world, player, hand);
+		return super.use(level, player, hand);
 	}
 
 	public static boolean makeSureTagIsValid(Player player, @Nullable CompoundTag nbt) {
@@ -113,10 +113,10 @@ public class SpellbookItem extends Item {
 		return super.getName(stack);
 	}
 
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> textComponents, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> textComponents, TooltipFlag flag) {
 		if (stack.hasTag()) {
-			CompoundTag compoundnbt = stack.getTag();
-			String s = compoundnbt.getString("author");
+			CompoundTag tag = stack.getTag();
+			String s = tag.getString("author");
 			if (!StringUtil.isNullOrEmpty(s)) {
 				textComponents.add((Component.translatable("book.byAuthor", s)).withStyle(ChatFormatting.GRAY));
 			}

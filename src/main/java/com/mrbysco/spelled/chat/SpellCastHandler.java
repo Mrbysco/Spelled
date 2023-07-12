@@ -15,8 +15,8 @@ public class SpellCastHandler {
 		if (event.phase == TickEvent.Phase.START)
 			return;
 
-		Level world = event.player.level;
-		if (!world.isClientSide && world.getGameTime() % 20 == 0) {
+		Level level = event.player.level();
+		if (!level.isClientSide && level.getGameTime() % 20 == 0) {
 			ServerPlayer player = (ServerPlayer) event.player;
 			int cooldown = SpelledAPI.getCooldown(player);
 			if (cooldown > 0) {

@@ -53,7 +53,7 @@ public class SpelledAPI {
 
 	public static void resetUnlocks(Player player) {
 		SpelledAPI.getSpellDataCap(player).ifPresent(ISpellData::resetUnlocks);
-		if (!player.level.isClientSide) {
+		if (!player.level().isClientSide) {
 			AdvancementHelper.removeAllAdjectiveAdvancements((ServerPlayer) player);
 		}
 	}
@@ -76,14 +76,14 @@ public class SpelledAPI {
 
 	public static void unlockKeyword(Player player, String keyword) {
 		SpelledAPI.getSpellDataCap(player).ifPresent(cap -> cap.unlockKeyword(keyword));
-		if (!player.level.isClientSide) {
+		if (!player.level().isClientSide) {
 			AdvancementHelper.unlockAdjectiveAdvancement((ServerPlayer) player, keyword);
 		}
 	}
 
 	public static void lockKeyword(Player player, String keyword) {
 		SpelledAPI.getSpellDataCap(player).ifPresent(cap -> cap.lockKeyword(keyword));
-		if (!player.level.isClientSide) {
+		if (!player.level().isClientSide) {
 			AdvancementHelper.lockAdjectiveAdvancement((ServerPlayer) player, keyword);
 		}
 	}

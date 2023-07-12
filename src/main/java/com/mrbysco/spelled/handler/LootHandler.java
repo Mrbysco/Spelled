@@ -36,7 +36,7 @@ public class LootHandler {
 	public void firstJoin(PlayerLoggedInEvent event) {
 		Player player = event.getEntity();
 
-		if (!player.level.isClientSide && SpelledConfig.COMMON.startWithBook.get()) {
+		if (!player.level().isClientSide && SpelledConfig.COMMON.startWithBook.get()) {
 			CompoundTag playerData = player.getPersistentData();
 
 			if (!playerData.getBoolean(hasBookTag)) {

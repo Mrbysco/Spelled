@@ -14,7 +14,6 @@ import com.mrbysco.spelled.handler.SpellHandler;
 import com.mrbysco.spelled.packets.PacketHandler;
 import com.mrbysco.spelled.registry.ReloadManager;
 import com.mrbysco.spelled.registry.SpelledRegistry;
-import com.mrbysco.spelled.registry.SpelledTab;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -42,10 +41,10 @@ public class Spelled {
 		SpelledRegistry.BLOCK_ENTITY_TYPES.register(eventBus);
 		SpelledRegistry.MENU_TYPES.register(eventBus);
 		SpelledRegistry.ITEMS.register(eventBus);
+		SpelledRegistry.CREATIVE_MODE_TABS.register(eventBus);
 		SpelledRegistry.ENTITY_TYPES.register(eventBus);
 		SpelledRegistry.SOUND_EVENTS.register(eventBus);
 
-		eventBus.register(new SpelledTab());
 		eventBus.addListener(this::setup);
 		eventBus.addListener(this::onCapabilityRegister);
 

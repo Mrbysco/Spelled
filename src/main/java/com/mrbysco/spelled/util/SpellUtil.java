@@ -56,7 +56,7 @@ public class SpellUtil {
 
 					//Do our stuff
 					IKeyword lastKeyword = registry.getKeywordFromName(words.get(words.size() - 1));
-					ServerLevel level = player.getLevel();
+					ServerLevel level = player.serverLevel();
 
 					if (lastKeyword instanceof TypeKeyword typeKeyword) {
 						SpellEntity spell = constructEntity(player, typeKeyword.getType());
@@ -105,7 +105,7 @@ public class SpellUtil {
 							List<ServerPlayer> playerEntities = level.players();
 							for (ServerPlayer nearbyPlayer : playerEntities) {
 								if (nearbyPlayer.getUUID().equals(player.getUUID()) ||
-										(nearbyPlayer.level.dimension() == level.dimension() && player.distanceToSqr(nearbyPlayer) <= SpelledConfig.COMMON.proximity.get())) {
+										(nearbyPlayer.level().dimension() == level.dimension() && player.distanceToSqr(nearbyPlayer) <= SpelledConfig.COMMON.proximity.get())) {
 									nearbyPlayer.sendSystemMessage(finalMessage, true);
 								}
 							}
@@ -191,7 +191,7 @@ public class SpellUtil {
 	}
 
 	public static SpellEntity constructEntity(ServerPlayer player, @Nonnull Type type) {
-		SpellEntity spell = new SpellEntity(player, player.level);
+		SpellEntity spell = new SpellEntity(player, player.level());
 		spell.setSpellType(type.getId());
 
 		return spell;
@@ -205,6 +205,6 @@ public class SpellUtil {
 		} else { //Ball (Self is handled elsewhere)
 			spell.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.0F, 0.0F);
 		}
-		player.level.playSound((Player) null, player.blockPosition(), SpelledRegistry.SHOOT_SPELL.get(), SoundSource.PLAYERS, 1.0F, 1.0F / (player.level.random.nextFloat() * 0.4F + 1.2F) + 0.5F);
+		player.level().playSound((Player) null, player.blockPosition(), SpelledRegistry.SHOOT_SPELL.get(), SoundSource.PLAYERS, 1.0F, 1.0F / (player.level().random.nextFloat() * 0.4F + 1.2F) + 0.5F);
 	}
 }

@@ -27,8 +27,8 @@ public class TomeItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
-		if (!worldIn.isClientSide) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player playerIn, InteractionHand handIn) {
+		if (!level.isClientSide) {
 			ItemStack itemstack = playerIn.getItemInHand(handIn);
 
 			if (itemstack.hasTag() && itemstack.getTag() != null && itemstack.getTag().contains(Reference.tomeUnlock)) {
@@ -57,11 +57,11 @@ public class TomeItem extends Item {
 				}
 			}
 		}
-		return super.use(worldIn, playerIn, handIn);
+		return super.use(level, playerIn, handIn);
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flagIn) {
 		if (!SpelledConfig.COMMON.hideKnowledgeTomeInfo.get()) {
 			if (stack.hasTag() && stack.getTag().contains(Reference.tomeUnlock)) {
 				CompoundTag tag = stack.getTag();
@@ -70,6 +70,6 @@ public class TomeItem extends Item {
 				tooltip.add(Component.translatable("spelled.tome.description.invalid").withStyle(ChatFormatting.RED));
 			}
 		}
-		super.appendHoverText(stack, worldIn, tooltip, flagIn);
+		super.appendHoverText(stack, level, tooltip, flagIn);
 	}
 }

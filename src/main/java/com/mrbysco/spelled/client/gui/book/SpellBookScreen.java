@@ -8,6 +8,7 @@ import com.mrbysco.spelled.packets.SignSpellPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -21,6 +22,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -37,6 +39,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SpellBookScreen extends Screen {
+	private static final ResourceLocation STATS_ICON_LOCATION = new ResourceLocation("textures/gui/container/stats_icons.png");
+
 	private static final Component EDIT_TITLE_LABEL = Component.translatable("spelled.book.editTitle");
 	private static final Component FINALIZE_WARNING_LABEL = Component.translatable("spelled.book.finalizeWarning");
 	private static final FormattedCharSequence GRAY_CURSOR = FormattedCharSequence.forward("_", Style.EMPTY.withColor(ChatFormatting.GRAY));
@@ -274,33 +278,34 @@ public class SpellBookScreen extends Screen {
 	}
 
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground(poseStack);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		this.renderBackground(guiGraphics);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		if (isSigning) {
 			int i = (this.width - 192) / 2;
 			int j = this.height / 2 - 100;
 
 			boolean flag = this.frameTick / 6 % 2 == 0;
-			FormattedCharSequence ireorderingprocessor = FormattedCharSequence.composite(FormattedCharSequence.forward(this.title, Style.EMPTY), flag ? GRAY_CURSOR : WHITE_CURSOR);
+			FormattedCharSequence formattedCharSequence = FormattedCharSequence.composite(FormattedCharSequence.forward(this.title, Style.EMPTY), flag ? GRAY_CURSOR : WHITE_CURSOR);
 			int k = this.font.width(EDIT_TITLE_LABEL);
-			this.font.draw(poseStack, EDIT_TITLE_LABEL, (float) (i + 36 + (114 - k) / 2), 34.0F + j, 16777215);
-			int l = this.font.width(ireorderingprocessor);
-			this.font.draw(poseStack, ireorderingprocessor, (float) (i + 36 + (114 - l) / 2), 50.0F + j, 16777215);
+			guiGraphics.drawString(font, EDIT_TITLE_LABEL, (int) (i + 36 + (114 - k) / 2), (int) (34.0F + j), 16777215, false);
+			int l = this.font.width(formattedCharSequence);
+			guiGraphics.drawString(font, formattedCharSequence, (float) (i + 36 + (114 - l) / 2), 50.0F + j, 16777215, false);
 			int i1 = this.font.width(this.ownerText);
-			this.font.draw(poseStack, this.ownerText, (float) (i + 36 + (114 - i1) / 2), 60.0F + j, 16777215);
-			this.font.drawWordWrap(poseStack, FINALIZE_WARNING_LABEL, i + 36, 82 + j, 114, 16777215);
+			guiGraphics.drawString(font, this.ownerText, (int) (i + 36 + (114 - i1) / 2), (int) (60.0F + j), 16777215, false);
+			guiGraphics.drawWordWrap(font, FINALIZE_WARNING_LABEL, i + 36, 82 + j, 114, 16777215);
 		} else {
-			this.adjectiveWidget.render(poseStack, mouseX, mouseY, partialTicks);
+			this.adjectiveWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
 
 			Component text = Component.translatable("spelled.screen.search");
-			drawCenteredString(poseStack, font, text, this.width / 2 + PADDING,
+			guiGraphics.drawCenteredString(font, text, this.width / 2 + PADDING,
 					search.getY() - font.lineHeight - 2, 16777215);
 
-			this.search.render(poseStack, mouseX, mouseY, partialTicks);
+			this.search.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-			this.font.draw(poseStack, this.getTitle(), 5, 5, 16777215);
+			guiGraphics.drawString(font, this.getTitle(), 5, 5, 16777215, false);
 
+			PoseStack poseStack = guiGraphics.pose();
 			poseStack.pushPose();
 			poseStack.translate(0.0F, 0.0F, 100.0F);
 
@@ -308,12 +313,10 @@ public class SpellBookScreen extends Screen {
 			int itemX = width / 2 - 2;
 			int itemY = height - 130;
 
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, STATS_ICON_LOCATION);
-			blit(poseStack, itemX - 1, itemY - 1, 0, 0, 18, 18, 128, 128);
+			guiGraphics.blit(STATS_ICON_LOCATION, itemX - 1, itemY - 1, 0, 0, 18, 18, 128, 128);
 
-			this.itemRenderer.renderAndDecorateItem(poseStack, stack, itemX, itemY);
-			this.itemRenderer.renderGuiItemDecorations(poseStack, this.font, stack, itemX, itemY, null);
+			guiGraphics.renderItem(stack, itemX, itemY);
+			guiGraphics.renderItemDecorations(this.font, stack, itemX, itemY, null);
 			RenderSystem.disableDepthTest();
 			poseStack.popPose();
 
@@ -344,10 +347,10 @@ public class SpellBookScreen extends Screen {
 				}
 
 				final Component finalComponent = component.append(component2);
-				renderTooltip(poseStack, finalComponent, mouseX, mouseY);
+				guiGraphics.renderTooltip(font, finalComponent, mouseX, mouseY);
 			}
 		}
-		super.render(poseStack, mouseX, mouseY, partialTicks);
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	protected boolean isHovering(int x, int y, int x2, int y2, double mouseX, double mouseY) {
