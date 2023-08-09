@@ -1,4 +1,4 @@
-// 1.19.2	2022-09-26T03:33:53.7173129	Patchouli Book Provider
+// 1.19.2	2023-08-09T16:56:01.9115613	Patchouli Book Provider
 451ed3aa9956f609cc7ed6754a6eac9fbfbd7d00 data/spelled/patchouli_books/knowledge_tome/book.json
 5d832eb588fe15c4581644ac93a318034e6d8274 data/spelled/patchouli_books/knowledge_tome/en_us/categories/colors.json
 2897f3b0d422c87697ba6918e78adc42622c933f data/spelled/patchouli_books/knowledge_tome/en_us/categories/descriptions.json
@@ -20,11 +20,14 @@ b62a692e82904d57f44a08232ab404a2afe6e799 data/spelled/patchouli_books/knowledge_
 9801777ac8d0917885b468e753bbfc75542738df data/spelled/patchouli_books/knowledge_tome/en_us/entries/descriptive/frigus.json
 1c9ed63af798d92febcb272873fb456338e49d44 data/spelled/patchouli_books/knowledge_tome/en_us/entries/descriptive/ignis.json
 8e225525ae4870f82dbf47b4d08ea1d51d8af571 data/spelled/patchouli_books/knowledge_tome/en_us/entries/descriptive/liquidus.json
+f648bd3b01bbf570f5d5e0e92f51c86d860bdaa4 data/spelled/patchouli_books/knowledge_tome/en_us/entries/descriptive/maturis.json
 e28ad06ff305f4268aca700db7041e9d1a33b654 data/spelled/patchouli_books/knowledge_tome/en_us/entries/descriptive/nix.json
 aa97f48c97134e962c12daaa4529b2639906ce6e data/spelled/patchouli_books/knowledge_tome/en_us/entries/descriptive/nocere.json
 ce47b51e73cdf08b4fcca0a83eca14b8af8c0ddd data/spelled/patchouli_books/knowledge_tome/en_us/entries/descriptive/praesidium.json
 848eecacce371f3a59cf146bd3c866f9671e9082 data/spelled/patchouli_books/knowledge_tome/en_us/entries/descriptive/propellentibus.json
 f68831eed0a22f1f7fadf741a1f24c172f33d153 data/spelled/patchouli_books/knowledge_tome/en_us/entries/descriptive/sanitatem.json
+3422ffd62e582b4af96c01cc561a2a4921fbd7a3 data/spelled/patchouli_books/knowledge_tome/en_us/entries/descriptive/sericum.json
+08f89ecba4bb677ba6bc340b7d553560429452e7 data/spelled/patchouli_books/knowledge_tome/en_us/entries/descriptive/vis.json
 2dcfffbe069cf36c0a847347a7543ceda17ef15f data/spelled/patchouli_books/knowledge_tome/en_us/entries/leveling/leveling.json
 318701afff1b760ee9cc00ea5beaa37a2623879f data/spelled/patchouli_books/knowledge_tome/en_us/entries/size/grandis.json
 4108d6f757e1b0d23fcbecbd9e505a1de7b2859a data/spelled/patchouli_books/knowledge_tome/en_us/entries/size/immanis.json

@@ -2,10 +2,13 @@ package com.mrbysco.spelled.registry.behavior;
 
 import com.mrbysco.spelled.api.behavior.BaseBehavior;
 import com.mrbysco.spelled.entity.SpellEntity;
+import com.mrbysco.spelled.util.LootHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,8 +25,15 @@ public class HarvestBehavior extends BaseBehavior {
 		Level world = spell.level;
 		BlockState hitState = world.getBlockState(pos);
 		float hardness = hitState.getDestroySpeed(world, pos);
-		if (hardness > 0.0F && hitState.getBlock().getExplosionResistance() <= 2) {
-			spell.level.destroyBlock(pos, true);
+		float power = 1.0F + spell.getPower();
+		if (!world.isClientSide && hardness <= power && hitState.getBlock().getExplosionResistance() <= 1200.0F) {
+			if (spell.isSilky()) {
+				world.getBlockState(pos).getDrops(LootHelper.silkContextBuilder((ServerLevel) world, pos, spell))
+						.forEach(i -> world.addFreshEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), i)));
+				world.destroyBlock(pos, false);
+			} else {
+				world.destroyBlock(pos, true);
+			}
 		}
 	}
 
@@ -33,7 +43,8 @@ public class HarvestBehavior extends BaseBehavior {
 			for (EquipmentSlot slotType : EquipmentSlot.values()) {
 				ItemStack stack = livingEntity.getItemBySlot(slotType);
 				if (livingEntity.getRandom().nextBoolean() && !stack.isEmpty()) {
-					stack.hurtAndBreak(1, livingEntity, (playerIn) -> {
+					int power = 1 + spell.getPower();
+					stack.hurtAndBreak(power, livingEntity, (playerIn) -> {
 						playerIn.broadcastBreakEvent(slotType);
 					});
 					break;

@@ -16,7 +16,8 @@ public class HurtBehavior extends BaseBehavior {
 	@Override
 	public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
 		if (entity instanceof LivingEntity) {
-			entity.hurt(Reference.causeMagicDamage(spell), 1);
+			float damageAmount = 1.0F + spell.getPower();
+			entity.hurt(Reference.causeMagicDamage(spell), damageAmount);
 		}
 	}
 }

@@ -1,0 +1,17 @@
+{
+  "advancement": "spelled:adjective_sericum",
+  "category": "spelled:descriptions",
+  "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.descriptive.sericum.name",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "info.spelled.book.descriptive.sericum.text"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "info.spelled.book.descriptive.sericum.text2"
+    }
+  ],
+  "secret": true
+}

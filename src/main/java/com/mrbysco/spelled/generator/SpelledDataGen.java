@@ -178,6 +178,9 @@ public class SpelledDataGen {
 			add("spelled.keyword.fractionis.description", "Breaking");
 			add("spelled.keyword.propellentibus.description", "Pushing");
 			add("spelled.keyword.ignis.description", "Fiery");
+			add("spelled.keyword.vis.description", "Power");
+			add("spelled.keyword.sericum.description", "Silk");
+			add("spelled.keyword.maturis.description", "Mature");
 
 			add("spelled.keyword.sphaera.description", "Ball");
 			add("spelled.keyword.projectilis.description", "Projectile");
@@ -239,6 +242,12 @@ public class SpelledDataGen {
 			add("advancement.spelled.propellentibus.desc", "Pushing");
 			add("advancement.spelled.ignis", "Ignis");
 			add("advancement.spelled.ignis.desc", "Fiery");
+			add("advancement.spelled.vis", "Vis");
+			add("advancement.spelled.vis.desc", "Power");
+			add("advancement.spelled.sericum", "Sericum");
+			add("advancement.spelled.sericum.desc", "Silk");
+			add("advancement.spelled.maturis", "Maturis");
+			add("advancement.spelled.maturis.desc", "Mature");
 
 			//Patchouli
 			add("item.spelled.book.name", "Tome Of Knowledge");
@@ -332,6 +341,15 @@ public class SpelledDataGen {
 			add("info.spelled.book.descriptive.ignis.name", "Ignis");
 			add("info.spelled.book.descriptive.ignis.text", "Harnessing the sun has long been a dream, and now you kinda can! Sure it’s barely warm enough to boil water in your kettle, but in a world where fire has taken on a life of its own in literal hell you take what little power you can get. Discovered by accident when a frustrated word wielder yelled at a pile of sticks, this spell is a favourite for many a pyromaniac word wielder,");
 			add("info.spelled.book.descriptive.ignis.text2", "who finds the ability to set things on fire at will too tempting to give up. Please take care when using this word, and remember, only you can stop forest fires!");
+			add("info.spelled.book.descriptive.vis.name", "Vis");
+			add("info.spelled.book.descriptive.vis.text", "Everyone knows Vis is power! Ignore those thaumaturges who insist it's stuff like aerum that you put in jars or you steal from nodes, it's real power! Using this word will turn give you the power of Hercules (Without fighting Hades), however remember with great power comes great responsibility! So don't be too surprised if some villagers approach you claiming that their cat is stuck");
+			add("info.spelled.book.descriptive.vis.text2", "up a tree and that they need you to bring it down. Masks not included, but there's nothing stopping you making your own and fighting crime! It's said that this word was created as an arachnid tried to save it's dying uncle. In a fit of despair it yelled \"Magna vis magna praestatione opprimitur\" and  gained strength it never knew he had!");
+			add("info.spelled.book.descriptive.sericum.name", "Sericum");
+			add("info.spelled.book.descriptive.sericum.text", "Well this is a sticky situation huh? Your parents probably always warned you to keep those sticky fingers out of the cookie jar but you didn't and now you've gotten everything permanetly tied together. On the bright side you can finally do the unthinkable and not break glass with a punch but now you've just got a pane of glass stuck to your hand.");
+			add("info.spelled.book.descriptive.sericum.text2", "Still, it's not all bad; you can steal the ore and the rock around it too now! Rumor has it, this word was discovered by \"Derek One-Hand\" who figured it would be useful to steal some diamonds from a rather vengeful creeper. Unfortunately when he was caught he couldn't figure out how to dispell it leading to his new nickname");
+			add("info.spelled.book.descriptive.maturis.name", "Maturis");
+			add("info.spelled.book.descriptive.maturis.text", "Everybody wants to grow up right? Adults seem to be able to have all the fun, and with this word now you can too! Sadly it doesn't work on people, but it can still give those annoying wheat plants the push they need to finally feed you. As a bonus it works on animals too! Note side effects of aging can include cramps, joint pain,");
+			add("info.spelled.book.descriptive.maturis.text2", "yelling at kids to get off your lawn, and an obligation to pay taxes. Failure to use this word responsibly can result in a man dressed in green tights showed up in your window and promising to take you to a land where you'll never grow old, with a grumpy old pirate and a ticking crocodile, so adult supervision is highly recommended!");
 		}
 
 		public void addSoundEvent(Supplier<? extends SoundEvent> key, String subtitle) {

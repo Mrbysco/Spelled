@@ -15,7 +15,8 @@ public class HealBehavior extends BaseBehavior {
 	@Override
 	public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
 		if (entity instanceof LivingEntity) {
-			((LivingEntity) entity).heal(1.0F);
+			float healAmount = 1.0F + spell.getPower();
+			((LivingEntity) entity).heal(healAmount);
 		}
 	}
 }

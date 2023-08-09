@@ -1,0 +1,28 @@
+{
+  "parent": "spelled:adjective_vis",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancement.spelled.sericum.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "spelled:ancient_knowledge_tome"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancement.spelled.sericum"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ]
+}

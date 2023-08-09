@@ -13,6 +13,7 @@ import com.mrbysco.spelled.registry.behavior.HurtBehavior;
 import com.mrbysco.spelled.registry.behavior.InkBehavior;
 import com.mrbysco.spelled.registry.behavior.KnockbackBehavior;
 import com.mrbysco.spelled.registry.behavior.LavaBehavior;
+import com.mrbysco.spelled.registry.behavior.MatureBehavior;
 import com.mrbysco.spelled.registry.behavior.ProtectBehavior;
 import com.mrbysco.spelled.registry.behavior.SmokeBehavior;
 import com.mrbysco.spelled.registry.behavior.SnowBehavior;
@@ -57,6 +58,7 @@ public class BehaviorRegistry {
 		registerBehavior(new SnowBehavior());
 		registerBehavior(new WaterBehavior());
 		registerBehavior(new ExtinguishBehavior());
+		registerBehavior(new MatureBehavior());
 	}
 
 	public void registerBehavior(ISpellBehavior behavior) {

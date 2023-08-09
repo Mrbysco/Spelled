@@ -1,0 +1,17 @@
+{
+  "advancement": "spelled:adjective_maturis",
+  "category": "spelled:descriptions",
+  "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.descriptive.maturis.name",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "info.spelled.book.descriptive.maturis.text"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "info.spelled.book.descriptive.maturis.text2"
+    }
+  ],
+  "secret": true
+}
