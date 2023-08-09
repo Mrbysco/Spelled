@@ -80,7 +80,7 @@ public class SpelledCommands {
 						player.getDisplayName(), levelText), true);
 			}
 		} else {
-			ctx.getSource().sendSuccess(() -> Component.translatable("spelled.commands.level.set.invalid", level, SpelledConfig.COMMON.maxLevel)
+			ctx.getSource().sendSuccess(() -> Component.translatable("spelled.commands.level.set.invalid", level, SpelledConfig.COMMON.maxLevel.get())
 					.withStyle(ChatFormatting.RED), true);
 		}
 
