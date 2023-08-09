@@ -82,7 +82,7 @@ public class SpelledCommands {
 				ctx.getSource().sendSuccess(text, true);
 			}
 		} else {
-			Component text = Component.translatable("spelled.commands.level.set.invalid", level, SpelledConfig.COMMON.maxLevel)
+			Component text = Component.translatable("spelled.commands.level.set.invalid", level, SpelledConfig.COMMON.maxLevel.get())
 					.withStyle(ChatFormatting.RED);
 			ctx.getSource().sendSuccess(text, true);
 		}
