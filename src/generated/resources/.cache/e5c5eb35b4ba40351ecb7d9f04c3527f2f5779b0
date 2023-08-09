@@ -1,4 +1,4 @@
-// 1.20.1	2023-07-12T16:57:05.7506083	Advancements
+// 1.20.1	2023-08-09T17:30:53.2406974	Advancements
 58b5162aa961d7126cc720c8031af225cd9b7003 data/spelled/advancements/adjective_albus.json
 cca4648b792724fc8f330ecdeeeaaa16499a4d6d data/spelled/advancements/adjective_aqua.json
 aab546987f1ad442777f5054fdccd52aae096b03 data/spelled/advancements/adjective_ater.json
@@ -13,6 +13,7 @@ aab546987f1ad442777f5054fdccd52aae096b03 data/spelled/advancements/adjective_ate
 2d694b81c50a7d6abb43642a3d40d3487424b3d1 data/spelled/advancements/adjective_immanis.json
 f3c33533345dfbfb2a4793020d6ccb1393d9e77c data/spelled/advancements/adjective_liquidus.json
 e093fef277cc61134d26df40f8aaabdaf551f8c0 data/spelled/advancements/adjective_magnum.json
+d11f4832f0e129867eb5cd6e640c03fe1faa639b data/spelled/advancements/adjective_maturis.json
 c98e047a0df38fffdad3cb2bef2bd9f1d273cb29 data/spelled/advancements/adjective_nix.json
 860c31ed202b0d997afc1ccbc79d08d149cf97c6 data/spelled/advancements/adjective_nocere.json
 c62ca66d4f311d45dc966ea429e2e38862eaa4b2 data/spelled/advancements/adjective_parvus.json
@@ -21,6 +22,8 @@ e56179de4ecac7bf9b92359e5ff09e39b3300901 data/spelled/advancements/adjective_pra
 2683fcd8d5e956bf2370ff7d46bc3b424473e958 data/spelled/advancements/adjective_roseus.json
 09a9ba17ff0e9157d9315077d37543d18387463f data/spelled/advancements/adjective_rubrum.json
 d90ba7e39e578cf6fa9b4c9ad7629cc5697edd44 data/spelled/advancements/adjective_sanitatem.json
+bc2960dbdc48cbdbddf8cc540ee1d0aa96e8b629 data/spelled/advancements/adjective_sericum.json
 04b7e49a7cd8998691bfcf59baca185e43c0f96a data/spelled/advancements/adjective_viridis.json
+114ea30f94d016b202975089a8ee749542edff2e data/spelled/advancements/adjective_vis.json
 a495911139dbd172398809bf160a7a243f6a4694 data/spelled/advancements/color_lore.json
 219c23c725b105ad10781aa75916a123aba27ba7 data/spelled/advancements/root.json
