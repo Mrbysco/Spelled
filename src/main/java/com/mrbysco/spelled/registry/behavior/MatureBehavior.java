@@ -19,13 +19,13 @@ public class MatureBehavior extends BaseBehavior {
 
 	@Override
 	public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
-		Level world = spell.level;
+		Level level = spell.level();
 		BlockPos abovePos = pos.above();
-		BlockState aboveState = world.getBlockState(abovePos);
+		BlockState aboveState = level.getBlockState(abovePos);
 		int bonemealCount = 1 + spell.getPower();
-		if (!world.isClientSide && aboveState.getBlock() instanceof BonemealableBlock bonemealableBlock) {
+		if (!level.isClientSide && aboveState.getBlock() instanceof BonemealableBlock bonemealableBlock) {
 			for (int i = 0; i < bonemealCount; i++) {
-				bonemealableBlock.performBonemeal((ServerLevel) world, world.random, abovePos, aboveState);
+				bonemealableBlock.performBonemeal((ServerLevel) level, level.random, abovePos, aboveState);
 			}
 		}
 	}
