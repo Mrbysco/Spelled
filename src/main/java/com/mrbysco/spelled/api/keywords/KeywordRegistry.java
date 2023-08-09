@@ -10,8 +10,11 @@ import com.mrbysco.spelled.registry.keyword.FireKeyword;
 import com.mrbysco.spelled.registry.keyword.HealingKeyword;
 import com.mrbysco.spelled.registry.keyword.HurtingKeyword;
 import com.mrbysco.spelled.registry.keyword.LiquidKeyword;
+import com.mrbysco.spelled.registry.keyword.MatureKeyword;
+import com.mrbysco.spelled.registry.keyword.PowerKeyword;
 import com.mrbysco.spelled.registry.keyword.ProtectKeyword;
 import com.mrbysco.spelled.registry.keyword.PushingKeyword;
+import com.mrbysco.spelled.registry.keyword.SilkKeyword;
 import com.mrbysco.spelled.registry.keyword.SizeKeyword;
 import com.mrbysco.spelled.registry.keyword.SnowKeyword;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword;
@@ -79,6 +82,9 @@ public class KeywordRegistry {
 		registerKeyword(new BreakingKeyword("fractionis", 1, 2));
 		registerKeyword(new PushingKeyword("propellentibus", 1, 2));
 		registerKeyword(new FireKeyword("ignis", 3, 2));
+		registerKeyword(new PowerKeyword("vis", 1, 1));
+		registerKeyword(new SilkKeyword("sericum", 3, 2));
+		registerKeyword(new MatureKeyword("maturis", 2, 1));
 
 		//Projectile
 		registerKeyword(new TypeKeyword("sphaera", Type.BALL, 2, 2));

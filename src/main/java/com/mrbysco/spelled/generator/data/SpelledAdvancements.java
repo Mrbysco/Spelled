@@ -59,6 +59,9 @@ public class SpelledAdvancements extends ForgeAdvancementProvider {
 		public Advancement fractionis;
 		public Advancement propellentibus;
 		public Advancement ignis;
+		public Advancement vis;
+		public Advancement sericum;
+		public Advancement maturis;
 
 		@Override
 		public void generate(HolderLookup.Provider registries, Consumer<Advancement> consumer, ExistingFileHelper existingFileHelper) {
@@ -104,6 +107,9 @@ public class SpelledAdvancements extends ForgeAdvancementProvider {
 			fractionis = generateAdjectiveAdvancement("fractionis", praesidium, consumer);
 			propellentibus = generateAdjectiveAdvancement("propellentibus", fractionis, consumer);
 			ignis = generateAdjectiveAdvancement("ignis", propellentibus, consumer);
+			vis = generateAdjectiveAdvancement("vis", fractionis, consumer);
+			sericum = generateAdjectiveAdvancement("sericum", vis, consumer);
+			maturis = generateAdjectiveAdvancement("maturis", praesidium, consumer);
 		}
 
 		private Advancement generateAdjectiveAdvancement(String adjective, Advancement parent, Consumer<Advancement> consumer) {

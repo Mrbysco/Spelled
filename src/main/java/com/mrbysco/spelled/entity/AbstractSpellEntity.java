@@ -44,7 +44,9 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 	private static final EntityDataAccessor<Boolean> SNOW = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> SMOKY = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> INKY = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> SILKY = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Float> SIZE_MULTIPLIER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Integer> POWER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.INT);
 
 	public AbstractSpellEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level level) {
 		super(entityType, level);
@@ -69,7 +71,9 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 		this.entityData.define(SNOW, false);
 		this.entityData.define(SMOKY, false);
 		this.entityData.define(INKY, false);
+		this.entityData.define(SILKY, false);
 		this.entityData.define(SIZE_MULTIPLIER, 1.0F);
+		this.entityData.define(POWER, 0);
 	}
 
 	public void setSpellOrder(CompoundTag order) {
@@ -162,6 +166,14 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 		return this.getEntityData().get(INKY);
 	}
 
+	public void setSilky(boolean snow) {
+		this.getEntityData().set(SILKY, snow);
+	}
+
+	public boolean isSilky() {
+		return this.getEntityData().get(SILKY);
+	}
+
 	public void setSizeMultiplier(float sizeMultiplier) {
 		this.getEntityData().set(SIZE_MULTIPLIER, sizeMultiplier);
 		this.reapplyPosition();
@@ -170,6 +182,14 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 
 	public float getSizeMultiplier() {
 		return this.getEntityData().get(SIZE_MULTIPLIER);
+	}
+
+	public void setPower(int power) {
+		this.getEntityData().set(POWER, power);
+	}
+
+	public int getPower() {
+		return this.getEntityData().get(POWER);
 	}
 
 	public void refreshDimensions() {
@@ -210,8 +230,10 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 		setSnow(compound.getBoolean("Snow"));
 		setSmoky(compound.getBoolean("Smoky"));
 		setInky(compound.getBoolean("Inky"));
+		setSilky(compound.getBoolean("Silky"));
 
 		setSizeMultiplier(compound.getFloat("SizeMultiplier"));
+		setPower(compound.getInt("PowerAdditive"));
 	}
 
 	@Override
@@ -232,8 +254,10 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 		compound.putBoolean("Snow", isSnow());
 		compound.putBoolean("Smoky", isSmoky());
 		compound.putBoolean("Inky", isInky());
+		compound.putBoolean("Silky", isSilky());
 
 		compound.putFloat("SizeMultiplier", getSizeMultiplier());
+		compound.putInt("PowerAdditive", getPower());
 	}
 
 	@Override
