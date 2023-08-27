@@ -54,9 +54,9 @@ public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 		public void render(GuiGraphics guiGraphics, int entryIdx, int top, int left, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_, float partialTicks) {
 			Component name = Component.literal(getAdjectiveName());
 			Font font = this.parent.getFont();
-
+			int color = isType() ? 16351261 : 0xFFFFFF;
 			guiGraphics.drawString(font, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
-					(this.parent.width / 2) - (font.width(name) / 2) + 3, top + 6, 0xFFFFFF, false);
+					(this.parent.width / 2) - (font.width(name) / 2) + 3, top + 6, color, false);
 
 			if (isMouseOver(mouseX, mouseY)) {
 				guiGraphics.renderTooltip(font, getDescription(), mouseX, mouseY);
