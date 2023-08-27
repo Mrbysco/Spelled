@@ -184,6 +184,11 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 		return this.getEntityData().get(SIZE_MULTIPLIER);
 	}
 
+	public float getSizeMultiplier(float max) {
+		float sizeMultiplier = getSizeMultiplier();
+		return sizeMultiplier < max ? sizeMultiplier : max;
+	}
+
 	public void setPower(int power) {
 		this.getEntityData().set(POWER, power);
 	}
@@ -210,7 +215,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 
 	@Override
 	public EntityDimensions getDimensions(Pose poseIn) {
-		return super.getDimensions(poseIn).scale(this.getSizeMultiplier());
+		return super.getDimensions(poseIn).scale(this.getSizeMultiplier(8.0F));
 	}
 
 	@Override
@@ -369,12 +374,5 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 			return this.level().getEntities(this, hitbox, Entity::isAlive);
 		}
 		return Collections.singletonList(hitEntity);
-	}
-
-	public void shootSpell(Vec3 lookVec) {
-		this.setDeltaMovement(lookVec);
-		this.xPower = lookVec.x * 0.1D;
-		this.yPower = lookVec.y * 0.1D;
-		this.zPower = lookVec.z * 0.1D;
 	}
 }
