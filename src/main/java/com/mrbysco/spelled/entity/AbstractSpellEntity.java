@@ -1,5 +1,6 @@
 package com.mrbysco.spelled.entity;
 
+import com.mrbysco.spelled.Spelled;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -32,6 +33,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 	private static final EntityDataAccessor<CompoundTag> SPELL_ORDER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.COMPOUND_TAG);
@@ -186,7 +189,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 
 	public float getSizeMultiplier(float max) {
 		float sizeMultiplier = getSizeMultiplier();
-		return sizeMultiplier < max ? sizeMultiplier : max;
+		return sizeMultiplier <= max ? sizeMultiplier : max;
 	}
 
 	public void setPower(int power) {
@@ -309,9 +312,9 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 		if (isCold() || isWater()) {
 			Entity entity = this.getOwner();
 			if (this.level().isClientSide || (entity == null || entity.isAlive()) && this.level().hasChunkAt(this.blockPosition())) {
-				HitResult raytraceresult = rayTraceWater(this::canHitEntity);
-				if (raytraceresult.getType() != HitResult.Type.MISS) {
-					this.onHit(raytraceresult);
+				HitResult result = rayTraceWater(this::canHitEntity);
+				if (result.getType() != HitResult.Type.MISS) {
+					this.onHit(result);
 				}
 			}
 		}
@@ -327,18 +330,18 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 	}
 
 	public HitResult rayTraceWater(Predicate<Entity> entityPredicate) {
-		Vec3 vector3d = this.getDeltaMovement();
+		Vec3 deltaMovement = this.getDeltaMovement();
 		Level level = this.level();
-		Vec3 vector3d1 = this.position();
-		Vec3 vector3d2 = vector3d1.add(vector3d);
-		HitResult raytraceresult = level.clip(new ClipContext(vector3d1, vector3d2, ClipContext.Block.COLLIDER, Fluid.SOURCE_ONLY, this));
+		Vec3 position = this.position();
+		Vec3 vector3d2 = position.add(deltaMovement);
+		HitResult raytraceresult = level.clip(new ClipContext(position, vector3d2, ClipContext.Block.COLLIDER, Fluid.SOURCE_ONLY, this));
 		if (raytraceresult.getType() != HitResult.Type.MISS) {
 			vector3d2 = raytraceresult.getLocation();
 		}
 
-		HitResult raytraceresult1 = ProjectileUtil.getEntityHitResult(level, this, vector3d1, vector3d2, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), entityPredicate);
-		if (raytraceresult1 != null) {
-			raytraceresult = raytraceresult1;
+		HitResult result = ProjectileUtil.getEntityHitResult(level, this, position, vector3d2, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), entityPredicate);
+		if (result != null) {
+			raytraceresult = result;
 		}
 
 		return raytraceresult;
@@ -352,14 +355,10 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 
 	public List<BlockPos> getSizedPos(BlockPos pos) {
 		if (getSizeMultiplier() > 1) {
-			int offset = Math.round(getSizeMultiplier() * 0.5f);
-			List<BlockPos> positionList = new ArrayList<>();
-			Iterable<BlockPos> positions = BlockPos.betweenClosed(pos.offset(-offset, -offset, -offset), pos.offset(offset, offset, offset));
-			for (BlockPos position : positions) {
-				if (!positionList.contains(position)) {
-					positionList.add(new BlockPos(position));
-				}
-			}
+			int offset = Math.round(getSizeMultiplier(16F) * 0.5f);
+			List<BlockPos> positionList = BlockPos.betweenClosedStream(
+					pos.offset(-offset, -offset, -offset),
+					pos.offset(offset, offset, offset)).map(BlockPos::immutable).collect(Collectors.toList());
 			return positionList;
 		}
 		return Collections.singletonList(pos);
@@ -367,7 +366,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 
 	public List<Entity> getRangedEntities(Entity hitEntity) {
 		if (getSizeMultiplier() > 1) {
-			double offset = getSizeMultiplier();
+			double offset = getSizeMultiplier(16F);
 			AABB hitbox = new AABB(hitEntity.getX() - 0.5f, hitEntity.getY() - 0.5f, hitEntity.getZ() - 0.5f, hitEntity.getX() + 0.5f, hitEntity.getY() + 0.5f, hitEntity.getZ() + 0.5f)
 					.expandTowards(-offset, -offset, -offset).expandTowards(offset, offset, offset);
 

@@ -1,5 +1,6 @@
 package com.mrbysco.spelled.entity;
 
+import com.mrbysco.spelled.Spelled;
 import com.mrbysco.spelled.api.behavior.BehaviorRegistry;
 import com.mrbysco.spelled.api.behavior.ISpellBehavior;
 import com.mrbysco.spelled.registry.SpelledRegistry;
@@ -32,8 +33,8 @@ public class SpellEntity extends AbstractSpellEntity {
 
 	@Override
 	protected void onHit(HitResult result) {
+		super.onHit(result);
 		if (!this.level().isClientSide) {
-			super.onHit(result);
 			this.level().addParticle(getTrailParticle(), this.getX(), this.getY(), this.getZ(), 1.0D, 0.0D, 0.0D);
 			this.discard();
 		}
