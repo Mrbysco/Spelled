@@ -361,9 +361,13 @@ public class SpellBookScreen extends Screen {
 	}
 
 	private void reloadAdjectives() {
-		this.adjectives = this.unsortedAdjectives.stream().
-				filter(struc -> StringUtils.toLowerCase(struc.toString()).contains(StringUtils.toLowerCase(search.getValue()))).collect(Collectors.toList());
 		lastFilterText = search.getValue();
+		this.adjectives = this.unsortedAdjectives.stream().
+				filter(word -> {
+					boolean flag = StringUtils.toLowerCase(word.getAdjectiveName()).contains(StringUtils.toLowerCase(lastFilterText));
+					boolean flag2 = StringUtils.toLowerCase(word.getAdjectiveDescription().getString()).contains(StringUtils.toLowerCase(lastFilterText));
+					return flag || flag2;
+				}).collect(Collectors.toList());
 	}
 
 	private void resortAdjectives(SortType newSort) {
