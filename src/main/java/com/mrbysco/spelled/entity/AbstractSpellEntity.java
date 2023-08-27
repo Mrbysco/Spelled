@@ -349,7 +349,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 
 	public void explode() {
 		boolean flag = !(isSnow() || isWater()) && isFiery();
-		int size = (int) Math.ceil(1 * getSizeMultiplier());
+		int size = (int) Math.ceil(1 * getSizeMultiplier(16.0F));
 		this.level().explode(this, this.getX(), this.getY(), this.getZ(), (float) size, flag, flag ? Level.ExplosionInteraction.NONE : Level.ExplosionInteraction.BLOCK);
 	}
 
