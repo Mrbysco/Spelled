@@ -1,1 +1,1 @@
-* Cap the explosion size
+* Fix the Altar screen not having the book positioned correctly and hovering not working
