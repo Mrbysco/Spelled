@@ -2,7 +2,6 @@ package com.mrbysco.spelled.client.gui;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.mrbysco.spelled.Reference;
@@ -80,25 +79,20 @@ public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
 		return this.isHovering(74, 20, 28, 22, (double) mouseX, (double) mouseY) && levelCost > 0;
 	}
 
-	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int x, int y) {
+	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
 		Player player = this.minecraft != null ? this.minecraft.player : null;
 		int levelCost = menu.getCurrentLevelCost();
 		int itemAmountCost = (this.menu).getItemCostAmount();
 		boolean itemFlag = SpelledConfig.COMMON.requireItems.get() && itemAmountCost > 0 && this.menu.getCostStackCount() < itemAmountCost;
-		Lighting.setupForEntityInInventory();
 		int i = (this.width - this.imageWidth) / 2;
 		int j = (this.height - this.imageHeight) / 2;
 		ResourceLocation texture = SpelledConfig.COMMON.requireItems.get() ? ALTAR_GUI_TEXTURE : ALTAR_GUI_SLOTLESS_TEXTURE;
 		guiGraphics.blit(texture, i, j, 0, 0, this.imageWidth, this.imageHeight);
 
-		this.renderBook(guiGraphics, i, j, partialTicks, levelCost, itemFlag);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
+		this.renderBook(guiGraphics, i, j, mouseX, mouseY, partialTicks, levelCost, itemFlag);
 
 		int j1 = i + 60;
 		int k1 = j1 + 20;
-		RenderSystem.setShaderTexture(0, ALTAR_GUI_TEXTURE);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		String s = "";
 
 		if (levelCost > 0) {
@@ -119,13 +113,13 @@ public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
 		guiGraphics.drawCenteredString(this.font, s, (k1 + 8), (j + 44), j2);
 	}
 
-	private void renderBook(GuiGraphics guiGraphics, int x, int y, float partialTick, int levelCost, boolean itemFlag) {
+	private void renderBook(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, float partialTick, int levelCost, boolean itemFlag) {
 		Player player = this.minecraft != null ? this.minecraft.player : null;
 		float f = Mth.lerp(partialTick, this.oOpen, this.open);
 		float f1 = Mth.lerp(partialTick, this.oFlip, this.flip);
 		Lighting.setupForEntityInInventory();
 		guiGraphics.pose().pushPose();
-		guiGraphics.pose().translate((float) x + 33.0F, (float) y + 31.0F, 100.0F);
+		guiGraphics.pose().translate((float) x + 88.0F, (float) y + 28.0F, 100.0F);
 		float f2 = 40.0F;
 		guiGraphics.pose().scale(-f2, f2, f2);
 		guiGraphics.pose().mulPose(Axis.XP.rotationDegrees(25.0F));
@@ -140,7 +134,6 @@ public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
 		if (player != null) {
 			flag = levelCost > 0 && ((itemFlag || player.experienceLevel < levelCost) && !player.getAbilities().instabuild);
 		}
-		boolean bookHovered = bookHovered(x, y);
 
 		this.bookModel.setupAnim(0.0F, f4, f5, f);
 		float red = 1.0F;
@@ -148,6 +141,7 @@ public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
 		float blue = 1.0F;
 		VertexConsumer vertexconsumer = guiGraphics.bufferSource().getBuffer(this.bookModel.renderType(ALTAR_BOOK_TEXTURE));
 
+		boolean bookHovered = bookHovered(mouseX, mouseY);
 		if (bookHovered) {
 			if (flag) {
 				red = 0.6F;
@@ -159,12 +153,13 @@ public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
 			blue = 0.4F;
 		} else {
 			if (flag) {
-				red = 0.4F;
-				green = 0.4F;
-				blue = 0.4F;
+				red = 0.6F;
+				green = 0.6F;
+				blue = 0.6F;
 			}
 		}
 		this.bookModel.renderToBuffer(guiGraphics.pose(), vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, red, green, blue, 1.0F);
+
 		guiGraphics.flush();
 		guiGraphics.pose().popPose();
 		Lighting.setupFor3DItems();
@@ -186,14 +181,14 @@ public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
 			List<Component> list = Lists.newArrayList();
 			boolean noXP = levelCost > 0 && (player == null ? 0 : player.experienceLevel) < levelCost;
 
-			MutableComponent iformattabletextcomponent;
+			MutableComponent mutableComponent;
 			if (noXP) {
-				iformattabletextcomponent = Component.translatable(Reference.MOD_PREFIX + "container.altar.level.requirement", levelCost);
+				mutableComponent = Component.translatable(Reference.MOD_PREFIX + "container.altar.level.requirement", levelCost);
 			} else {
 				if (levelCost == 1) {
-					iformattabletextcomponent = Component.translatable(Reference.MOD_PREFIX + "container.altar.level.one");
+					mutableComponent = Component.translatable(Reference.MOD_PREFIX + "container.altar.level.one");
 				} else {
-					iformattabletextcomponent = Component.translatable(Reference.MOD_PREFIX + "container.altar.level.many", levelCost);
+					mutableComponent = Component.translatable(Reference.MOD_PREFIX + "container.altar.level.many", levelCost);
 				}
 			}
 
@@ -203,7 +198,7 @@ public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
 				final int itemAmountCost = (this.menu).getItemCostAmount();
 				boolean noItems = itemAmountCost > 0 && itemCost != Items.AIR && stackCount <= itemAmountCost;
 
-				list.add(iformattabletextcomponent.withStyle(noXP ? ChatFormatting.RED : ChatFormatting.GREEN));
+				list.add(mutableComponent.withStyle(noXP ? ChatFormatting.RED : ChatFormatting.GREEN));
 				MutableComponent iformattabletextcomponent1;
 				if (noItems) {
 					iformattabletextcomponent1 = Component.translatable(Reference.MOD_PREFIX + "container.altar.item.requirement", itemAmountCost, itemCost.getDescription());
