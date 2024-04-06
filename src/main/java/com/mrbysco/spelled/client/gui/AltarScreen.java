@@ -170,7 +170,6 @@ public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
 		if (this.minecraft != null) {
 			partialTicks = this.minecraft.getFrameTime();
 		}
-		this.renderBackground(guiGraphics);
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
 		boolean flag = player != null && player.getAbilities().instabuild;

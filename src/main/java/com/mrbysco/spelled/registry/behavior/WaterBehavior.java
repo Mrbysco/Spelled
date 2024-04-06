@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.LiquidBlockContainer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.event.EventHooks;
 
 import javax.annotation.Nonnull;
 
@@ -28,12 +29,12 @@ public class WaterBehavior extends BaseBehavior {
 		BlockState offState = level.getBlockState(offPos);
 
 		Block block = hitState.getBlock();
-		if (block instanceof LiquidBlockContainer && ((LiquidBlockContainer) block).canPlaceLiquid(level, pos, hitState, Fluids.WATER)) {
+		if (block instanceof LiquidBlockContainer && ((LiquidBlockContainer) block).canPlaceLiquid(null, level, pos, hitState, Fluids.WATER)) {
 			((LiquidBlockContainer) block).placeLiquid(level, pos, hitState, Fluids.WATER.getSource(false));
 		} else {
 			if (hitState.getBlock() instanceof LiquidBlock && ((LiquidBlock) hitState.getBlock()).getFluid() == Fluids.LAVA) {
 				Block fluidBlock = level.getFluidState(pos).isSource() ? Blocks.OBSIDIAN : Blocks.COBBLESTONE;
-				level.setBlockAndUpdate(pos, net.minecraftforge.event.ForgeEventFactory.fireFluidPlaceBlockEvent(level, pos, pos, fluidBlock.defaultBlockState()));
+				level.setBlockAndUpdate(pos, EventHooks.fireFluidPlaceBlockEvent(level, pos, pos, fluidBlock.defaultBlockState()));
 			} else {
 				if (hitState.canBeReplaced(Fluids.WATER)) {
 					level.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());

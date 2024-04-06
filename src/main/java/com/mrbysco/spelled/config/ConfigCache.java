@@ -1,10 +1,10 @@
 package com.mrbysco.spelled.config;
 
 import com.mrbysco.spelled.Spelled;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.HashMap;
@@ -28,7 +28,7 @@ public class ConfigCache {
 			Spelled.LOGGER.error("'requiredItem' is empty, using default");
 			requiredItem = Items.LAPIS_LAZULI;
 		} else {
-			Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(value));
+			Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(value));
 			if (item != null) {
 				requiredItem = item;
 			} else {
@@ -59,7 +59,7 @@ public class ConfigCache {
 						int dummyLevel = i + 1;
 						int dummyItemCost = 5;
 						int level = NumberUtils.isParsable(values[0]) ? Integer.parseInt(values[0]) : -1;
-						Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(values[1]));
+						Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(values[1]));
 						int itemCost = NumberUtils.isParsable(values[2]) ? Integer.parseInt(values[2]) : -1;
 
 						if (level == -1) {
@@ -67,7 +67,7 @@ public class ConfigCache {
 							level = dummyLevel;
 						}
 						if (item == null) {
-							Spelled.LOGGER.error(String.format("Couldn't parse specified item %s, using dummy value: %s", values[1], ForgeRegistries.ITEMS.getKey(defaultItem)));
+							Spelled.LOGGER.error(String.format("Couldn't parse specified item %s, using dummy value: %s", values[1], BuiltInRegistries.ITEM.getKey(defaultItem)));
 							item = defaultItem;
 						}
 						if (itemCost == -1) {

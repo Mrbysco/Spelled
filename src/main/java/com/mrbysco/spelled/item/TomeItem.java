@@ -16,10 +16,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public class TomeItem extends Item {
 	public TomeItem(Properties builder) {
@@ -33,7 +33,7 @@ public class TomeItem extends Item {
 
 			if (itemstack.hasTag() && itemstack.getTag() != null && itemstack.getTag().contains(Reference.tomeUnlock)) {
 				CompoundTag tag = itemstack.getTag();
-				LazyOptional<ISpellData> cap = SpelledAPI.getSpellDataCap(playerIn);
+				Optional<ISpellData> cap = SpelledAPI.getSpellDataCap(playerIn);
 				ISpellData data = cap.orElseGet(null);
 				if (cap.isPresent()) {
 					String word = tag.getString(Reference.tomeUnlock);

@@ -1,23 +1,18 @@
-package com.mrbysco.spelled.api.capability;
+package com.mrbysco.spelled.attachment;
 
 import com.mrbysco.spelled.Reference;
-import com.mrbysco.spelled.api.SpelledAPI;
+import com.mrbysco.spelled.api.capability.ISpellData;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Locale;
 
-public class SpellDataCapability implements ISpellData {
+public class SpellData implements ISpellData {
 	private int level;
 	private CompoundTag unlockedKeywords;
 	private int castCooldown;
 
-	public SpellDataCapability() {
+	public SpellData() {
 		this.level = 0;
 		this.unlockedKeywords = getDefaultUnlocks();
 		this.castCooldown = 0;
@@ -102,11 +97,5 @@ public class SpellDataCapability implements ISpellData {
 		setLevel(level);
 		setUnlocked(characterUnlocks);
 		setCastCooldown(castCooldown);
-	}
-
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-		return SpelledAPI.SPELL_DATA_CAP.orEmpty(cap, LazyOptional.of(() -> this));
 	}
 }

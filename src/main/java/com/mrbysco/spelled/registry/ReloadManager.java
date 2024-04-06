@@ -4,9 +4,9 @@ import com.mrbysco.spelled.api.behavior.BehaviorRegistry;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
 
 public class ReloadManager implements ResourceManagerReloadListener {
 	@Override

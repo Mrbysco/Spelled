@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_books",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_books"
     ]
   ],
   "rewards": {
     "recipes": [
       "spelled:spell_book"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

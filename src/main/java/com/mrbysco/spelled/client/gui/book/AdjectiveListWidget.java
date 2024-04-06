@@ -15,7 +15,7 @@ public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 	private final SpellBookScreen parent;
 
 	public AdjectiveListWidget(SpellBookScreen parent, int listWidth, int top, int bottom) {
-		super(parent.getMinecraft(), listWidth, parent.height, top, bottom, parent.getFont().lineHeight * 2 + 8);
+		super(parent.getMinecraft(), listWidth, bottom - top, top, parent.getFont().lineHeight * 2 + 8);
 		this.parent = parent;
 		this.listWidth = listWidth;
 		this.refreshList();
@@ -36,11 +36,6 @@ public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 		parent.buildAdjectiveList(this::addEntry, mod -> new ListEntry(mod, this.parent));
 	}
 
-	@Override
-	protected void renderBackground(GuiGraphics guiGraphics) {
-		this.parent.renderBackground(guiGraphics);
-	}
-
 	public class ListEntry extends ObjectSelectionList.Entry<ListEntry> {
 		private final AdjectiveEntry adjective;
 		private final SpellBookScreen parent;
@@ -51,21 +46,16 @@ public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 		}
 
 		@Override
-		public void render(GuiGraphics guiGraphics, int entryIdx, int top, int left, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_, float partialTicks) {
+		public void render(GuiGraphics guiGraphics, int entryIdx, int top, int left, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovering, float partialTicks) {
 			Component name = Component.literal(getAdjectiveName());
 			Font font = this.parent.getFont();
 			int color = isType() ? 16351261 : 0xFFFFFF;
 			guiGraphics.drawString(font, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
 					(this.parent.width / 2) - (font.width(name) / 2) + 3, top + 6, color, false);
 
-			if (isMouseOver(mouseX, mouseY)) {
+			if (isHovering) {
 				guiGraphics.renderTooltip(font, getDescription(), mouseX, mouseY);
 			}
-		}
-
-		@Override
-		public boolean isMouseOver(double mouseX, double mouseY) {
-			return mouseX >= (width / 2) - 40 && mouseX <= (width / 2) + 40 && super.isMouseOver(mouseX, mouseY);
 		}
 
 		@Override

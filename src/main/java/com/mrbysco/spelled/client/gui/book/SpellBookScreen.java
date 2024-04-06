@@ -3,8 +3,7 @@ package com.mrbysco.spelled.client.gui.book;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrbysco.spelled.Reference;
-import com.mrbysco.spelled.packets.PacketHandler;
-import com.mrbysco.spelled.packets.SignSpellPacket;
+import com.mrbysco.spelled.packets.message.SignSpellPayload;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -26,7 +25,8 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.loading.StringUtils;
+import net.neoforged.fml.loading.StringUtils;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +38,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SpellBookScreen extends Screen {
-	private static final ResourceLocation STATS_ICON_LOCATION = new ResourceLocation("textures/gui/container/stats_icons.png");
+	private static final ResourceLocation SLOT_SPRITE = new ResourceLocation("container/slot");
 
 	private static final Component EDIT_TITLE_LABEL = Component.translatable("spelled.book.editTitle");
 	private static final Component FINALIZE_WARNING_LABEL = Component.translatable("spelled.book.finalizeWarning");
@@ -71,7 +71,6 @@ public class SpellBookScreen extends Screen {
 	private Button removeButton;
 	private Button signButton;
 	private Button finalizeButton;
-	private Button cancelButton;
 
 	private String title = "";
 	private final TextFieldHelper titleEdit =
@@ -142,7 +141,7 @@ public class SpellBookScreen extends Screen {
 		int structureWidth = this.width - listWidth - (PADDING * 3);
 		int closeButtonWidth = Math.min(structureWidth, 200);
 		int y = this.height - 20 - PADDING;
-		this.cancelButton = this.addRenderableWidget(Button.builder(CommonComponents.GUI_CANCEL, (button) -> {
+		this.addRenderableWidget(Button.builder(CommonComponents.GUI_CANCEL, (button) -> {
 			if (this.isSigning) {
 				this.isSigning = false;
 			} else {
@@ -153,7 +152,7 @@ public class SpellBookScreen extends Screen {
 		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
 
 		y -= 18 + PADDING;
-		this.insertButton = this.addRenderableWidget(Button.builder(Component.translatable("spelled.screen.selection.select"), (button) -> {
+		this.addRenderableWidget(this.insertButton = Button.builder(Component.translatable("spelled.screen.selection.select"), (button) -> {
 			if (focused != null) {
 				if (focused.isType()) {
 					typeWord = focused.getAdjectiveName();
@@ -164,7 +163,7 @@ public class SpellBookScreen extends Screen {
 		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
 
 		y -= 18 + PADDING;
-		this.removeButton = this.addRenderableWidget(Button.builder(Component.translatable("spelled.screen.selection.remove"), (button) -> {
+		this.addRenderableWidget(this.removeButton = Button.builder(Component.translatable("spelled.screen.selection.remove"), (button) -> {
 			if (selectedAdjectives.size() == 1) {
 				selectedAdjectives.clear();
 			} else {
@@ -182,7 +181,7 @@ public class SpellBookScreen extends Screen {
 		y -= 30;
 
 		this.adjectiveWidget = new AdjectiveListWidget(this, width, fullButtonHeight, y - getFont().lineHeight - PADDING);
-		this.adjectiveWidget.setLeftPos(0);
+		this.adjectiveWidget.setX(0);
 
 		this.addWidget(search);
 		this.addWidget(adjectiveWidget);
@@ -198,17 +197,18 @@ public class SpellBookScreen extends Screen {
 			resortAdjectives(SortType.Z_TO_A);
 		}).bounds(x, PADDING, width - buttonMargin, 20).build());
 
-		this.signButton = this.addRenderableWidget(Button.builder(Component.translatable("spelled.book.finalizeButton"), (button) -> {
+		this.addRenderableWidget(this.signButton = Button.builder(Component.translatable("spelled.book.finalizeButton"), (button) -> {
 			this.isSigning = true;
+
 			this.updateButtonVisibility();
 		}).bounds(this.width - (60 + PADDING), PADDING, 60, 20).build());
 
-		this.finalizeButton = this.addRenderableWidget(Button.builder(Component.translatable("book.signButton"), (button) -> {
+		this.addRenderableWidget(this.finalizeButton = Button.builder(Component.translatable("book.signButton"), (button) -> {
 			if (this.isSigning) {
 				this.saveChanges(true);
 				this.minecraft.setScreen((Screen) null);
 			}
-		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
+		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, this.height - 50 - PADDING, closeButtonWidth, 20).build());
 
 		this.updateButtonVisibility();
 		resortAdjectives(SortType.A_TO_Z);
@@ -251,7 +251,6 @@ public class SpellBookScreen extends Screen {
 		++this.frameTick;
 		if (!isSigning) {
 			this.signButton.active = !selectedAdjectives.isEmpty() && !typeWord.isEmpty();
-			search.tick();
 			adjectiveWidget.setSelected(focused);
 
 			if (!search.getValue().equals(lastFilterText)) {
@@ -278,7 +277,7 @@ public class SpellBookScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground(guiGraphics);
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		if (isSigning) {
 			int i = (this.width - 192) / 2;
@@ -312,7 +311,7 @@ public class SpellBookScreen extends Screen {
 			int itemX = width / 2 - 2;
 			int itemY = height - 130;
 
-			guiGraphics.blit(STATS_ICON_LOCATION, itemX - 1, itemY - 1, 0, 0, 18, 18, 128, 128);
+			guiGraphics.blitSprite(SLOT_SPRITE, itemX - 1, itemY - 1, 0, 18, 18);
 
 			guiGraphics.renderItem(stack, itemX, itemY);
 			guiGraphics.renderItemDecorations(this.font, stack, itemX, itemY, null);
@@ -349,7 +348,11 @@ public class SpellBookScreen extends Screen {
 				guiGraphics.renderTooltip(font, finalComponent, mouseX, mouseY);
 			}
 		}
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+	}
+
+	@Override
+	public void renderBackground(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+		this.renderDirtBackground(guiGraphics);
 	}
 
 	protected boolean isHovering(int x, int y, int x2, int y2, double mouseX, double mouseY) {
@@ -476,7 +479,7 @@ public class SpellBookScreen extends Screen {
 			}
 
 			int i = this.hand == InteractionHand.MAIN_HAND ? this.owner.getInventory().selected : 40;
-			PacketHandler.CHANNEL.sendToServer(new SignSpellPacket(this.stack, finalize, i));
+			PacketDistributor.SERVER.noArg().send(new SignSpellPayload(this.stack, finalize, i));
 		}
 	}
 

@@ -1,5 +1,6 @@
 package com.mrbysco.spelled.block;
 
+import com.mojang.serialization.MapCodec;
 import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.blockentity.LevelingAltarBlockEntity;
 import com.mrbysco.spelled.menu.AltarMenu;
@@ -44,14 +45,15 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
+	public static final MapCodec<LevelingAltarBlock> CODEC = simpleCodec(LevelingAltarBlock::new);
 	public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -88,6 +90,11 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 	public LevelingAltarBlock(Properties properties) {
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(HORIZONTAL_FACING, Direction.NORTH).setValue(WATERLOGGED, Boolean.FALSE));
+	}
+
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return CODEC;
 	}
 
 	@Override
@@ -210,7 +217,7 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 	}
 
 	@Override
-	public boolean canPlaceLiquid(BlockGetter p_54766_, BlockPos p_54767_, BlockState p_54768_, Fluid p_54769_) {
+	public boolean canPlaceLiquid(@Nullable Player player, BlockGetter p_54766_, BlockPos p_54767_, BlockState p_54768_, Fluid p_54769_) {
 		return false;
 	}
 

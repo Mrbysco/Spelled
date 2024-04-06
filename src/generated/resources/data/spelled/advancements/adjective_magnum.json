@@ -10,8 +10,6 @@
     "description": {
       "translate": "advancement.spelled.magnum.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "spelled:ancient_knowledge_tome"
     },

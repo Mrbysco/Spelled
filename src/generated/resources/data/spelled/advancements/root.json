@@ -13,12 +13,9 @@
     "description": {
       "translate": "advancement.spelled.root.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "spelled:ancient_knowledge_tome"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.spelled.root"
     }

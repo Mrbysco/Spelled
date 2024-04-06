@@ -1,29 +1,27 @@
 package com.mrbysco.spelled.api;
 
+import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.api.capability.ISpellData;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
-import com.mrbysco.spelled.packets.PacketHandler;
-import com.mrbysco.spelled.packets.SpellDataSyncMessage;
+import com.mrbysco.spelled.packets.message.SpellDataSyncPayload;
 import com.mrbysco.spelled.util.AdvancementHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.capabilities.EntityCapability;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 public class SpelledAPI {
-	public static final Capability<ISpellData> SPELL_DATA_CAP = CapabilityManager.get(new CapabilityToken<>() {
-	});
+	public static final EntityCapability<ISpellData, Void> SPELL_DATA_CAP = EntityCapability.createVoid(
+			new ResourceLocation(Reference.MOD_ID, "spell_data"), ISpellData.class);
 
-	public static LazyOptional<ISpellData> getSpellDataCap(@Nonnull final Player player) {
-		return player.getCapability(SpelledAPI.SPELL_DATA_CAP);
+	public static Optional<ISpellData> getSpellDataCap(@Nonnull final Player player) {
+		return Optional.ofNullable(player.getCapability(SpelledAPI.SPELL_DATA_CAP));
 	}
 
 	public static void forceLevelUp(Player player) {
@@ -43,7 +41,7 @@ public class SpelledAPI {
 	}
 
 	public static int getLevel(Player player) {
-		LazyOptional<ISpellData> cap = SpelledAPI.getSpellDataCap(player);
+		Optional<ISpellData> cap = SpelledAPI.getSpellDataCap(player);
 		if (cap.isPresent()) {
 			ISpellData data = cap.orElse(null);
 			return data.getLevel();
@@ -59,7 +57,7 @@ public class SpelledAPI {
 	}
 
 	public static List<String> getUnlocks(Player player) {
-		LazyOptional<ISpellData> cap = SpelledAPI.getSpellDataCap(player);
+		Optional<ISpellData> cap = SpelledAPI.getSpellDataCap(player);
 		if (cap.isPresent()) {
 			ISpellData data = cap.orElse(null);
 			List<String> unlocks = new ArrayList<>(data.getUnlocked().getAllKeys());
@@ -89,7 +87,7 @@ public class SpelledAPI {
 	}
 
 	public static int getCooldown(Player player) {
-		LazyOptional<ISpellData> cap = SpelledAPI.getSpellDataCap(player);
+		Optional<ISpellData> cap = SpelledAPI.getSpellDataCap(player);
 		if (cap.isPresent()) {
 			ISpellData data = cap.orElse(null);
 			return data.getCastCooldown();
@@ -106,6 +104,6 @@ public class SpelledAPI {
 	}
 
 	public static void syncCap(ServerPlayer player) {
-		SpelledAPI.getSpellDataCap(player).ifPresent(cap -> PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new SpellDataSyncMessage(cap, player.getGameProfile().getId())));
+		SpelledAPI.getSpellDataCap(player).ifPresent(cap -> player.connection.send(new SpellDataSyncPayload(cap, player.getGameProfile().getId())));
 	}
 }

@@ -1,6 +1,5 @@
 package com.mrbysco.spelled.entity;
 
-import com.mrbysco.spelled.Spelled;
 import com.mrbysco.spelled.api.behavior.BehaviorRegistry;
 import com.mrbysco.spelled.api.behavior.ISpellBehavior;
 import com.mrbysco.spelled.registry.SpelledRegistry;
@@ -13,7 +12,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.network.PlayMessages.SpawnEntity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,10 +23,6 @@ public class SpellEntity extends AbstractSpellEntity {
 
 	public SpellEntity(LivingEntity shooter, Level level) {
 		super(SpelledRegistry.SPELL.get(), shooter, level);
-	}
-
-	public SpellEntity(SpawnEntity spawnEntity, Level level) {
-		this(SpelledRegistry.SPELL.get(), level);
 	}
 
 	@Override

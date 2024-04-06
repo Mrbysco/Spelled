@@ -2,7 +2,9 @@ package com.mrbysco.spelled.generator.data;
 
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.FrameType;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementType;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.EnterBlockTrigger;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.core.HolderLookup;
@@ -10,66 +12,66 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.common.data.ForgeAdvancementProvider;
+import net.neoforged.neoforge.common.data.AdvancementProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public class SpelledAdvancements extends ForgeAdvancementProvider {
+public class SpelledAdvancements extends AdvancementProvider {
 	private static final List<AdvancementGenerator> subproviders = List.of(new SpelledAdvancementGenerator());
 
 	public SpelledAdvancements(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries,
-							   ExistingFileHelper existingFileHelper) {
-		super(packOutput, registries,
-				existingFileHelper, subproviders);
+	                           ExistingFileHelper existingFileHelper) {
+		super(packOutput, registries, existingFileHelper, subproviders);
 	}
 
-	public static class SpelledAdvancementGenerator implements ForgeAdvancementProvider.AdvancementGenerator {
 
-		public Advancement root;
+	public static class SpelledAdvancementGenerator implements AdvancementGenerator {
+
+		public AdvancementHolder root;
 
 		//Colors
-		public Advancement color_lore;
-		public Advancement ater;
-		public Advancement aureus;
-		public Advancement caeruleus;
-		public Advancement viridis;
-		public Advancement aqua;
-		public Advancement rubrum;
-		public Advancement roseus;
-		public Advancement flavus;
-		public Advancement albus;
+		public AdvancementHolder color_lore;
+		public AdvancementHolder ater;
+		public AdvancementHolder aureus;
+		public AdvancementHolder caeruleus;
+		public AdvancementHolder viridis;
+		public AdvancementHolder aqua;
+		public AdvancementHolder rubrum;
+		public AdvancementHolder roseus;
+		public AdvancementHolder flavus;
+		public AdvancementHolder albus;
 
 		//Size
-		public Advancement parvus;
-		public Advancement magnum;
-		public Advancement grandis;
-		public Advancement immanis;
+		public AdvancementHolder parvus;
+		public AdvancementHolder magnum;
+		public AdvancementHolder grandis;
+		public AdvancementHolder immanis;
 
 		//Informative
-		public Advancement liquidus;
-		public Advancement nix;
-		public Advancement frigus;
-		public Advancement dissiliunt;
-		public Advancement sanitatem;
-		public Advancement nocere;
-		public Advancement praesidium;
-		public Advancement fractionis;
-		public Advancement propellentibus;
-		public Advancement ignis;
-		public Advancement vis;
-		public Advancement sericum;
-		public Advancement maturis;
+		public AdvancementHolder liquidus;
+		public AdvancementHolder nix;
+		public AdvancementHolder frigus;
+		public AdvancementHolder dissiliunt;
+		public AdvancementHolder sanitatem;
+		public AdvancementHolder nocere;
+		public AdvancementHolder praesidium;
+		public AdvancementHolder fractionis;
+		public AdvancementHolder propellentibus;
+		public AdvancementHolder ignis;
+		public AdvancementHolder vis;
+		public AdvancementHolder sericum;
+		public AdvancementHolder maturis;
 
 		@Override
-		public void generate(HolderLookup.Provider registries, Consumer<Advancement> consumer, ExistingFileHelper existingFileHelper) {
+		public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer, ExistingFileHelper existingFileHelper) {
 			root = Advancement.Builder.advancement()
 					.display(SpelledRegistry.KNOWLEDGE_TOME.get(),
 							Component.translatable("advancement.spelled.root"),
 							Component.translatable("advancement.spelled.root.desc"),
-							new ResourceLocation("minecraft:textures/block/bookshelf.png"), FrameType.TASK, true, false, false)
+							new ResourceLocation("minecraft:textures/block/bookshelf.png"), AdvancementType.TASK, true, false, false)
 					.addCriterion("air", EnterBlockTrigger.TriggerInstance.entersBlock(Blocks.AIR))
 					.save(consumer, "spelled:root");
 
@@ -77,9 +79,9 @@ public class SpelledAdvancements extends ForgeAdvancementProvider {
 					.display(SpelledRegistry.KNOWLEDGE_TOME.get(),
 							Component.translatable("advancement.spelled.color_lore"),
 							Component.translatable("advancement.spelled.color_lore.desc"),
-							null, FrameType.TASK, false, false, false)
+							null, AdvancementType.TASK, false, false, false)
 					.parent(root)
-					.addCriterion("impossible", new ImpossibleTrigger.TriggerInstance())
+					.addCriterion("impossible", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
 					.save(consumer, "spelled:color_lore");
 
 			ater = generateAdjectiveAdvancement("ater", color_lore, consumer);
@@ -112,14 +114,14 @@ public class SpelledAdvancements extends ForgeAdvancementProvider {
 			maturis = generateAdjectiveAdvancement("maturis", praesidium, consumer);
 		}
 
-		private Advancement generateAdjectiveAdvancement(String adjective, Advancement parent, Consumer<Advancement> consumer) {
+		private AdvancementHolder generateAdjectiveAdvancement(String adjective, AdvancementHolder parent, Consumer<AdvancementHolder> consumer) {
 			return Advancement.Builder.advancement()
 					.display(SpelledRegistry.KNOWLEDGE_TOME.get(),
 							Component.translatable(String.format("advancement.spelled.%s", adjective)),
 							Component.translatable(String.format("advancement.spelled.%s.desc", adjective)),
-							null, FrameType.TASK, false, false, false)
+							null, AdvancementType.TASK, false, false, false)
 					.parent(parent)
-					.addCriterion("impossible", new ImpossibleTrigger.TriggerInstance())
+					.addCriterion("impossible", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
 					.save(consumer, "spelled:adjective_" + adjective);
 		}
 	}

@@ -4,10 +4,10 @@ import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.util.SpellUtil;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.TickEvent.PlayerTickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.ServerChatEvent;
+import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.TickEvent.PlayerTickEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 
 public class SpellCastHandler {
 	@SubscribeEvent

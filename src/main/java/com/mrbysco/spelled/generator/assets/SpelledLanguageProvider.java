@@ -4,7 +4,7 @@ import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.data.PackOutput;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 
 import java.util.function.Supplier;
 

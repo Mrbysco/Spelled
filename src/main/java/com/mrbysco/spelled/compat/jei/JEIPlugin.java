@@ -8,9 +8,9 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.registration.ISubtypeRegistration;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
@@ -32,7 +32,7 @@ public class JEIPlugin implements IModPlugin {
 			if (!stack.hasTag()) return IIngredientSubtypeInterpreter.NONE;
 			String tomeUnlock = stack.getTag().getString(Reference.tomeUnlock);
 			if (tomeUnlock.isEmpty()) return IIngredientSubtypeInterpreter.NONE;
-			return ForgeRegistries.ITEMS.getKey(stack.getItem()) + "@" + tomeUnlock;
+			return BuiltInRegistries.ITEM.getKey(stack.getItem()) + "@" + tomeUnlock;
 		}
 	}
 }

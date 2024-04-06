@@ -5,6 +5,7 @@ import com.mrbysco.spelled.api.keywords.IKeyword;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.registry.SpelledRegistry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -22,11 +23,10 @@ import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.SetNbtFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.event.village.WandererTradesEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.LootTableLoadEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.neoforged.neoforge.event.village.WandererTradesEvent;
 
 public class LootHandler {
 
@@ -40,7 +40,7 @@ public class LootHandler {
 			CompoundTag playerData = player.getPersistentData();
 
 			if (!playerData.getBoolean(hasBookTag)) {
-				Item guideBook = ForgeRegistries.ITEMS.getValue(new ResourceLocation("patchouli", "guide_book"));
+				Item guideBook = BuiltInRegistries.ITEM.get(new ResourceLocation("patchouli", "guide_book"));
 				if (guideBook != null) {
 					ItemStack guideStack = new ItemStack(guideBook);
 					CompoundTag tag = new CompoundTag();

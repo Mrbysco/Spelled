@@ -1,6 +1,5 @@
 package com.mrbysco.spelled.util;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.level.ClipContext;
@@ -47,7 +46,7 @@ public class RayTraceHelper {
 		Entity nearest = null;
 		double distance = 0;
 
-		AABB bb = new AABB(BlockPos.containing(from), BlockPos.containing(to))
+		AABB bb = new AABB(from, to)
 				.expandTowards(aaExpansion.x, aaExpansion.y, aaExpansion.z)
 				.inflate(aaGrowth);
 		List<E> entities = level.getEntitiesOfClass(clazz, bb, predicate);

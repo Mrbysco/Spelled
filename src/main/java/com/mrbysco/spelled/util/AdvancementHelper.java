@@ -1,7 +1,7 @@
 package com.mrbysco.spelled.util;
 
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,12 +24,12 @@ public class AdvancementHelper {
 	}
 
 	public static void unlockAdvancement(ServerPlayer player, String name) {
-		Advancement advancementIn = player.getServer().getAdvancements().getAdvancement(new ResourceLocation("spelled:" + name));
-		if (advancementIn != null) {
-			AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementIn);
+		AdvancementHolder advancementHolder = player.getServer().getAdvancements().get(new ResourceLocation("spelled:" + name));
+		if (advancementHolder != null) {
+			AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementHolder);
 			if (!advancementprogress.isDone()) {
 				for (String s : advancementprogress.getRemainingCriteria()) {
-					player.getAdvancements().award(advancementIn, s);
+					player.getAdvancements().award(advancementHolder, s);
 				}
 			}
 		}
@@ -40,12 +40,12 @@ public class AdvancementHelper {
 	}
 
 	public static void lockAdvancement(ServerPlayer player, String name) {
-		Advancement advancementIn = player.getServer().getAdvancements().getAdvancement(new ResourceLocation("spelled:" + name));
-		if (advancementIn != null) {
-			AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementIn);
+		AdvancementHolder advancementHolder = player.getServer().getAdvancements().get(new ResourceLocation("spelled:" + name));
+		if (advancementHolder != null) {
+			AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementHolder);
 			if (advancementprogress.hasProgress()) {
 				for (String s : advancementprogress.getCompletedCriteria()) {
-					player.getAdvancements().revoke(advancementIn, s);
+					player.getAdvancements().revoke(advancementHolder, s);
 				}
 			}
 		}
@@ -55,8 +55,8 @@ public class AdvancementHelper {
 		KeywordRegistry registry = KeywordRegistry.instance();
 		boolean flag = true;
 		for (String color : registry.getColors()) {
-			Advancement advancementIn = player.getServer().getAdvancements().getAdvancement(new ResourceLocation("spelled:adjective_" + color));
-			AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementIn);
+			AdvancementHolder advancementHolder = player.getServer().getAdvancements().get(new ResourceLocation("spelled:adjective_" + color));
+			AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementHolder);
 			if (!advancementprogress.isDone()) {
 				flag = false;
 				break;

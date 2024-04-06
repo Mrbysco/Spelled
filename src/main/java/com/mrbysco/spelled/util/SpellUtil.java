@@ -2,7 +2,7 @@ package com.mrbysco.spelled.util;
 
 import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.api.capability.ISpellData;
-import com.mrbysco.spelled.api.capability.SpellDataCapability;
+import com.mrbysco.spelled.attachment.SpellData;
 import com.mrbysco.spelled.api.keywords.IKeyword;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.config.SpelledConfig;
@@ -20,7 +20,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.ServerChatEvent;
+import net.neoforged.neoforge.event.ServerChatEvent;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -121,7 +121,7 @@ public class SpellUtil {
 	}
 
 	public static boolean isValidSpellFormation(ServerPlayer player, List<String> words) {
-		ISpellData data = SpelledAPI.getSpellDataCap(player).orElse(new SpellDataCapability());
+		ISpellData data = SpelledAPI.getSpellDataCap(player).orElse(new SpellData());
 		final KeywordRegistry registry = KeywordRegistry.instance();
 
 		//Check if every word matches a keyword
@@ -138,7 +138,7 @@ public class SpellUtil {
 	}
 
 	public static boolean canCastSpell(ServerPlayer player, List<String> words) {
-		ISpellData data = SpelledAPI.getSpellDataCap(player).orElse(new SpellDataCapability());
+		ISpellData data = SpelledAPI.getSpellDataCap(player).orElse(new SpellData());
 		final KeywordRegistry registry = KeywordRegistry.instance();
 
 		//If creative just return true if the chat message was a valid spell
@@ -179,7 +179,7 @@ public class SpellUtil {
 	}
 
 	public static boolean isOnCooldown(ServerPlayer player) {
-		ISpellData data = SpelledAPI.getSpellDataCap(player).orElse(new SpellDataCapability());
+		ISpellData data = SpelledAPI.getSpellDataCap(player).orElse(new SpellData());
 		//Check if player is on cooldown
 		int cooldown = data.getCastCooldown();
 		if (cooldown > 0) {

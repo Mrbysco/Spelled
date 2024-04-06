@@ -1,9 +1,9 @@
 package com.mrbysco.spelled.api.capability;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
-public interface ISpellData extends ICapabilitySerializable<CompoundTag> {
+public interface ISpellData extends INBTSerializable<CompoundTag> {
 	CompoundTag getUnlocked();
 
 	void setUnlocked(CompoundTag nbt);
@@ -23,8 +23,4 @@ public interface ISpellData extends ICapabilitySerializable<CompoundTag> {
 	int getCastCooldown();
 
 	void setCastCooldown(int cooldown);
-
-//    boolean isDirty();
-//
-//    void setDirty(boolean dirty);
 }

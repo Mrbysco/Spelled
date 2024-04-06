@@ -17,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.CommonHooks;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class SpellbookItem extends Item {
 				final String regExp = "^[a-zA-Z\\s]*$";
 				if (!message.isEmpty() && message.matches(regExp)) {
 					Component component = Component.translatable("chat.type.text", serverPlayer.getDisplayName(),
-							net.minecraftforge.common.ForgeHooks.newChatWithLinks(message));
+							CommonHooks.newChatWithLinks(message));
 
 					component = SpellUtil.manualCastSpell(serverPlayer, message, component);
 					if (component == null) {
