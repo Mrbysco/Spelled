@@ -1,1 +1,1 @@
-* Fix the Altar screen not having the book positioned correctly and hovering not working
+* Port to 1.20.4 (NeoForge)
