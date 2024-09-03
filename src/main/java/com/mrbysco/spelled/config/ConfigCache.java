@@ -28,7 +28,7 @@ public class ConfigCache {
 			Spelled.LOGGER.error("'requiredItem' is empty, using default");
 			requiredItem = Items.LAPIS_LAZULI;
 		} else {
-			Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(value));
+			Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(value));
 			if (item != null) {
 				requiredItem = item;
 			} else {
@@ -59,7 +59,7 @@ public class ConfigCache {
 						int dummyLevel = i + 1;
 						int dummyItemCost = 5;
 						int level = NumberUtils.isParsable(values[0]) ? Integer.parseInt(values[0]) : -1;
-						Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(values[1]));
+						Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(values[1]));
 						int itemCost = NumberUtils.isParsable(values[2]) ? Integer.parseInt(values[2]) : -1;
 
 						if (level == -1) {

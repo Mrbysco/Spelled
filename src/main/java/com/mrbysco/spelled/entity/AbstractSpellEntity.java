@@ -56,21 +56,21 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		this.entityData.define(SPELL_ORDER, new CompoundTag());
-		this.entityData.define(SPELL_TYPE, 0);
-		this.entityData.define(COLOR, OptionalInt.empty());
-		this.entityData.define(FIERY, false);
-		this.entityData.define(LAVA, false);
-		this.entityData.define(WATER, false);
-		this.entityData.define(COLD, false);
-		this.entityData.define(SNOW, false);
-		this.entityData.define(SMOKY, false);
-		this.entityData.define(INKY, false);
-		this.entityData.define(SILKY, false);
-		this.entityData.define(SIZE_MULTIPLIER, 1.0F);
-		this.entityData.define(POWER, 0);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(SPELL_ORDER, new CompoundTag());
+		builder.define(SPELL_TYPE, 0);
+		builder.define(COLOR, OptionalInt.empty());
+		builder.define(FIERY, false);
+		builder.define(LAVA, false);
+		builder.define(WATER, false);
+		builder.define(COLD, false);
+		builder.define(SNOW, false);
+		builder.define(SMOKY, false);
+		builder.define(INKY, false);
+		builder.define(SILKY, false);
+		builder.define(SIZE_MULTIPLIER, 1.0F);
+		builder.define(POWER, 0);
 	}
 
 	public void setSpellOrder(CompoundTag order) {

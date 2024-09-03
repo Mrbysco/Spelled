@@ -16,16 +16,16 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.registries.VanillaRegistries;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class SpelledDataGen {
 	@SubscribeEvent
 	public static void gatherData(GatherDataEvent event) {
@@ -35,10 +35,10 @@ public class SpelledDataGen {
 		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
 		if (event.includeServer()) {
-			generator.addProvider(event.includeServer(), new SpelledLootProvider(packOutput));
-			generator.addProvider(event.includeServer(), new SpelledRecipes(packOutput));
+			generator.addProvider(event.includeServer(), new SpelledLootProvider(packOutput, lookupProvider));
+			generator.addProvider(event.includeServer(), new SpelledRecipes(packOutput, lookupProvider));
 			generator.addProvider(event.includeServer(), new SpelledAdvancements(packOutput, lookupProvider, helper));
-			generator.addProvider(event.includeServer(), new SpelledPatchouliProvider(packOutput));
+			generator.addProvider(event.includeServer(), new SpelledPatchouliProvider(packOutput, lookupProvider));
 
 			generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
 					packOutput, CompletableFuture.supplyAsync(SpelledDataGen::getProvider), Set.of(Reference.MOD_ID)));

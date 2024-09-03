@@ -1,9 +1,9 @@
 package com.mrbysco.spelled.util;
 
+import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public class AdvancementHelper {
@@ -24,7 +24,7 @@ public class AdvancementHelper {
 	}
 
 	public static void unlockAdvancement(ServerPlayer player, String name) {
-		AdvancementHolder advancementHolder = player.getServer().getAdvancements().get(new ResourceLocation("spelled:" + name));
+		AdvancementHolder advancementHolder = player.getServer().getAdvancements().get(Reference.modLoc(name));
 		if (advancementHolder != null) {
 			AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementHolder);
 			if (!advancementprogress.isDone()) {
@@ -40,7 +40,7 @@ public class AdvancementHelper {
 	}
 
 	public static void lockAdvancement(ServerPlayer player, String name) {
-		AdvancementHolder advancementHolder = player.getServer().getAdvancements().get(new ResourceLocation("spelled:" + name));
+		AdvancementHolder advancementHolder = player.getServer().getAdvancements().get(Reference.modLoc(name));
 		if (advancementHolder != null) {
 			AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementHolder);
 			if (advancementprogress.hasProgress()) {
@@ -55,7 +55,7 @@ public class AdvancementHelper {
 		KeywordRegistry registry = KeywordRegistry.instance();
 		boolean flag = true;
 		for (String color : registry.getColors()) {
-			AdvancementHolder advancementHolder = player.getServer().getAdvancements().get(new ResourceLocation("spelled:adjective_" + color));
+			AdvancementHolder advancementHolder = player.getServer().getAdvancements().get(Reference.modLoc("adjective_" + color));
 			AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementHolder);
 			if (!advancementprogress.isDone()) {
 				flag = false;

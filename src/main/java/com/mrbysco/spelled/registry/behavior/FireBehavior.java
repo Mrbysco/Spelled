@@ -27,6 +27,6 @@ public class FireBehavior extends BaseBehavior {
 
 	@Override
 	public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
-		entity.setSecondsOnFire(5);
+		entity.igniteForSeconds(5);
 	}
 }

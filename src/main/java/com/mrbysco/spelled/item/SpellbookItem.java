@@ -4,9 +4,10 @@ import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.api.keywords.IKeyword;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.client.gui.book.AdjectiveEntry;
+import com.mrbysco.spelled.registry.SpelledComponents;
 import com.mrbysco.spelled.util.SpellUtil;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringUtil;
@@ -16,12 +17,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.CommonHooks;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SpellbookItem extends Item {
@@ -32,10 +32,10 @@ public class SpellbookItem extends Item {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (stack.hasTag() && stack.getTag().getBoolean("sealed")) {
+		if (stack.has(SpelledComponents.SEALED)) {
 			if (!level.isClientSide) {
 				ServerPlayer serverPlayer = (ServerPlayer) player;
-				String message = stack.getTag().getString("spell");
+				String message = stack.getOrDefault(SpelledComponents.SPELL, "");
 				final String regExp = "^[a-zA-Z\\s]*$";
 				if (!message.isEmpty() && message.matches(regExp)) {
 					Component component = Component.translatable("chat.type.text", serverPlayer.getDisplayName(),
@@ -74,39 +74,12 @@ public class SpellbookItem extends Item {
 		return super.use(level, player, hand);
 	}
 
-	public static boolean makeSureTagIsValid(Player player, @Nullable CompoundTag nbt) {
-		if (!makeSureSpellIsValid(player, nbt)) {
-			return false;
-		} else if (!nbt.contains("title", 8)) {
-			return false;
-		} else {
-			String s = nbt.getString("title");
-			return s.length() <= 32 && nbt.contains("author", 8);
-		}
-	}
-
-	public static boolean makeSureSpellIsValid(Player player, @Nullable CompoundTag nbt) {
-		if (nbt != null && nbt.contains("spell")) {
-			String currentSpell = nbt.getString("spell");
-			String[] words = currentSpell.split(" ");
-			List<String> wordList = Arrays.asList(words);
-			wordList = wordList.subList(0, wordList.size() - 1);
-			for (String word : wordList) {
-				if (!SpelledAPI.isUnlocked(player, word)) {
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
-	}
-
 	@Override
 	public Component getName(ItemStack stack) {
-		if (stack.hasTag()) {
-			CompoundTag compoundnbt = stack.getTag();
-			String s = compoundnbt.getString("title");
-			if (!StringUtil.isNullOrEmpty(s)) {
+		WrittenBookContent writtenbookcontent = stack.get(DataComponents.WRITTEN_BOOK_CONTENT);
+		if (writtenbookcontent != null) {
+			String s = writtenbookcontent.title().raw();
+			if (!StringUtil.isBlank(s)) {
 				return Component.literal(s);
 			}
 		}
@@ -114,18 +87,18 @@ public class SpellbookItem extends Item {
 		return super.getName(stack);
 	}
 
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> textComponents, TooltipFlag flag) {
-		if (stack.hasTag()) {
-			CompoundTag tag = stack.getTag();
-			String s = tag.getString("author");
-			if (!StringUtil.isNullOrEmpty(s)) {
-				textComponents.add((Component.translatable("book.byAuthor", s)).withStyle(ChatFormatting.GRAY));
+	@Override
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+		WrittenBookContent writtenbookcontent = stack.get(DataComponents.WRITTEN_BOOK_CONTENT);
+		if (writtenbookcontent != null) {
+			if (!StringUtil.isBlank(writtenbookcontent.author())) {
+				tooltipComponents.add(Component.translatable("book.byAuthor", writtenbookcontent.author()).withStyle(ChatFormatting.GRAY));
 			}
 		}
 	}
 
 	@Override
 	public boolean isFoil(ItemStack stack) {
-		return stack.hasTag() && stack.getTag().getBoolean("sealed");
+		return stack.has(SpelledComponents.SEALED);
 	}
 }

@@ -5,7 +5,7 @@ import com.mrbysco.spelled.packets.message.SpellDataSyncPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class ClientPayloadHandler {
 	private static final ClientPayloadHandler INSTANCE = new ClientPayloadHandler();
@@ -14,18 +14,18 @@ public class ClientPayloadHandler {
 		return INSTANCE;
 	}
 
-	public void handleSync(final SpellDataSyncPayload data, final PlayPayloadContext context) {
-		context.workHandler().submitAsync(() -> {
+	public void handleSync(final SpellDataSyncPayload data, final IPayloadContext context) {
+		context.enqueueWork(() -> {
 					Player player = Minecraft.getInstance().level.getPlayerByUUID(data.playerUUID());
 					if (player != null) {
 						SpelledAPI.getSpellDataCap(player).ifPresent(sanityCap -> {
-							sanityCap.deserializeNBT(data.data());
+							sanityCap.deserializeNBT(player.registryAccess(), data.data());
 						});
 					}
 				})
 				.exceptionally(e -> {
 					// Handle exception
-					context.packetHandler().disconnect(Component.translatable("spelled.networking.spell_data_sync.failed", e.getMessage()));
+					context.disconnect(Component.translatable("spelled.networking.spell_data_sync.failed", e.getMessage()));
 					return null;
 				});
 	}

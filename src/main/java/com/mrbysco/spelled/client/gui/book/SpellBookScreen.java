@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.packets.message.SignSpellPayload;
+import com.mrbysco.spelled.registry.SpelledComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -15,7 +16,6 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.font.TextFieldHelper;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -38,7 +38,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SpellBookScreen extends Screen {
-	private static final ResourceLocation SLOT_SPRITE = new ResourceLocation("container/slot");
+	private static final ResourceLocation SLOT_SPRITE = ResourceLocation.withDefaultNamespace("container/slot");
 
 	private static final Component EDIT_TITLE_LABEL = Component.translatable("spelled.book.editTitle");
 	private static final Component FINALIZE_WARNING_LABEL = Component.translatable("spelled.book.finalizeWarning");
@@ -109,8 +109,8 @@ public class SpellBookScreen extends Screen {
 
 		this.ownerText = (Component.translatable("book.byAuthor", player.getName())).withStyle(ChatFormatting.GRAY);
 
-		if (stack.hasTag()) {
-			String currentSpell = stack.getTag().getString("spell");
+		if (stack.has(SpelledComponents.SPELL)) {
+			String currentSpell = stack.getOrDefault(SpelledComponents.SPELL, "");
 			String[] words = currentSpell.split(" ");
 			List<String> wordList = Arrays.asList(words);
 			String type = wordList.get(wordList.size() - 1);
@@ -350,11 +350,6 @@ public class SpellBookScreen extends Screen {
 		}
 	}
 
-	@Override
-	public void renderBackground(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-		this.renderDirtBackground(guiGraphics);
-	}
-
 	protected boolean isHovering(int x, int y, int x2, int y2, double mouseX, double mouseY) {
 		return mouseX >= x && mouseX < x2 && mouseY >= y && mouseY <= y2;
 	}
@@ -471,15 +466,11 @@ public class SpellBookScreen extends Screen {
 				selectedAdjectives.forEach((adjective) -> builder.append(adjective).append(" "));
 			}
 			builder.append(typeWord);
-			this.stack.addTagElement("spell", StringTag.valueOf(builder.toString()));
-
-			if (finalize) {
-				this.stack.addTagElement("author", StringTag.valueOf(this.owner.getGameProfile().getName()));
-				this.stack.addTagElement("title", StringTag.valueOf(this.title.trim()));
-			}
+			String spell = builder.toString();
+			this.stack.set(SpelledComponents.SPELL, spell);
 
 			int i = this.hand == InteractionHand.MAIN_HAND ? this.owner.getInventory().selected : 40;
-			PacketDistributor.SERVER.noArg().send(new SignSpellPayload(this.stack, finalize, i));
+			PacketDistributor.sendToServer(new SignSpellPayload(this.stack, finalize, this.title.trim(), spell, i));
 		}
 	}
 

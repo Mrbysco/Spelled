@@ -3,6 +3,7 @@ package com.mrbysco.spelled.attachment;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.api.capability.ISpellData;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.Locale;
@@ -79,7 +80,7 @@ public class SpellData implements ISpellData {
 	}
 
 	@Override
-	public CompoundTag serializeNBT() {
+	public CompoundTag serializeNBT(HolderLookup.Provider provider) {
 		CompoundTag tag = new CompoundTag();
 		tag.putInt(Reference.characterLevel, getLevel());
 		tag.put(Reference.characterUnlocks, getUnlocked());
@@ -89,7 +90,7 @@ public class SpellData implements ISpellData {
 	}
 
 	@Override
-	public void deserializeNBT(CompoundTag tag) {
+	public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
 		int level = tag.getInt(Reference.characterLevel);
 		CompoundTag characterUnlocks = tag.getCompound(Reference.characterUnlocks);
 		int castCooldown = tag.getInt(Reference.characterCooldown);

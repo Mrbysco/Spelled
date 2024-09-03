@@ -1,12 +1,11 @@
 package com.mrbysco.spelled.item;
 
-import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.api.capability.ISpellData;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.config.SpelledConfig;
+import com.mrbysco.spelled.registry.SpelledComponents;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -17,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,12 +29,11 @@ public class TomeItem extends Item {
 		if (!level.isClientSide) {
 			ItemStack itemstack = playerIn.getItemInHand(handIn);
 
-			if (itemstack.hasTag() && itemstack.getTag() != null && itemstack.getTag().contains(Reference.tomeUnlock)) {
-				CompoundTag tag = itemstack.getTag();
+			if (itemstack.has(SpelledComponents.UNLOCK)) {
 				Optional<ISpellData> cap = SpelledAPI.getSpellDataCap(playerIn);
 				ISpellData data = cap.orElseGet(null);
 				if (cap.isPresent()) {
-					String word = tag.getString(Reference.tomeUnlock);
+					String word = itemstack.getOrDefault(SpelledComponents.UNLOCK, "");
 					if (!data.knowsKeyword(word)) {
 						playerIn.startUsingItem(handIn);
 						SpelledAPI.unlockKeyword((ServerPlayer) playerIn, word);
@@ -49,11 +46,9 @@ public class TomeItem extends Item {
 					}
 				}
 			} else {
-				CompoundTag tag = new CompoundTag();
 				String adjective = KeywordRegistry.instance().getRandomAdjective();
 				if (!adjective.isEmpty()) {
-					tag.putString(Reference.tomeUnlock, KeywordRegistry.instance().getRandomAdjective());
-					itemstack.setTag(tag);
+					itemstack.set(SpelledComponents.UNLOCK, KeywordRegistry.instance().getRandomAdjective());
 				}
 			}
 		}
@@ -61,15 +56,16 @@ public class TomeItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
 		if (!SpelledConfig.COMMON.hideKnowledgeTomeInfo.get()) {
-			if (stack.hasTag() && stack.getTag().contains(Reference.tomeUnlock)) {
-				CompoundTag tag = stack.getTag();
-				tooltip.add(Component.translatable("spelled.tome.description", Component.literal(tag.getString(Reference.tomeUnlock)).withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.YELLOW));
+			if (stack.has(SpelledComponents.UNLOCK)) {
+				String word = stack.getOrDefault(SpelledComponents.UNLOCK, "");
+				tooltip.add(Component.translatable("spelled.tome.description", Component.literal(word)
+						.withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.YELLOW));
 			} else {
 				tooltip.add(Component.translatable("spelled.tome.description.invalid").withStyle(ChatFormatting.RED));
 			}
 		}
-		super.appendHoverText(stack, level, tooltip, flagIn);
+		super.appendHoverText(stack, context, tooltip, tooltipFlag);
 	}
 }

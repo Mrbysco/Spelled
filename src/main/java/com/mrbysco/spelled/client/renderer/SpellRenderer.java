@@ -12,16 +12,15 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import java.awt.*;
 
 public class SpellRenderer extends EntityRenderer<SpellEntity> {
-	private static final ResourceLocation PROJECTILE_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/item/projectile.png");
-	private static final ResourceLocation BALL_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/item/ball.png");
-	private static final ResourceLocation LAVA_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/item/lava_ball.png");
-	private static final ResourceLocation WATER_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/item/water_ball.png");
+	private static final ResourceLocation PROJECTILE_TEXTURE = Reference.modLoc("textures/item/projectile.png");
+	private static final ResourceLocation BALL_TEXTURE = Reference.modLoc("textures/item/ball.png");
+	private static final ResourceLocation LAVA_TEXTURE = Reference.modLoc("textures/item/lava_ball.png");
+	private static final ResourceLocation WATER_TEXTURE = Reference.modLoc("textures/item/water_ball.png");
 	private static final RenderType renderType = RenderType.entityCutoutNoCull(BALL_TEXTURE);
 	private static Color color = null;
 
@@ -40,18 +39,22 @@ public class SpellRenderer extends EntityRenderer<SpellEntity> {
 		poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 		PoseStack.Pose last = poseStack.last();
 		Matrix4f pose = last.pose();
-		Matrix3f normal = last.normal();
 		VertexConsumer buffer = bufferIn.getBuffer(renderType);
-		vertex(buffer, pose, normal, packedLightIn, 0.0F, 0, 0, 1);
-		vertex(buffer, pose, normal, packedLightIn, 1.0F, 0, 1, 1);
-		vertex(buffer, pose, normal, packedLightIn, 1.0F, 1, 1, 0);
-		vertex(buffer, pose, normal, packedLightIn, 0.0F, 1, 0, 0);
+		vertex(buffer, pose, last, packedLightIn, 0.0F, 0, 0, 1);
+		vertex(buffer, pose, last, packedLightIn, 1.0F, 0, 1, 1);
+		vertex(buffer, pose, last, packedLightIn, 1.0F, 1, 1, 0);
+		vertex(buffer, pose, last, packedLightIn, 0.0F, 1, 0, 0);
 		poseStack.popPose();
 		super.render(entityIn, entityYaw, partialTicks, poseStack, bufferIn, packedLightIn);
 	}
 
-	private static void vertex(VertexConsumer vertexBuilder, Matrix4f pose, Matrix3f normal, int packedLightIn, float p_229045_4_, int p_229045_5_, int p_229045_6_, int p_229045_7_) {
-		vertexBuilder.vertex(pose, p_229045_4_ - 0.5F, (float) p_229045_5_ - 0.25F, 0.0F).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).uv((float) p_229045_6_, (float) p_229045_7_).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normal, 0.0F, 1.0F, 0.0F).endVertex();
+	private static void vertex(VertexConsumer vertexBuilder, Matrix4f pose, PoseStack.Pose last, int packedLightIn, float p_229045_4_, int p_229045_5_, int p_229045_6_, int p_229045_7_) {
+		vertexBuilder.addVertex(pose, p_229045_4_ - 0.5F, (float) p_229045_5_ - 0.25F, 0.0F)
+				.setColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
+				.setUv((float) p_229045_6_, (float) p_229045_7_)
+				.setOverlay(OverlayTexture.NO_OVERLAY)
+				.setLight(packedLightIn)
+				.setNormal(last, 0.0F, 1.0F, 0.0F);
 	}
 
 	protected void preRenderCallback(SpellEntity entityIn, PoseStack poseStack, float partialTickTime) {

@@ -25,7 +25,7 @@ public class ColdBehavior extends BaseBehavior {
 	public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
 		Level level = spell.level();
 		BlockState hitState = level.getBlockState(pos);
-		if (hitState.getBlock() instanceof LiquidBlock && ((LiquidBlock) hitState.getBlock()).getFluid() == Fluids.WATER)
+		if (hitState.getBlock() instanceof LiquidBlock && ((LiquidBlock) hitState.getBlock()).fluid == Fluids.WATER)
 			level.setBlockAndUpdate(pos, Blocks.ICE.defaultBlockState());
 		if (hitState.getBlock() instanceof IceBlock)
 			level.setBlockAndUpdate(pos, Blocks.PACKED_ICE.defaultBlockState());

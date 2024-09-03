@@ -2,9 +2,9 @@ package com.mrbysco.spelled.util;
 
 import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.api.capability.ISpellData;
-import com.mrbysco.spelled.attachment.SpellData;
 import com.mrbysco.spelled.api.keywords.IKeyword;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
+import com.mrbysco.spelled.attachment.SpellData;
 import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.entity.SpellEntity;
 import com.mrbysco.spelled.registry.SpelledRegistry;

@@ -14,12 +14,11 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class CreativeTomeItem extends Item {
 	public CreativeTomeItem(Properties builder) {
-		super(builder);
+		super(builder.rarity(Rarity.EPIC));
 	}
 
 	@Override
@@ -29,7 +28,7 @@ public class CreativeTomeItem extends Item {
 			playerIn.startUsingItem(handIn);
 			List<String> adjectives = KeywordRegistry.instance().getAdjectives();
 			for (String adjective : adjectives) {
-				SpelledAPI.unlockKeyword((ServerPlayer) playerIn, adjective);
+				SpelledAPI.unlockKeyword(playerIn, adjective);
 			}
 			SpelledAPI.syncCap((ServerPlayer) playerIn);
 			playerIn.displayClientMessage(Component.translatable("spelled.tome.success"), true);
@@ -39,18 +38,13 @@ public class CreativeTomeItem extends Item {
 	}
 
 	@Override
-	public Rarity getRarity(ItemStack stack) {
-		return Rarity.EPIC;
-	}
-
-	@Override
 	public boolean isFoil(ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
 		tooltip.add(Component.translatable("spelled.creative_tome.description").withStyle(ChatFormatting.DARK_PURPLE));
-		super.appendHoverText(stack, level, tooltip, flagIn);
+		super.appendHoverText(stack, context, tooltip, tooltipFlag);
 	}
 }

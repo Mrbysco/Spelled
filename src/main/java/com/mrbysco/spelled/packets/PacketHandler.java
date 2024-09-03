@@ -5,17 +5,15 @@ import com.mrbysco.spelled.packets.handler.ClientPayloadHandler;
 import com.mrbysco.spelled.packets.handler.ServerPayloadHandler;
 import com.mrbysco.spelled.packets.message.SignSpellPayload;
 import com.mrbysco.spelled.packets.message.SpellDataSyncPayload;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class PacketHandler {
 
-	public static void setupPackets(final RegisterPayloadHandlerEvent event) {
-		final IPayloadRegistrar registrar = event.registrar(Reference.MOD_ID);
+	public static void setupPackets(final RegisterPayloadHandlersEvent event) {
+		final PayloadRegistrar registrar = event.registrar(Reference.MOD_ID);
 
-		registrar.play(SpellDataSyncPayload.ID, SpellDataSyncPayload::new, handler -> handler
-				.client(ClientPayloadHandler.getInstance()::handleSync));
-		registrar.play(SignSpellPayload.ID, SignSpellPayload::new, handler -> handler
-				.server(ServerPayloadHandler.getInstance()::handleSignSpell));
+		registrar.playToClient(SpellDataSyncPayload.ID, SpellDataSyncPayload.CODEC, ClientPayloadHandler.getInstance()::handleSync);
+		registrar.playToServer(SignSpellPayload.ID, SignSpellPayload.CODEC, ServerPayloadHandler.getInstance()::handleSignSpell);
 	}
 }

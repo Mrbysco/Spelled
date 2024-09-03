@@ -2,23 +2,25 @@ package com.mrbysco.spelled.generator.data;
 
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
 import xyz.brassgoggledcoders.patchouliprovider.BookBuilder;
 import xyz.brassgoggledcoders.patchouliprovider.CategoryBuilder;
 import xyz.brassgoggledcoders.patchouliprovider.EntryBuilder;
 import xyz.brassgoggledcoders.patchouliprovider.PatchouliBookProvider;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class SpelledPatchouliProvider extends PatchouliBookProvider {
-	public SpelledPatchouliProvider(PackOutput packOutput) {
-		super(packOutput, Reference.MOD_ID, "en_us");
+	public SpelledPatchouliProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+		super(packOutput, Reference.MOD_ID, "en_us", lookupProvider);
 	}
 
 	@Override
-	protected void addBooks(Consumer<BookBuilder> consumer) {
-		BookBuilder bookBuilder = createBookBuilder("knowledge_tome", "item.spelled.book.name", "info.spelled.book.landing")
+	protected void addBooks(Consumer<BookBuilder> consumer, HolderLookup.Provider registries) {
+		BookBuilder bookBuilder = createBookBuilder("knowledge_tome", "item.spelled.book.name",
+				"info.spelled.book.landing", registries)
 				.setSubtitle("info.spelled.book.subtitle")
 				.setAdvancementsTab("spelled:root")
 				.setCreativeTab("spelled")
@@ -37,7 +39,7 @@ public class SpelledPatchouliProvider extends PatchouliBookProvider {
 				//Add leveling altar entry
 				.addEntry("leveling/leveling", "info.spelled.book.leveling.entry.name", "spelled:leveling_altar")
 				.addTextPage("info.spelled.book.leveling_info.text").build()
-				.addCraftingPage(new ResourceLocation(Reference.MOD_ID, "leveling_altar")).setText("info.spelled.book.leveling_recipe.text").build()
+				.addCraftingPage(Reference.modLoc("leveling_altar")).setText("info.spelled.book.leveling_recipe.text").build()
 				.build().build() //Back to the bookbuilder
 
 				//Types

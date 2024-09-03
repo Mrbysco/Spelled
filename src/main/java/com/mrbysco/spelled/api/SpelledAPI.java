@@ -5,7 +5,6 @@ import com.mrbysco.spelled.api.capability.ISpellData;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.packets.message.SpellDataSyncPayload;
 import com.mrbysco.spelled.util.AdvancementHelper;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.capabilities.EntityCapability;
@@ -18,7 +17,7 @@ import java.util.Optional;
 
 public class SpelledAPI {
 	public static final EntityCapability<ISpellData, Void> SPELL_DATA_CAP = EntityCapability.createVoid(
-			new ResourceLocation(Reference.MOD_ID, "spell_data"), ISpellData.class);
+			Reference.modLoc("spell_data"), ISpellData.class);
 
 	public static Optional<ISpellData> getSpellDataCap(@Nonnull final Player player) {
 		return Optional.ofNullable(player.getCapability(SpelledAPI.SPELL_DATA_CAP));

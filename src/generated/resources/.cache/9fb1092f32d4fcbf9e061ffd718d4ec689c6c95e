@@ -1,5 +1,5 @@
-// 1.20.4	2024-04-06T17:16:56.7979285	Recipes
-1bf9994141c052dc500279690913300079168022 data/spelled/advancements/recipes/misc/spell_book.json
-803e6131f73a9268c81780f267a1d4cc7996be0f data/spelled/advancements/recipes/redstone/leveling_altar.json
-d1e2632fce78f15c585180bc2f079d03214b501b data/spelled/recipes/leveling_altar.json
-e543c5c9234ec5f94e2f9476c9b51ef36d9cf20f data/spelled/recipes/spell_book.json
+// 1.21.1	2024-09-03T23:24:15.5182792	Recipes
+e229fa6defc852384d6d1547dc0658a7921d7449 data/spelled/advancement/recipes/misc/spell_book.json
+d5d97bb8256229b57bf23aee617001e33e3ec450 data/spelled/advancement/recipes/redstone/leveling_altar.json
+a23d7ede01909e5e64aaa7b1c81fae53b693be8a data/spelled/recipe/leveling_altar.json
+91433d66702a32c3c9b3743e1b42203e44960e87 data/spelled/recipe/spell_book.json

@@ -1,20 +1,22 @@
 package com.mrbysco.spelled.compat.jei;
 
 import com.mrbysco.spelled.Reference;
+import com.mrbysco.spelled.registry.SpelledComponents;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
-	private static final ResourceLocation UID = new ResourceLocation(Reference.MOD_ID, "jei_plugin");
+	private static final ResourceLocation UID = Reference.modLoc("jei_plugin");
 
 	@Override
 	public ResourceLocation getPluginUid() {
@@ -26,13 +28,18 @@ public class JEIPlugin implements IModPlugin {
 		registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, SpelledRegistry.KNOWLEDGE_TOME.get(), new TomeSubTypes());
 	}
 
-	private static class TomeSubTypes implements IIngredientSubtypeInterpreter<ItemStack> {
+	private static class TomeSubTypes implements ISubtypeInterpreter<ItemStack> {
 		@Override
-		public String apply(ItemStack stack, UidContext context) {
-			if (!stack.hasTag()) return IIngredientSubtypeInterpreter.NONE;
-			String tomeUnlock = stack.getTag().getString(Reference.tomeUnlock);
-			if (tomeUnlock.isEmpty()) return IIngredientSubtypeInterpreter.NONE;
-			return BuiltInRegistries.ITEM.getKey(stack.getItem()) + "@" + tomeUnlock;
+		@Nullable
+		public Object getSubtypeData(ItemStack ingredient, UidContext context) {
+			return ingredient.get(SpelledComponents.UNLOCK);
+		}
+
+		@Override
+		public String getLegacyStringSubtypeInfo(ItemStack ingredient, UidContext context) {
+			String tomeUnlock = ingredient.getOrDefault(SpelledComponents.UNLOCK, "");
+			if (tomeUnlock.isEmpty()) return "";
+			return BuiltInRegistries.ITEM.getKey(ingredient.getItem()) + "@" + tomeUnlock;
 		}
 	}
 }

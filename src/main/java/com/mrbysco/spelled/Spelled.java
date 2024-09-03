@@ -13,14 +13,17 @@ import com.mrbysco.spelled.handler.LootHandler;
 import com.mrbysco.spelled.handler.SpellHandler;
 import com.mrbysco.spelled.packets.PacketHandler;
 import com.mrbysco.spelled.registry.ReloadManager;
+import com.mrbysco.spelled.registry.SpelledComponents;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.world.entity.EntityType;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -30,10 +33,11 @@ import org.slf4j.Logger;
 public class Spelled {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
-	public Spelled(IEventBus eventBus) {
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SpelledConfig.commonSpec);
+	public Spelled(IEventBus eventBus, ModContainer container, Dist dist) {
+		container.registerConfig(ModConfig.Type.COMMON, SpelledConfig.commonSpec);
 		eventBus.register(SpelledConfig.class);
 
+		SpelledComponents.DATA_COMPONENT_TYPES.register(eventBus);
 		SpelledRegistry.BLOCKS.register(eventBus);
 		SpelledRegistry.BLOCK_ENTITY_TYPES.register(eventBus);
 		SpelledRegistry.MENU_TYPES.register(eventBus);
@@ -55,8 +59,9 @@ public class Spelled {
 		NeoForge.EVENT_BUS.addListener(this::onCommandRegister);
 		NeoForge.EVENT_BUS.addListener(this::serverStart);
 
-		if (FMLEnvironment.dist.isClient()) {
-			eventBus.addListener(ClientHandler::onClientSetupEvent);
+		if (dist.isClient()) {
+			container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+			eventBus.addListener(ClientHandler::onMenuRegister);
 			eventBus.addListener(ClientHandler::registerEntityRenders);
 			NeoForge.EVENT_BUS.addListener(ClientHandler::loginEvent);
 		}

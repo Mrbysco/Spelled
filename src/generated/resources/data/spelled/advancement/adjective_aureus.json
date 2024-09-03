@@ -1,0 +1,28 @@
+{
+  "parent": "spelled:adjective_ater",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancement.spelled.aureus.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "spelled:ancient_knowledge_tome"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancement.spelled.aureus"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

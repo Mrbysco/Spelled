@@ -1,6 +1,7 @@
 package com.mrbysco.spelled.generator.data;
 
 import com.mrbysco.spelled.registry.SpelledRegistry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -10,10 +11,12 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
 
+import java.util.concurrent.CompletableFuture;
+
 public class SpelledRecipes extends RecipeProvider {
 
-	public SpelledRecipes(PackOutput packOutput) {
-		super(packOutput);
+	public SpelledRecipes(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+		super(packOutput, lookupProvider);
 	}
 
 	@Override

@@ -17,7 +17,7 @@ public class LootHelper {
 
 	public static LootParams.Builder silkContextBuilder(ServerLevel level, BlockPos pos, SpellEntity spell) {
 		ItemStack dummy = getDummyTool();
-		dummy.enchant(Enchantments.SILK_TOUCH, 1);
+		dummy.enchant(level.holderOrThrow(Enchantments.SILK_TOUCH), 1);
 
 		return new LootParams.Builder(level)
 				.withParameter(LootContextParams.ORIGIN, new Vec3(pos.getX(), pos.getY(), pos.getZ()))

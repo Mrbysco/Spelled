@@ -32,7 +32,7 @@ public class WaterBehavior extends BaseBehavior {
 		if (block instanceof LiquidBlockContainer && ((LiquidBlockContainer) block).canPlaceLiquid(null, level, pos, hitState, Fluids.WATER)) {
 			((LiquidBlockContainer) block).placeLiquid(level, pos, hitState, Fluids.WATER.getSource(false));
 		} else {
-			if (hitState.getBlock() instanceof LiquidBlock && ((LiquidBlock) hitState.getBlock()).getFluid() == Fluids.LAVA) {
+			if (hitState.getBlock() instanceof LiquidBlock && ((LiquidBlock) hitState.getBlock()).fluid == Fluids.LAVA) {
 				Block fluidBlock = level.getFluidState(pos).isSource() ? Blocks.OBSIDIAN : Blocks.COBBLESTONE;
 				level.setBlockAndUpdate(pos, EventHooks.fireFluidPlaceBlockEvent(level, pos, pos, fluidBlock.defaultBlockState()));
 			} else {

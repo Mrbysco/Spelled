@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -28,10 +29,10 @@ import java.util.List;
 import java.util.Random;
 
 public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
-	private static final ResourceLocation ALTAR_GUI_TEXTURE = new ResourceLocation(Reference.MOD_PREFIX + "textures/gui/container/leveling_altar.png");
-	private static final ResourceLocation ALTAR_GUI_SLOTLESS_TEXTURE = new ResourceLocation(Reference.MOD_PREFIX + "textures/gui/container/leveling_altar_no_slot.png");
+	private static final ResourceLocation ALTAR_GUI_TEXTURE = Reference.modLoc("textures/gui/container/leveling_altar.png");
+	private static final ResourceLocation ALTAR_GUI_SLOTLESS_TEXTURE = Reference.modLoc("textures/gui/container/leveling_altar_no_slot.png");
 
-	private static final ResourceLocation ALTAR_BOOK_TEXTURE = new ResourceLocation(Reference.MOD_PREFIX + "textures/entity/altar_book.png");
+	private static final ResourceLocation ALTAR_BOOK_TEXTURE = Reference.modLoc("textures/entity/altar_book.png");
 	private BookModel bookModel;
 	/**
 	 * A Random instance for use with the Altar gui
@@ -158,7 +159,8 @@ public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
 				blue = 0.6F;
 			}
 		}
-		this.bookModel.renderToBuffer(guiGraphics.pose(), vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, red, green, blue, 1.0F);
+
+		this.bookModel.renderToBuffer(guiGraphics.pose(), vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.colorFromFloat(red, green, blue, 1.0F));
 
 		guiGraphics.flush();
 		guiGraphics.pose().popPose();
@@ -168,7 +170,7 @@ public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		Player player = this.minecraft != null ? this.minecraft.player : null;
 		if (this.minecraft != null) {
-			partialTicks = this.minecraft.getFrameTime();
+			partialTicks = this.minecraft.getFrameTimeNs();
 		}
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);

@@ -12,9 +12,7 @@ import com.mrbysco.spelled.item.TomeItem;
 import com.mrbysco.spelled.menu.AltarMenu;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -49,7 +47,7 @@ public class SpelledRegistry {
 	public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, Reference.MOD_ID);
 
 	public static final DeferredHolder<SoundEvent, SoundEvent> SHOOT_SPELL = SOUND_EVENTS.register("shoot.spell", () ->
-			SoundEvent.createVariableRangeEvent(new ResourceLocation(Reference.MOD_ID, "shoot.spell")));
+			SoundEvent.createVariableRangeEvent(Reference.modLoc("shoot.spell")));
 
 	public static final DeferredBlock<LevelingAltarBlock> LEVELING_ALTAR = BLOCKS.register("leveling_altar", () -> new LevelingAltarBlock(
 			Block.Properties.of().strength(2.5F).sound(SoundType.WOOD)));
@@ -87,10 +85,8 @@ public class SpelledRegistry {
 				output.acceptAll(stacks);
 
 				for (String adjective : KeywordRegistry.instance().getAdjectives()) {
-					CompoundTag nbt = new CompoundTag();
-					nbt.putString(Reference.tomeUnlock, adjective);
-					ItemStack stack = new ItemStack(SpelledRegistry.KNOWLEDGE_TOME.get(), 1, nbt);
-					stack.setTag(nbt);
+					ItemStack stack = SpelledRegistry.KNOWLEDGE_TOME.toStack();
+					stack.set(SpelledComponents.UNLOCK, adjective);
 					output.accept(stack);
 				}
 			}).build());

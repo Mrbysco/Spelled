@@ -1,9 +1,9 @@
 package com.mrbysco.spelled.handler;
 
 import com.mrbysco.spelled.entity.SpellEntity;
-import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 
 public class SpellHandler {
 

@@ -46,9 +46,7 @@ public class HarvestBehavior extends BaseBehavior {
 				ItemStack stack = livingEntity.getItemBySlot(slotType);
 				if (livingEntity.getRandom().nextBoolean() && !stack.isEmpty()) {
 					int power = 1 + spell.getPower();
-					stack.hurtAndBreak(power, livingEntity, (playerIn) -> {
-						playerIn.broadcastBreakEvent(slotType);
-					});
+					stack.hurtAndBreak(power, livingEntity, slotType);
 					break;
 				}
 			}

@@ -71,7 +71,7 @@ public class SpelledAdvancements extends AdvancementProvider {
 					.display(SpelledRegistry.KNOWLEDGE_TOME.get(),
 							Component.translatable("advancement.spelled.root"),
 							Component.translatable("advancement.spelled.root.desc"),
-							new ResourceLocation("minecraft:textures/block/bookshelf.png"), AdvancementType.TASK, true, false, false)
+							ResourceLocation.withDefaultNamespace("textures/block/bookshelf.png"), AdvancementType.TASK, true, false, false)
 					.addCriterion("air", EnterBlockTrigger.TriggerInstance.entersBlock(Blocks.AIR))
 					.save(consumer, "spelled:root");
 

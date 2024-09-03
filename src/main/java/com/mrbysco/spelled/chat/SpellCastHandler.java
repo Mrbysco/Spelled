@@ -3,21 +3,14 @@ package com.mrbysco.spelled.chat;
 import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.util.SpellUtil;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.event.ServerChatEvent;
-import net.neoforged.neoforge.event.TickEvent;
-import net.neoforged.neoforge.event.TickEvent.PlayerTickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.ServerChatEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 public class SpellCastHandler {
 	@SubscribeEvent
-	public void onPlayerTick(PlayerTickEvent event) {
-		if (event.phase == TickEvent.Phase.START)
-			return;
-
-		Level level = event.player.level();
-		if (!level.isClientSide && level.getGameTime() % 20 == 0) {
-			ServerPlayer player = (ServerPlayer) event.player;
+	public void onPlayerTick(PlayerTickEvent.Post event) {
+		if (event.getEntity() instanceof ServerPlayer player && player.level().getGameTime() % 20 == 0) {
 			int cooldown = SpelledAPI.getCooldown(player);
 			if (cooldown > 0) {
 				SpelledAPI.setCooldown(player, cooldown - 1);
