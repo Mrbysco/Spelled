@@ -1,5 +1,6 @@
 package com.mrbysco.spelled.registry;
 
+import com.mojang.serialization.Codec;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.attachment.SpellData;
@@ -68,6 +69,10 @@ public class SpelledRegistry {
 
 	public static final Supplier<AttachmentType<SpellData>> SPELL_DATA_ATTACHMENT = ATTACHMENT_TYPES.register("spell_data", () ->
 			AttachmentType.serializable(SpellData::new).build());
+
+	public static final Supplier<AttachmentType<Boolean>> HAS_BOOK_ATTACHMENT = ATTACHMENT_TYPES.register(
+			"has_book", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build()
+	);
 
 	public static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
 		return builder.build(id);

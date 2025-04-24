@@ -42,13 +42,18 @@ public class LootHandler {
 		if (!player.level().isClientSide && SpelledConfig.COMMON.startWithBook.get()) {
 			CompoundTag playerData = player.getPersistentData();
 
-			if (!playerData.getBoolean(hasBookTag)) {
+			if (!player.hasData(SpelledRegistry.HAS_BOOK_ATTACHMENT)) {
+				if (playerData.getBoolean(hasBookTag)) { // Convert from old tag
+					player.setData(SpelledRegistry.HAS_BOOK_ATTACHMENT, true);
+					return;
+				}
+
 				Item guideBook = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("patchouli", "guide_book"));
 				if (guideBook != null) {
 					ItemStack guideStack = new ItemStack(guideBook);
 					guideStack.set(PatchouliDataComponents.BOOK, Reference.modLoc("knowledge_tome"));
-					player.getInventory().add(guideStack);
-					playerData.putBoolean(hasBookTag, true);
+					player.addItem(guideStack);
+					player.setData(SpelledRegistry.HAS_BOOK_ATTACHMENT, true);
 				}
 			}
 		}
