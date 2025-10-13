@@ -113,6 +113,7 @@ public class SpelledLanguageProvider extends LanguageProvider {
 		add("spelled.keyword.vis.description", "Power");
 		add("spelled.keyword.sericum.description", "Silk");
 		add("spelled.keyword.maturis.description", "Mature");
+		add("spelled.keyword.colligunt.description", "Collecting");
 
 		add("spelled.keyword.sphaera.description", "Ball");
 		add("spelled.keyword.projectilis.description", "Projectile");
@@ -180,6 +181,8 @@ public class SpelledLanguageProvider extends LanguageProvider {
 		add("advancement.spelled.sericum.desc", "Silk");
 		add("advancement.spelled.maturis", "Maturis");
 		add("advancement.spelled.maturis.desc", "Mature");
+		add("advancement.spelled.colligunt", "Colligunt");
+		add("advancement.spelled.colligunt.desc", "Collecting");
 
 		//Patchouli
 		add("item.spelled.book.name", "Tome Of Knowledge");
@@ -282,6 +285,9 @@ public class SpelledLanguageProvider extends LanguageProvider {
 		add("info.spelled.book.descriptive.maturis.name", "Maturis");
 		add("info.spelled.book.descriptive.maturis.text", "Everybody wants to grow up right? Adults seem to be able to have all the fun, and with this word now you can too! Sadly it doesn't work on people, but it can still give those annoying wheat plants the push they need to finally feed you. As a bonus it works on animals too! Note side effects of aging can include cramps, joint pain,");
 		add("info.spelled.book.descriptive.maturis.text2", "yelling at kids to get off your lawn, and an obligation to pay taxes. Failure to use this word responsibly can result in a man dressed in green tights showed up in your window and promising to take you to a land where you'll never grow old, with a grumpy old pirate and a ticking crocodile, so adult supervision is highly recommended!");
+		add("info.spelled.book.descriptive.colligunt.name", "Colligunt");
+		add("info.spelled.book.descriptive.colligunt.text", "Back in my day we had to go pick up our cobblestone by hands by walking all the way to the Far lands and back while also dodging creepers! You kids today don't know how good you got it, but still you made this spell that let's you pick stuff up from far away, better get to using it.");
+		add("info.spelled.book.descriptive.colligunt.text2", "While this word was a more recent discovery thanks to an apparently soupy researcher, it nevertheless makes your life a lot easier by letting you pick stuff up from far away! Perfect for cleaning up while you're causing wanton destruction.");
 	}
 
 	public void addSoundEvent(Supplier<? extends SoundEvent> key, String subtitle) {

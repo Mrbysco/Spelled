@@ -135,7 +135,8 @@ public class SpelledPatchouliProvider extends PatchouliBookProvider {
 				"ignis",
 				"vis",
 				"sericum",
-				"maturis"
+				"maturis",
+				"colligunt"
 		};
 		for (String descriptive : descriptions) {
 			EntryBuilder descriptiveEntry = descriptionCategory.addEntry("descriptive/" + descriptive, String.format("info.spelled.book.descriptive.%s.name", descriptive), "spelled:ancient_knowledge_tome")

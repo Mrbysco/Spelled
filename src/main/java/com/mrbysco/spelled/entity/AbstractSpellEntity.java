@@ -45,6 +45,9 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 	private static final EntityDataAccessor<Float> SIZE_MULTIPLIER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Integer> POWER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.INT);
 
+    // Doesn't need to be sync'd, entirely handled on server-side.
+    private boolean collecting;
+
 	public AbstractSpellEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level level) {
 		super(entityType, level);
 	}
@@ -193,6 +196,14 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 	public int getPower() {
 		return this.getEntityData().get(POWER);
 	}
+
+    public void setCollecting(boolean isCollecting) {
+        collecting = isCollecting;
+    }
+
+    public boolean isCollecting() {
+        return collecting;
+    }
 
 	public void refreshDimensions() {
 		double d0 = this.getX();

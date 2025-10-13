@@ -1,0 +1,17 @@
+{
+  "advancement": "spelled:adjective_colligunt",
+  "category": "spelled:descriptions",
+  "icon": "spelled:ancient_knowledge_tome",
+  "name": "info.spelled.book.descriptive.colligunt.name",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "info.spelled.book.descriptive.colligunt.text"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "info.spelled.book.descriptive.colligunt.text2"
+    }
+  ],
+  "secret": true
+}

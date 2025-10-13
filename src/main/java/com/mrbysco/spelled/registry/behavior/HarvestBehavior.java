@@ -1,6 +1,7 @@
 package com.mrbysco.spelled.registry.behavior;
 
 import com.mrbysco.spelled.api.behavior.BaseBehavior;
+import com.mrbysco.spelled.chat.SpellCastHandler;
 import com.mrbysco.spelled.entity.SpellEntity;
 import com.mrbysco.spelled.util.LootHelper;
 import net.minecraft.core.BlockPos;
@@ -30,11 +31,19 @@ public class HarvestBehavior extends BaseBehavior {
 		boolean canBreak = spell.getOwner() instanceof Player player ? hitState.canHarvestBlock(level, pos, player) : false;
 		if (!level.isClientSide && canBreak && hardness <= power && hitState.getBlock().getExplosionResistance() <= 1200.0F) {
 			if (spell.isSilky()) {
-				level.getBlockState(pos).getDrops(LootHelper.silkContextBuilder((ServerLevel) level, pos, spell))
-						.forEach(i -> level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), i)));
+                if (spell.isCollecting()) {
+                    level.getBlockState(pos).getDrops(LootHelper.silkContextBuilder((ServerLevel) level, pos, spell))
+                            .forEach(i -> level.addFreshEntity(
+                                    new ItemEntity(level, spell.getOwner().getX(), spell.getOwner().getY(), spell.getOwner().getZ(), i)));
+                } else {
+                    level.getBlockState(pos).getDrops(LootHelper.silkContextBuilder((ServerLevel) level, pos, spell))
+                            .forEach(i -> level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), i)));
+                }
 				level.destroyBlock(pos, false);
 			} else {
+                SpellCastHandler.collectableBlocks.put(pos, spell);
 				level.destroyBlock(pos, true);
+                SpellCastHandler.collectableBlocks.remove(pos);
 			}
 		}
 	}
