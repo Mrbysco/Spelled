@@ -64,6 +64,7 @@ public class SpelledAdvancements extends AdvancementProvider {
 		public AdvancementHolder vis;
 		public AdvancementHolder sericum;
 		public AdvancementHolder maturis;
+		public AdvancementHolder colligunt;
 
 		@Override
 		public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer, ExistingFileHelper existingFileHelper) {
@@ -112,6 +113,7 @@ public class SpelledAdvancements extends AdvancementProvider {
 			vis = generateAdjectiveAdvancement("vis", fractionis, consumer);
 			sericum = generateAdjectiveAdvancement("sericum", vis, consumer);
 			maturis = generateAdjectiveAdvancement("maturis", praesidium, consumer);
+            colligunt = generateAdjectiveAdvancement("colligunt", fractionis, consumer);
 		}
 
 		private AdvancementHolder generateAdjectiveAdvancement(String adjective, AdvancementHolder parent, Consumer<AdvancementHolder> consumer) {

@@ -19,6 +19,7 @@ import com.mrbysco.spelled.registry.keyword.SizeKeyword;
 import com.mrbysco.spelled.registry.keyword.SnowKeyword;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword;
 import com.mrbysco.spelled.registry.keyword.TypeKeyword.Type;
+import com.mrbysco.spelled.registry.keyword.CollectKeyword;
 import net.minecraft.ChatFormatting;
 
 import javax.annotation.Nullable;
@@ -85,6 +86,7 @@ public class KeywordRegistry {
 		registerKeyword(new PowerKeyword("vis", 1, 1));
 		registerKeyword(new SilkKeyword("sericum", 3, 2));
 		registerKeyword(new MatureKeyword("maturis", 2, 1));
+        registerKeyword(new CollectKeyword("colligunt", 1, 1));
 
 		//Projectile
 		registerKeyword(new TypeKeyword("sphaera", Type.BALL, 2, 2));

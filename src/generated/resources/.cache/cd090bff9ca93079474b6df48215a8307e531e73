@@ -1,4 +1,4 @@
-// 1.21.1	2024-09-03T23:24:15.515728	Patchouli Book Provider
+// 1.21.1	2025-10-13T01:05:16.762686695	Patchouli Book Provider
 5d832eb588fe15c4581644ac93a318034e6d8274 assets/spelled/patchouli_books/knowledge_tome/en_us/categories/colors.json
 2897f3b0d422c87697ba6918e78adc42622c933f assets/spelled/patchouli_books/knowledge_tome/en_us/categories/descriptions.json
 3d69f8df9541749687d3a99ea3ac26ed8a6ff50d assets/spelled/patchouli_books/knowledge_tome/en_us/categories/leveling.json
@@ -14,6 +14,7 @@ d8ecfd0266348a6cec861cf3fc64bae78b972cb5 assets/spelled/patchouli_books/knowledg
 5a92e9f35a061a955813f220baf183d47cb4d177 assets/spelled/patchouli_books/knowledge_tome/en_us/entries/colors/roseus.json
 daf47a7700d251be45396baa89a3699019fc563f assets/spelled/patchouli_books/knowledge_tome/en_us/entries/colors/rubrum.json
 8a6ffe1c2635a23664cb35cea8f0ed83ebef3cfd assets/spelled/patchouli_books/knowledge_tome/en_us/entries/colors/viridis.json
+2f5d8784f5cdd223f3cbe109803f1d4b7346bef1 assets/spelled/patchouli_books/knowledge_tome/en_us/entries/descriptive/colligunt.json
 b62a692e82904d57f44a08232ab404a2afe6e799 assets/spelled/patchouli_books/knowledge_tome/en_us/entries/descriptive/dissiliunt.json
 1bec548acb5b883e7b7ddb27828b363380fbe5ca assets/spelled/patchouli_books/knowledge_tome/en_us/entries/descriptive/fractionis.json
 9801777ac8d0917885b468e753bbfc75542738df assets/spelled/patchouli_books/knowledge_tome/en_us/entries/descriptive/frigus.json
