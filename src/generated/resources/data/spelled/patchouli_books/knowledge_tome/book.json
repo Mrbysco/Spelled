@@ -9,7 +9,7 @@
     "$(item)": "$(#94fcf5)",
     "$(thing)": "$(#94fcf5)"
   },
-  "model": "spelled:knowledge_tome",
+  "model": "spelled:creative_tome",
   "name": "item.spelled.book.name",
   "show_progress": false,
   "subtitle": "info.spelled.book.subtitle",

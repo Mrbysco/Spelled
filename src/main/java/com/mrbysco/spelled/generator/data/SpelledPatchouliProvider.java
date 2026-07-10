@@ -24,7 +24,7 @@ public class SpelledPatchouliProvider extends PatchouliBookProvider {
 				.setSubtitle("info.spelled.book.subtitle")
 				.setAdvancementsTab("spelled:root")
 				.setCreativeTab("spelled")
-				.setModel("spelled:knowledge_tome")
+				.setModel("spelled:creative_tome")
 				.setBookTexture("spelled:textures/gui/tome.png")
 				.setShowProgress(false)
 				.setI18n(true)

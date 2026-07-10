@@ -1,4 +1,4 @@
-// 26.1.2	2026-07-10T20:36:24.5012626	Patchouli Book Provider
+// 26.1.2	2026-07-10T23:01:02.7661559	Patchouli Book Provider
 5d832eb588fe15c4581644ac93a318034e6d8274 assets/spelled/patchouli_books/knowledge_tome/en_us/categories/colors.json
 2897f3b0d422c87697ba6918e78adc42622c933f assets/spelled/patchouli_books/knowledge_tome/en_us/categories/descriptions.json
 3d69f8df9541749687d3a99ea3ac26ed8a6ff50d assets/spelled/patchouli_books/knowledge_tome/en_us/categories/leveling.json
@@ -35,4 +35,4 @@ f68831eed0a22f1f7fadf741a1f24c172f33d153 assets/spelled/patchouli_books/knowledg
 41078f6463eba6abc95e9bc2cdc27b19a7cc8c26 assets/spelled/patchouli_books/knowledge_tome/en_us/entries/types/ball.json
 fa1427aaf0aa270c2b5eb702e92148d28867ed4b assets/spelled/patchouli_books/knowledge_tome/en_us/entries/types/projectilis.json
 6db2584940d18cf36c5b09b931670331cccffb80 assets/spelled/patchouli_books/knowledge_tome/en_us/entries/types/self.json
-404a7bc736b0dd74f8dbf6ef28a466466b2eefc1 data/spelled/patchouli_books/knowledge_tome/book.json
+4561c073632598eff4378d0b5f5a26c3fa98c1e3 data/spelled/patchouli_books/knowledge_tome/book.json
