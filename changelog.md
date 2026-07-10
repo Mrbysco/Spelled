@@ -1,1 +1,1 @@
-* Adjust the tome giving code
+* Update to 26.1.2
