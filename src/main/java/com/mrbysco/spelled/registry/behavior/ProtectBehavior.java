@@ -18,11 +18,11 @@ public class ProtectBehavior extends BaseBehavior {
 	@Override
 	public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
 		if (entity instanceof LivingEntity livingEntity) {
-			if (livingEntity.getEffect(MobEffects.DAMAGE_RESISTANCE) == null) {
-				livingEntity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 0, false, false));
+			if (livingEntity.getEffect(MobEffects.RESISTANCE) == null) {
+				livingEntity.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 200, 0, false, false));
 			} else {
-				int amplifier = livingEntity.getEffect(MobEffects.DAMAGE_RESISTANCE).getAmplifier();
-				livingEntity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, Mth.clamp(amplifier + 1, 0, 4), false, false));
+				int amplifier = livingEntity.getEffect(MobEffects.RESISTANCE).getAmplifier();
+				livingEntity.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 200, Mth.clamp(amplifier + 1, 0, 4), false, false));
 			}
 			livingEntity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 200, 0, false, false));
 		}

@@ -2,27 +2,30 @@ package com.mrbysco.spelled.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.entity.SpellEntity;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import org.joml.Matrix4f;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 
-import java.awt.*;
+public class SpellRenderer extends EntityRenderer<SpellEntity, SpellRenderState> {
+	private static final Identifier PROJECTILE_TEXTURE = Reference.modLoc("textures/item/projectile.png");
+	private static final Identifier BALL_TEXTURE = Reference.modLoc("textures/item/ball.png");
+	private static final Identifier LAVA_TEXTURE = Reference.modLoc("textures/item/lava_ball.png");
+	private static final Identifier WATER_TEXTURE = Reference.modLoc("textures/item/water_ball.png");
 
-public class SpellRenderer extends EntityRenderer<SpellEntity> {
-	private static final ResourceLocation PROJECTILE_TEXTURE = Reference.modLoc("textures/item/projectile.png");
-	private static final ResourceLocation BALL_TEXTURE = Reference.modLoc("textures/item/ball.png");
-	private static final ResourceLocation LAVA_TEXTURE = Reference.modLoc("textures/item/lava_ball.png");
-	private static final ResourceLocation WATER_TEXTURE = Reference.modLoc("textures/item/water_ball.png");
-	private static final RenderType renderType = RenderType.entityCutoutNoCull(BALL_TEXTURE);
-	private static Color color = null;
+	private static final RenderType PROJECTILE_RENDER_TYPE = RenderTypes.entityCutout(PROJECTILE_TEXTURE);
+	private static final RenderType BALL_RENDER_TYPE = RenderTypes.entityCutout(BALL_TEXTURE);
+	private static final RenderType LAVA_RENDER_TYPE = RenderTypes.entityCutout(LAVA_TEXTURE);
+	private static final RenderType WATER_RENDER_TYPE = RenderTypes.entityCutout(WATER_TEXTURE);
+	private static int color = -1;
 
 	public SpellRenderer(EntityRendererProvider.Context context) {
 		super(context);
@@ -32,41 +35,58 @@ public class SpellRenderer extends EntityRenderer<SpellEntity> {
 		return 15;
 	}
 
-	public void render(SpellEntity entityIn, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn) {
+	@Override
+	public SpellRenderState createRenderState() {
+		return new SpellRenderState();
+	}
+
+	@Override
+	public void extractRenderState(SpellEntity spell, SpellRenderState state, float partialTicks) {
+		super.extractRenderState(spell, state, partialTicks);
+		state.color = spell.hasColor() ? spell.getColor().getAsInt() : null;
+		state.sizeMultiplier = spell.getSizeMultiplier();
+		state.isWater = spell.isWater();
+		state.isLava = spell.isLava();
+		state.isProjectile = spell.getSpellType() == 1;
+	}
+
+	@Override
+	public void submit(SpellRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
 		poseStack.pushPose();
-		this.preRenderCallback(entityIn, poseStack, partialTicks);
-		poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
-		poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
-		PoseStack.Pose last = poseStack.last();
-		Matrix4f pose = last.pose();
-		VertexConsumer buffer = bufferIn.getBuffer(renderType);
-		vertex(buffer, pose, last, packedLightIn, 0.0F, 0, 0, 1);
-		vertex(buffer, pose, last, packedLightIn, 1.0F, 0, 1, 1);
-		vertex(buffer, pose, last, packedLightIn, 1.0F, 1, 1, 0);
-		vertex(buffer, pose, last, packedLightIn, 0.0F, 1, 0, 0);
+		preSubmitCallback(state, poseStack);
+		poseStack.scale(2.0F, 2.0F, 2.0F);
+		poseStack.mulPose(camera.orientation);
+		submitNodeCollector.submitCustomGeometry(poseStack, getRenderType(state), (pose, buffer) -> {
+			vertex(buffer, pose, state.lightCoords, 0.0F, 0, 0, 1);
+			vertex(buffer, pose, state.lightCoords, 1.0F, 0, 1, 1);
+			vertex(buffer, pose, state.lightCoords, 1.0F, 1, 1, 0);
+			vertex(buffer, pose, state.lightCoords, 0.0F, 1, 0, 0);
+		});
 		poseStack.popPose();
-		super.render(entityIn, entityYaw, partialTicks, poseStack, bufferIn, packedLightIn);
+		super.submit(state, poseStack, submitNodeCollector, camera);
 	}
 
-	private static void vertex(VertexConsumer vertexBuilder, Matrix4f pose, PoseStack.Pose last, int packedLightIn, float p_229045_4_, int p_229045_5_, int p_229045_6_, int p_229045_7_) {
-		vertexBuilder.addVertex(pose, p_229045_4_ - 0.5F, (float) p_229045_5_ - 0.25F, 0.0F)
-				.setColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
-				.setUv((float) p_229045_6_, (float) p_229045_7_)
+	private static void vertex(VertexConsumer builder, PoseStack.Pose pose, int lightCoords, float x, int y, int u, int v) {
+		builder.addVertex(pose, x - 0.5F, y - 0.25F, 0.0F)
+				.setColor(-1)
+				.setUv(u, v)
 				.setOverlay(OverlayTexture.NO_OVERLAY)
-				.setLight(packedLightIn)
-				.setNormal(last, 0.0F, 1.0F, 0.0F);
+				.setLight(lightCoords)
+				.setNormal(pose, 0.0F, 1.0F, 0.0F);
 	}
 
-	protected void preRenderCallback(SpellEntity entityIn, PoseStack poseStack, float partialTickTime) {
-		if (color == null)
-			color = new Color(255, 255, 255, 255);
 
-		if (entityIn.hasColor()) {
-			if (!color.equals(new Color(entityIn.getColor().getAsInt())))
-				color = new Color(entityIn.getColor().getAsInt());
+	protected void preSubmitCallback(SpellRenderState state, PoseStack poseStack) {
+		if (color == -1)
+			color = ARGB.color(255, 255, 255, 255);
+
+		if (state.color != null) {
+			int currentColor = ARGB.fromABGR(state.color.intValue());
+			if (color != currentColor)
+				color = currentColor;
 		}
 
-		float sizeMultiplier = entityIn.getSizeMultiplier() / 2;
+		float sizeMultiplier = state.sizeMultiplier / 2;
 		if (sizeMultiplier > 8F)
 			sizeMultiplier = 8F;
 		poseStack.scale(1.0F, 1.0F, 1.0F);
@@ -76,18 +96,18 @@ public class SpellRenderer extends EntityRenderer<SpellEntity> {
 	}
 
 	/**
-	 * Returns the location of an entity's texture.
+	 * Returns the correct render type.
 	 */
-	public ResourceLocation getTextureLocation(SpellEntity entity) {
-		if (entity.isWater()) {
-			return WATER_TEXTURE;
+	public RenderType getRenderType(SpellRenderState entity) {
+		if (entity.isWater) {
+			return WATER_RENDER_TYPE;
 		}
-		if (entity.isLava()) {
-			return LAVA_TEXTURE;
+		if (entity.isLava) {
+			return LAVA_RENDER_TYPE;
 		}
-		if (entity.getSpellType() == 1) {
-			return PROJECTILE_TEXTURE;
+		if (entity.isProjectile) {
+			return PROJECTILE_RENDER_TYPE;
 		}
-		return BALL_TEXTURE;
+		return BALL_RENDER_TYPE;
 	}
 }

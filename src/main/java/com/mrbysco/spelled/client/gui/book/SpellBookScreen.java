@@ -1,32 +1,32 @@
 package com.mrbysco.spelled.client.gui.book;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.packets.message.SignSpellPayload;
 import com.mrbysco.spelled.registry.SpelledComponents;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.font.TextFieldHelper;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.loading.StringUtils;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +38,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SpellBookScreen extends Screen {
-	private static final ResourceLocation SLOT_SPRITE = ResourceLocation.withDefaultNamespace("container/slot");
+	private static final Identifier SLOT_SPRITE = Identifier.withDefaultNamespace("container/slot");
 
 	private static final Component EDIT_TITLE_LABEL = Component.translatable("spelled.book.editTitle");
 	private static final Component FINALIZE_WARNING_LABEL = Component.translatable("spelled.book.finalizeWarning");
@@ -276,9 +276,8 @@ public class SpellBookScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+		super.extractRenderState(graphics, mouseX, mouseY, partialTick);
 		if (isSigning) {
 			int i = (this.width - 192) / 2;
 			int j = this.height / 2 - 100;
@@ -286,37 +285,35 @@ public class SpellBookScreen extends Screen {
 			boolean flag = this.frameTick / 6 % 2 == 0;
 			FormattedCharSequence formattedCharSequence = FormattedCharSequence.composite(FormattedCharSequence.forward(this.title, Style.EMPTY), flag ? GRAY_CURSOR : WHITE_CURSOR);
 			int k = this.font.width(EDIT_TITLE_LABEL);
-			guiGraphics.drawString(font, EDIT_TITLE_LABEL, (int) (i + 36 + (114 - k) / 2), (int) (34.0F + j), 16777215, false);
+			graphics.text(font, EDIT_TITLE_LABEL, i + 36 + (114 - k) / 2, (int) (34.0F + j), 16777215, false);
 			int l = this.font.width(formattedCharSequence);
-			guiGraphics.drawString(font, formattedCharSequence, (float) (i + 36 + (114 - l) / 2), 50.0F + j, 16777215, false);
+			graphics.text(font, formattedCharSequence, i + 36 + (114 - l) / 2, (int) (50.0F + j), 16777215, false);
 			int i1 = this.font.width(this.ownerText);
-			guiGraphics.drawString(font, this.ownerText, (int) (i + 36 + (114 - i1) / 2), (int) (60.0F + j), 16777215, false);
-			guiGraphics.drawWordWrap(font, FINALIZE_WARNING_LABEL, i + 36, 82 + j, 114, 16777215);
+			graphics.text(font, this.ownerText, i + 36 + (114 - i1) / 2, (int) (60.0F + j), 16777215, false);
+			graphics.textWithWordWrap(font, FINALIZE_WARNING_LABEL, i + 36, 82 + j, 114, 16777215);
 		} else {
-			this.adjectiveWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
+			this.adjectiveWidget.extractRenderState(graphics, mouseX, mouseY, partialTick);
 
 			Component text = Component.translatable("spelled.screen.search");
-			guiGraphics.drawCenteredString(font, text, this.width / 2 + PADDING,
+			graphics.centeredText(font, text, this.width / 2 + PADDING,
 					search.getY() - font.lineHeight - 2, 16777215);
 
-			this.search.render(guiGraphics, mouseX, mouseY, partialTicks);
+			this.search.extractRenderState(graphics, mouseX, mouseY, partialTick);
 
-			guiGraphics.drawString(font, this.getTitle(), 5, 5, 16777215, false);
+			graphics.text(font, this.getTitle(), 5, 5, 16777215, false);
 
-			PoseStack poseStack = guiGraphics.pose();
-			poseStack.pushPose();
-			poseStack.translate(0.0F, 0.0F, 100.0F);
+//			PoseStack poseStack = graphics.pose();
+//			poseStack.pushPose();
+//			poseStack.translate(0.0F, 0.0F, 100.0F);
 
-			RenderSystem.enableDepthTest();
 			int itemX = width / 2 - 2;
 			int itemY = height - 130;
 
-			guiGraphics.blitSprite(SLOT_SPRITE, itemX - 1, itemY - 1, 0, 18, 18);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_SPRITE, itemX - 1, itemY - 1, 0, 18, 18);
 
-			guiGraphics.renderItem(stack, itemX, itemY);
-			guiGraphics.renderItemDecorations(this.font, stack, itemX, itemY, null);
-			RenderSystem.disableDepthTest();
-			poseStack.popPose();
+			graphics.item(stack, itemX, itemY);
+			graphics.itemDecorations(this.font, stack, itemX, itemY, null);
+//			poseStack.popPose();
 
 			if (isHovering(itemX - 16, itemY, itemX + 16, itemY + 24, mouseX, mouseY)) {
 				boolean flag = selectedAdjectives.isEmpty();
@@ -345,7 +342,7 @@ public class SpellBookScreen extends Screen {
 				}
 
 				final Component finalComponent = component.append(component2);
-				guiGraphics.renderTooltip(font, finalComponent, mouseX, mouseY);
+				graphics.setTooltipForNextFrame(font, finalComponent, mouseX, mouseY);
 			}
 		}
 	}
@@ -388,12 +385,12 @@ public class SpellBookScreen extends Screen {
 	}
 
 	@Override
-	public void resize(Minecraft mc, int newWidth, int newHeight) {
-		super.resize(mc, newHeight, newHeight);
+	public void resize(int newWidth, int newHeight) {
+		super.resize(newHeight, newHeight);
 		String s = this.search.getValue();
 		SortType sort = this.sortType;
 		AdjectiveListWidget.ListEntry focused = this.focused;
-		this.init(mc, newWidth, newHeight);
+		this.init(newWidth, newHeight);
 		this.search.setValue(s);
 		this.focused = focused;
 		if (!this.search.getValue().isEmpty())
@@ -410,23 +407,23 @@ public class SpellBookScreen extends Screen {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == 256) {
+	public boolean keyPressed(KeyEvent event) {
+		if (event.key() == 256) {
 			this.minecraft.setScreen((Screen) null);
 			return true;
 		} else if (this.isSigning) {
-			return this.titleKeyPressed(keyCode, scanCode, modifiers);
+			return this.titleKeyPressed(event);
 		} else {
-			return super.keyPressed(keyCode, scanCode, modifiers);
+			return super.keyPressed(event);
 		}
 	}
 
 	@Override
-	public boolean charTyped(char keyCode, int modifiers) {
-		if (super.charTyped(keyCode, modifiers)) {
+	public boolean charTyped(CharacterEvent event) {
+		if (super.charTyped(event)) {
 			return true;
 		} else if (this.isSigning) {
-			boolean flag = this.titleEdit.charTyped(keyCode);
+			boolean flag = this.titleEdit.charTyped(event);
 			if (flag) {
 				this.updateButtonVisibility();
 				this.isModified = true;
@@ -439,8 +436,8 @@ public class SpellBookScreen extends Screen {
 		}
 	}
 
-	private boolean titleKeyPressed(int keyCode, int scanCode, int modifiers) {
-		switch (keyCode) {
+	private boolean titleKeyPressed(KeyEvent event) {
+		switch (event.key()) {
 			case 257:
 			case 335:
 				if (!this.title.isEmpty()) {
@@ -469,8 +466,8 @@ public class SpellBookScreen extends Screen {
 			String spell = builder.toString();
 			this.stack.set(SpelledComponents.SPELL, spell);
 
-			int i = this.hand == InteractionHand.MAIN_HAND ? this.owner.getInventory().selected : 40;
-			PacketDistributor.sendToServer(new SignSpellPayload(this.stack, finalize, this.title.trim(), spell, i));
+			int i = this.hand == InteractionHand.MAIN_HAND ? this.owner.getInventory().getSelectedSlot() : 40;
+			ClientPacketDistributor.sendToServer(new SignSpellPayload(this.stack, finalize, this.title.trim(), spell, i));
 		}
 	}
 

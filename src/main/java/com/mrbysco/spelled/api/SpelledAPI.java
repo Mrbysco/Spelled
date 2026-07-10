@@ -50,7 +50,7 @@ public class SpelledAPI {
 
 	public static void resetUnlocks(Player player) {
 		SpelledAPI.getSpellDataCap(player).ifPresent(ISpellData::resetUnlocks);
-		if (!player.level().isClientSide) {
+		if (!player.level().isClientSide()) {
 			AdvancementHelper.removeAllAdjectiveAdvancements((ServerPlayer) player);
 		}
 	}
@@ -59,7 +59,7 @@ public class SpelledAPI {
 		Optional<ISpellData> cap = SpelledAPI.getSpellDataCap(player);
 		if (cap.isPresent()) {
 			ISpellData data = cap.orElse(null);
-			List<String> unlocks = new ArrayList<>(data.getUnlocked().getAllKeys());
+			List<String> unlocks = new ArrayList<>(data.getUnlocked().keySet());
 			unlocks.removeAll(KeywordRegistry.instance().getTypes());
 			return unlocks;
 		}
@@ -73,14 +73,14 @@ public class SpelledAPI {
 
 	public static void unlockKeyword(Player player, String keyword) {
 		SpelledAPI.getSpellDataCap(player).ifPresent(cap -> cap.unlockKeyword(keyword));
-		if (!player.level().isClientSide) {
+		if (!player.level().isClientSide()) {
 			AdvancementHelper.unlockAdjectiveAdvancement((ServerPlayer) player, keyword);
 		}
 	}
 
 	public static void lockKeyword(Player player, String keyword) {
 		SpelledAPI.getSpellDataCap(player).ifPresent(cap -> cap.lockKeyword(keyword));
-		if (!player.level().isClientSide) {
+		if (!player.level().isClientSide()) {
 			AdvancementHelper.lockAdjectiveAdvancement((ServerPlayer) player, keyword);
 		}
 	}
@@ -103,6 +103,6 @@ public class SpelledAPI {
 	}
 
 	public static void syncCap(ServerPlayer player) {
-		SpelledAPI.getSpellDataCap(player).ifPresent(cap -> player.connection.send(new SpellDataSyncPayload(cap, player.getGameProfile().getId())));
+		SpelledAPI.getSpellDataCap(player).ifPresent(cap -> player.connection.send(new SpellDataSyncPayload(player.registryAccess(), cap, player.getGameProfile().id())));
 	}
 }

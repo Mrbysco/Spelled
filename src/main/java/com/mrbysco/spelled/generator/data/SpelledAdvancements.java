@@ -5,30 +5,29 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.critereon.EnterBlockTrigger;
-import net.minecraft.advancements.critereon.ImpossibleTrigger;
+import net.minecraft.advancements.criterion.EnterBlockTrigger;
+import net.minecraft.advancements.criterion.ImpossibleTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.advancements.AdvancementProvider;
+import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.data.AdvancementProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class SpelledAdvancements extends AdvancementProvider {
-	private static final List<AdvancementGenerator> subproviders = List.of(new SpelledAdvancementGenerator());
+	private static final List<AdvancementSubProvider> subproviders = List.of(new SpelledAdvancementGenerator());
 
-	public SpelledAdvancements(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries,
-	                           ExistingFileHelper existingFileHelper) {
-		super(packOutput, registries, existingFileHelper, subproviders);
+	public SpelledAdvancements(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
+		super(packOutput, registries, subproviders);
 	}
 
 
-	public static class SpelledAdvancementGenerator implements AdvancementGenerator {
+	public static class SpelledAdvancementGenerator implements AdvancementSubProvider {
 
 		public AdvancementHolder root;
 
@@ -66,12 +65,12 @@ public class SpelledAdvancements extends AdvancementProvider {
 		public AdvancementHolder maturis;
 
 		@Override
-		public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer, ExistingFileHelper existingFileHelper) {
+		public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer) {
 			root = Advancement.Builder.advancement()
 					.display(SpelledRegistry.KNOWLEDGE_TOME.get(),
 							Component.translatable("advancement.spelled.root"),
 							Component.translatable("advancement.spelled.root.desc"),
-							ResourceLocation.withDefaultNamespace("textures/block/bookshelf.png"), AdvancementType.TASK, true, false, false)
+							Identifier.withDefaultNamespace("textures/block/bookshelf.png"), AdvancementType.TASK, true, false, false)
 					.addCriterion("air", EnterBlockTrigger.TriggerInstance.entersBlock(Blocks.AIR))
 					.save(consumer, "spelled:root");
 

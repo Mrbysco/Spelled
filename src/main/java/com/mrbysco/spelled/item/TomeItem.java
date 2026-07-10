@@ -9,15 +9,17 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class TomeItem extends Item {
 	public TomeItem(Properties builder) {
@@ -25,24 +27,28 @@ public class TomeItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player playerIn, InteractionHand handIn) {
-		if (!level.isClientSide) {
-			ItemStack itemstack = playerIn.getItemInHand(handIn);
+	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+		Level level = context.getLevel();
+		Player player = context.getPlayer();
+		InteractionHand hand = context.getHand();
+		if (player == null) return InteractionResult.PASS;
+		if (!level.isClientSide()) {
+			ItemStack itemstack = player.getItemInHand(hand);
 
 			if (itemstack.has(SpelledComponents.UNLOCK)) {
-				Optional<ISpellData> cap = SpelledAPI.getSpellDataCap(playerIn);
+				Optional<ISpellData> cap = SpelledAPI.getSpellDataCap(player);
 				ISpellData data = cap.orElseGet(null);
 				if (cap.isPresent()) {
 					String word = itemstack.getOrDefault(SpelledComponents.UNLOCK, "");
 					if (!data.knowsKeyword(word)) {
-						playerIn.startUsingItem(handIn);
-						SpelledAPI.unlockKeyword((ServerPlayer) playerIn, word);
-						SpelledAPI.syncCap((ServerPlayer) playerIn);
-						playerIn.displayClientMessage(Component.translatable("spelled.tome.success"), true);
-						return InteractionResultHolder.consume(itemstack);
+						player.startUsingItem(hand);
+						SpelledAPI.unlockKeyword((ServerPlayer) player, word);
+						SpelledAPI.syncCap((ServerPlayer) player);
+						player.sendOverlayMessage(Component.translatable("spelled.tome.success"));
+						return InteractionResult.CONSUME;
 					} else {
-						playerIn.displayClientMessage(Component.translatable("spelled.tome.fail"), true);
-						return InteractionResultHolder.fail(itemstack);
+						player.sendOverlayMessage(Component.translatable("spelled.tome.fail"));
+						return InteractionResult.FAIL;
 					}
 				}
 			} else {
@@ -52,20 +58,21 @@ public class TomeItem extends Item {
 				}
 			}
 		}
-		return super.use(level, playerIn, handIn);
+
+		return super.onItemUseFirst(stack, context);
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
 		if (!SpelledConfig.COMMON.hideKnowledgeTomeInfo.get()) {
 			if (stack.has(SpelledComponents.UNLOCK)) {
 				String word = stack.getOrDefault(SpelledComponents.UNLOCK, "");
-				tooltip.add(Component.translatable("spelled.tome.description", Component.literal(word)
+				builder.accept(Component.translatable("spelled.tome.description", Component.literal(word)
 						.withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.YELLOW));
 			} else {
-				tooltip.add(Component.translatable("spelled.tome.description.invalid").withStyle(ChatFormatting.RED));
+				builder.accept(Component.translatable("spelled.tome.description.invalid").withStyle(ChatFormatting.RED));
 			}
 		}
-		super.appendHoverText(stack, context, tooltip, tooltipFlag);
+		super.appendHoverText(stack, context, display, builder, tooltipFlag);
 	}
 }

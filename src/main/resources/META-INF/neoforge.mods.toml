@@ -15,13 +15,19 @@ It's spelled "Yu Mo Gui Gwai Fai Di Zao"
 
 [[dependencies.spelled]]
 modId="minecraft"
-type="REQUIRED"
-versionRange="[1.21.1,1.22)"
+type="required"
+versionRange="[26.1.1,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.spelled]]
 modId="neoforge"
 type="required"
-versionRange="[21.1.0,)"
+versionRange="[26.1.1.0-alpha,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.spelled]]
+modId="patchouli"
+type="required"
+versionRange="[26.1-94,)"
 ordering="NONE"
 side="BOTH"

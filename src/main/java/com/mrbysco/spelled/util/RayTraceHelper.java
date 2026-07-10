@@ -35,7 +35,7 @@ public class RayTraceHelper {
 
 	public static BlockHitResult rayTraceBlocks(Entity entity, Vec3 from, Vec3 to) {
 		ClipContext context = new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity);
-		return entity.getCommandSenderWorld().clip(context);
+		return entity.level().clip(context);
 	}
 
 	public static <E extends Entity> EntityHitResult rayTraceEntities(Class<E> clazz, Level level, Vec3 from, Vec3 to, Vec3 aaExpansion, float aaGrowth,
@@ -72,7 +72,7 @@ public class RayTraceHelper {
 		if (block.getType() == HitResult.Type.BLOCK)
 			to = block.getLocation();
 
-		EntityHitResult entity = rayTraceEntities(clazz, mainEntity.getCommandSenderWorld(), from, to, Vec3.ZERO, 0.5f, 0.5f, entityFilter);
+		EntityHitResult entity = rayTraceEntities(clazz, mainEntity.level(), from, to, Vec3.ZERO, 0.5f, 0.5f, entityFilter);
 
 		if (block.getType() == HitResult.Type.MISS) {
 			return entity;

@@ -4,7 +4,9 @@ import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.packets.message.SpellDataSyncPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class ClientPayloadHandler {
@@ -19,7 +21,7 @@ public class ClientPayloadHandler {
 					Player player = Minecraft.getInstance().level.getPlayerByUUID(data.playerUUID());
 					if (player != null) {
 						SpelledAPI.getSpellDataCap(player).ifPresent(sanityCap -> {
-							sanityCap.deserializeNBT(player.registryAccess(), data.data());
+							sanityCap.deserialize(TagValueInput.create(ProblemReporter.DISCARDING, player.registryAccess(), data.data()));
 						});
 					}
 				})

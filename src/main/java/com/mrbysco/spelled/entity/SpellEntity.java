@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.entity.projectile.hurtingprojectile.AbstractHurtingProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SpellEntity extends AbstractSpellEntity {
+
 	public SpellEntity(EntityType<? extends AbstractHurtingProjectile> entityType, Level level) {
 		super(entityType, level);
 	}
@@ -28,7 +29,7 @@ public class SpellEntity extends AbstractSpellEntity {
 	@Override
 	protected void onHit(HitResult result) {
 		super.onHit(result);
-		if (!this.level().isClientSide) {
+		if (!this.level().isClientSide()) {
 			this.level().addParticle(getTrailParticle(), this.getX(), this.getY(), this.getZ(), 1.0D, 0.0D, 0.0D);
 			this.discard();
 		}
@@ -46,7 +47,7 @@ public class SpellEntity extends AbstractSpellEntity {
 		HashMap<String, ISpellBehavior> behaviors = BehaviorRegistry.instance().getBehaviors();
 
 		for (int i = 0; i < getSpellOrder().size(); i++) {
-			String action = getSpellOrder().getString(String.valueOf(i));
+			String action = getSpellOrder().get(i);
 			ISpellBehavior behavior = behaviors.get(action);
 			if (behavior != null) {
 				if (behavior.appliedMultiple()) {
@@ -69,7 +70,7 @@ public class SpellEntity extends AbstractSpellEntity {
 		HashMap<String, ISpellBehavior> behaviors = BehaviorRegistry.instance().getBehaviors();
 
 		for (int i = 0; i < getSpellOrder().size(); i++) {
-			String action = getSpellOrder().getString(String.valueOf(i));
+			String action = getSpellOrder().get(i);
 			ISpellBehavior behavior = behaviors.get(action);
 			if (behavior != null) {
 				if (behavior.appliedMultiple()) {

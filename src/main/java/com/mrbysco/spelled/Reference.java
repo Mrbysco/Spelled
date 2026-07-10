@@ -2,7 +2,7 @@ package com.mrbysco.spelled;
 
 import com.mrbysco.spelled.entity.AbstractSpellEntity;
 import com.mrbysco.spelled.registry.SpelledDamageTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
 
 public class Reference {
@@ -20,7 +20,7 @@ public class Reference {
 		return spell.damageSources().source(SpelledDamageTypes.MAGIC, spell.getEffectSource());
 	}
 
-	public static ResourceLocation modLoc(String path) {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+	public static Identifier modLoc(String path) {
+		return Identifier.fromNamespaceAndPath(MOD_ID, path);
 	}
 }

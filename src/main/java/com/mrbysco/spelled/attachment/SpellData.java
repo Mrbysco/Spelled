@@ -3,8 +3,10 @@ package com.mrbysco.spelled.attachment;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.api.capability.ISpellData;
 import com.mrbysco.spelled.api.keywords.KeywordRegistry;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
 import java.util.Locale;
 
@@ -80,20 +82,17 @@ public class SpellData implements ISpellData {
 	}
 
 	@Override
-	public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-		CompoundTag tag = new CompoundTag();
-		tag.putInt(Reference.characterLevel, getLevel());
-		tag.put(Reference.characterUnlocks, getUnlocked());
-		tag.putInt(Reference.characterCooldown, getCastCooldown());
-
-		return tag;
+	public void serialize(ValueOutput output) {
+		output.putInt(Reference.characterLevel, getLevel());
+		output.store(Reference.characterUnlocks, CompoundTag.CODEC, getUnlocked());
+		output.putInt(Reference.characterCooldown, getCastCooldown());
 	}
 
 	@Override
-	public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
-		int level = tag.getInt(Reference.characterLevel);
-		CompoundTag characterUnlocks = tag.getCompound(Reference.characterUnlocks);
-		int castCooldown = tag.getInt(Reference.characterCooldown);
+	public void deserialize(ValueInput input) {
+		int level = input.getIntOr(Reference.characterLevel, 0);
+		CompoundTag characterUnlocks = input.read(Reference.characterUnlocks, CompoundTag.CODEC).orElse(new CompoundTag());
+		int castCooldown = input.getIntOr(Reference.characterCooldown, 0);
 
 		setLevel(level);
 		setUnlocked(characterUnlocks);

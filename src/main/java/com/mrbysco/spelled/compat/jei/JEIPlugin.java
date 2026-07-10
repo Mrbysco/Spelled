@@ -9,17 +9,16 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.registration.ISubtypeRegistration;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
-	private static final ResourceLocation UID = Reference.modLoc("jei_plugin");
+	private static final Identifier UID = Reference.modLoc("jei_plugin");
 
 	@Override
-	public ResourceLocation getPluginUid() {
+	public Identifier getPluginUid() {
 		return UID;
 	}
 
@@ -35,11 +34,5 @@ public class JEIPlugin implements IModPlugin {
 			return ingredient.get(SpelledComponents.UNLOCK);
 		}
 
-		@Override
-		public String getLegacyStringSubtypeInfo(ItemStack ingredient, UidContext context) {
-			String tomeUnlock = ingredient.getOrDefault(SpelledComponents.UNLOCK, "");
-			if (tomeUnlock.isEmpty()) return "";
-			return BuiltInRegistries.ITEM.getKey(ingredient.getItem()) + "@" + tomeUnlock;
-		}
 	}
 }

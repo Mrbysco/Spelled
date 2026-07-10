@@ -34,7 +34,7 @@ public class ColdBehavior extends BaseBehavior {
 	@Override
 	public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
 		if (entity instanceof LivingEntity) {
-			((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 4 * 20));
+			((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 4 * 20));
 		}
 	}
 }

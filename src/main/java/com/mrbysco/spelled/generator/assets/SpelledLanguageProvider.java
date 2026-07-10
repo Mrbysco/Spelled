@@ -285,6 +285,6 @@ public class SpelledLanguageProvider extends LanguageProvider {
 	}
 
 	public void addSoundEvent(Supplier<? extends SoundEvent> key, String subtitle) {
-		add(Reference.MOD_ID + ".subtitles." + key.get().getLocation().getPath(), subtitle);
+		add(Reference.MOD_ID + ".subtitles." + key.get().location().getPath(), subtitle);
 	}
 }

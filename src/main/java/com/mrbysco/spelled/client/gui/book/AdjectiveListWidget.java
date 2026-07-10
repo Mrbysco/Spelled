@@ -3,8 +3,9 @@ package com.mrbysco.spelled.client.gui.book;
 import com.mrbysco.spelled.client.gui.book.AdjectiveListWidget.ListEntry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -22,8 +23,8 @@ public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 	}
 
 	@Override
-	protected int getScrollbarPosition() {
-		return this.listWidth;
+	protected int scrollBarX() {
+		return this.listWidth - 6;
 	}
 
 	@Override
@@ -46,20 +47,21 @@ public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 		}
 
 		@Override
-		public void render(GuiGraphics guiGraphics, int entryIdx, int top, int left, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovering, float partialTicks) {
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
+			int top = getContentY();
 			Component name = Component.literal(getAdjectiveName());
 			Font font = this.parent.getFont();
 			int color = isType() ? 16351261 : 0xFFFFFF;
-			guiGraphics.drawString(font, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
+			graphics.text(font, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
 					(this.parent.width / 2) - (font.width(name) / 2) + 3, top + 6, color, false);
 
-			if (isHovering) {
-				guiGraphics.renderTooltip(font, getDescription(), mouseX, mouseY);
+			if (hovered) {
+				graphics.setTooltipForNextFrame(font, getDescription(), mouseX, mouseY);
 			}
 		}
 
 		@Override
-		public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
+		public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 			parent.setFocused(this);
 			AdjectiveListWidget.this.setSelected(this);
 			return false;

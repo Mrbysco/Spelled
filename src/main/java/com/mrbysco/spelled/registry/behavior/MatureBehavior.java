@@ -23,9 +23,9 @@ public class MatureBehavior extends BaseBehavior {
 		BlockPos abovePos = pos.above();
 		BlockState aboveState = level.getBlockState(abovePos);
 		int bonemealCount = 1 + spell.getPower();
-		if (!level.isClientSide && aboveState.getBlock() instanceof BonemealableBlock bonemealableBlock) {
+		if (!level.isClientSide() && aboveState.getBlock() instanceof BonemealableBlock bonemealableBlock) {
 			for (int i = 0; i < bonemealCount; i++) {
-				bonemealableBlock.performBonemeal((ServerLevel) level, level.random, abovePos, aboveState);
+				bonemealableBlock.performBonemeal((ServerLevel) level, level.getRandom(), abovePos, aboveState);
 			}
 		}
 	}

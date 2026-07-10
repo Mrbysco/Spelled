@@ -1,9 +1,9 @@
 package com.mrbysco.spelled.api.capability;
 
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
-public interface ISpellData extends INBTSerializable<CompoundTag> {
+public interface ISpellData extends ValueIOSerializable {
 	CompoundTag getUnlocked();
 
 	void setUnlocked(CompoundTag nbt);

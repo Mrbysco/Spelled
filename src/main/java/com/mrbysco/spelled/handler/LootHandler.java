@@ -6,18 +6,20 @@ import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.registry.SpelledComponents;
 import com.mrbysco.spelled.registry.SpelledRegistry;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.npc.VillagerTrades.ItemListing;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.trading.ItemCost;
-import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.TradeCost;
+import net.minecraft.world.item.trading.VillagerTrade;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -28,8 +30,10 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
-import net.neoforged.neoforge.event.village.WandererTradesEvent;
 import vazkii.patchouli.common.item.PatchouliDataComponents;
+
+import java.util.List;
+import java.util.Optional;
 
 public class LootHandler {
 
@@ -39,16 +43,16 @@ public class LootHandler {
 	public void firstJoin(PlayerLoggedInEvent event) {
 		Player player = event.getEntity();
 
-		if (!player.level().isClientSide && SpelledConfig.COMMON.startWithBook.get()) {
+		if (!player.level().isClientSide() && SpelledConfig.COMMON.startWithBook.get()) {
 			CompoundTag playerData = player.getPersistentData();
 
 			if (!player.hasData(SpelledRegistry.HAS_BOOK_ATTACHMENT)) {
-				if (playerData.getBoolean(hasBookTag)) { // Convert from old tag
+				if (playerData.getBooleanOr(hasBookTag, false)) { // Convert from old tag
 					player.setData(SpelledRegistry.HAS_BOOK_ATTACHMENT, true);
 					return;
 				}
 
-				Item guideBook = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("patchouli", "guide_book"));
+				Item guideBook = BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath("patchouli", "guide_book"));
 				if (guideBook != null) {
 					ItemStack guideStack = new ItemStack(guideBook);
 					guideStack.set(PatchouliDataComponents.BOOK, Reference.modLoc("knowledge_tome"));
@@ -102,49 +106,24 @@ public class LootHandler {
 		return entry;
 	}
 
-	@SubscribeEvent
-	public void onWandererTradesEvent(WandererTradesEvent event) {
+	public static void tradeBootstrap(BootstrapContext<VillagerTrade> context) {
 		KeywordRegistry registry = KeywordRegistry.instance();
 		if (registry.getAdjectives().isEmpty()) {
 			registry.initializeKeywords();
 		}
-		ItemStack stack = new ItemStack(SpelledRegistry.KNOWLEDGE_TOME.get());
 		for (String adjective : registry.getAdjectives()) {
 			IKeyword keyword = registry.getKeywordFromName(adjective);
 			if (keyword != null) {
-				event.getRareTrades().add(new ItemsForEmeraldsTrade(stack, keyword.getLevel() + 2,
-						1, adjective, 1, keyword.getLevel()));
+				context.register(createKey("wandering_trader/" + adjective),
+						new VillagerTrade(new TradeCost(Items.EMERALD, keyword.getLevel() + 2),
+								new ItemStackTemplate(SpelledRegistry.KNOWLEDGE_TOME.get(), DataComponentPatch.builder()
+										.set(SpelledComponents.UNLOCK.get(), adjective).build()), 1, keyword.getLevel(),
+								0.05F, Optional.empty(), List.of()));
 			}
 		}
 	}
 
-	public static class ItemsForEmeraldsTrade implements ItemListing {
-		private final ItemStack outputStack;
-		private final int outputAmount;
-		private final String unlock;
-		private final int priceAmount;
-		private final int maxUses;
-		private final int givenExp;
-		private final float priceMultiplier;
-
-		public ItemsForEmeraldsTrade(ItemStack outputStack, int priceAmount, int outputAmount, String unlock, int maxUses, int givenExp) {
-			this(outputStack, priceAmount, outputAmount, unlock, maxUses, givenExp, 0.05F);
-		}
-
-		public ItemsForEmeraldsTrade(ItemStack outputStack, int priceAmount, int outputAmount, String unlock, int maxUses, int givenExp, float priceMultiplier) {
-			this.priceAmount = priceAmount;
-			this.outputStack = outputStack;
-			this.outputAmount = outputAmount;
-			this.unlock = unlock;
-			this.maxUses = maxUses;
-			this.givenExp = givenExp;
-			this.priceMultiplier = priceMultiplier;
-		}
-
-		public MerchantOffer getOffer(Entity trader, RandomSource rand) {
-			ItemStack stack = new ItemStack(this.outputStack.getItem(), this.outputAmount);
-			stack.set(SpelledComponents.UNLOCK.get(), this.unlock);
-			return new MerchantOffer(new ItemCost(Items.EMERALD, this.priceAmount), stack, this.maxUses, this.givenExp, this.priceMultiplier);
-		}
+	private static ResourceKey<VillagerTrade> createKey(String name) {
+		return ResourceKey.create(Registries.VILLAGER_TRADE, Reference.modLoc(name));
 	}
 }

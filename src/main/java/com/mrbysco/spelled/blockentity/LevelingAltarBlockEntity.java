@@ -3,15 +3,16 @@ package com.mrbysco.spelled.blockentity;
 import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import javax.annotation.Nullable;
 
@@ -28,18 +29,19 @@ public class LevelingAltarBlockEntity extends BlockEntity implements Nameable {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
 
 		if (this.hasCustomName())
-			tag.putString("CustomName", Component.Serializer.toJson(this.customName, registries));
+			output.putString("CustomName", this.customName.getString());
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		if (tag.contains("CustomName", 8))
-			this.customName = Component.Serializer.fromJson(tag.getString("CustomName"), registries);
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+
+		String name = input.getString("CustomName").orElse("");
+		this.customName = name.isBlank() ? null : Component.literal(name);
 	}
 
 	@Override
@@ -57,9 +59,9 @@ public class LevelingAltarBlockEntity extends BlockEntity implements Nameable {
 	}
 
 	@Override
-	protected void applyImplicitComponents(BlockEntity.DataComponentInput componentInput) {
-		super.applyImplicitComponents(componentInput);
-		this.customName = componentInput.get(DataComponents.CUSTOM_NAME);
+	protected void applyImplicitComponents(DataComponentGetter getter) {
+		super.applyImplicitComponents(getter);
+		this.customName = getter.get(DataComponents.CUSTOM_NAME);
 	}
 
 	@Override
@@ -69,7 +71,7 @@ public class LevelingAltarBlockEntity extends BlockEntity implements Nameable {
 	}
 
 	@Override
-	public void removeComponentsFromTag(CompoundTag tag) {
-		tag.remove("CustomName");
+	public void removeComponentsFromTag(ValueOutput output) {
+		output.discard("CustomName");
 	}
 }

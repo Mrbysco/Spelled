@@ -24,7 +24,7 @@ public class AdvancementHelper {
 	}
 
 	public static void unlockAdvancement(ServerPlayer player, String name) {
-		AdvancementHolder advancementHolder = player.getServer().getAdvancements().get(Reference.modLoc(name));
+		AdvancementHolder advancementHolder = player.level().getServer().getAdvancements().get(Reference.modLoc(name));
 		if (advancementHolder != null) {
 			AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementHolder);
 			if (!advancementprogress.isDone()) {
@@ -40,7 +40,7 @@ public class AdvancementHelper {
 	}
 
 	public static void lockAdvancement(ServerPlayer player, String name) {
-		AdvancementHolder advancementHolder = player.getServer().getAdvancements().get(Reference.modLoc(name));
+		AdvancementHolder advancementHolder = player.level().getServer().getAdvancements().get(Reference.modLoc(name));
 		if (advancementHolder != null) {
 			AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementHolder);
 			if (advancementprogress.hasProgress()) {
@@ -55,7 +55,7 @@ public class AdvancementHelper {
 		KeywordRegistry registry = KeywordRegistry.instance();
 		boolean flag = true;
 		for (String color : registry.getColors()) {
-			AdvancementHolder advancementHolder = player.getServer().getAdvancements().get(Reference.modLoc("adjective_" + color));
+			AdvancementHolder advancementHolder = player.level().getServer().getAdvancements().get(Reference.modLoc("adjective_" + color));
 			AdvancementProgress advancementprogress = player.getAdvancements().getOrStartProgress(advancementHolder);
 			if (!advancementprogress.isDone()) {
 				flag = false;

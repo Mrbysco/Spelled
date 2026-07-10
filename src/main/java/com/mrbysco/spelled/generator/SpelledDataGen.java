@@ -1,59 +1,43 @@
 package com.mrbysco.spelled.generator;
 
-import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.generator.assets.SpelledLanguageProvider;
 import com.mrbysco.spelled.generator.data.SpelledAdvancements;
-import com.mrbysco.spelled.generator.data.SpelledDamageTypeProvider;
+import com.mrbysco.spelled.generator.data.SpelledDamageTypeTags;
 import com.mrbysco.spelled.generator.data.SpelledLootProvider;
 import com.mrbysco.spelled.generator.data.SpelledPatchouliProvider;
 import com.mrbysco.spelled.generator.data.SpelledRecipes;
-import net.minecraft.core.Cloner;
+import com.mrbysco.spelled.handler.LootHandler;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.registries.VanillaRegistries;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public class SpelledDataGen {
+	private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
+			.add(Registries.DAMAGE_TYPE, SpelledDamageTypeBootstrap::bootstrap)
+			.add(Registries.VILLAGER_TRADE, LootHandler::tradeBootstrap);
+
 	@SubscribeEvent
-	public static void gatherData(GatherDataEvent event) {
+	public static void gatherData(GatherDataEvent.Client event) {
+		event.createDatapackRegistryObjects(BUILDER);
+
 		DataGenerator generator = event.getGenerator();
 		PackOutput packOutput = generator.getPackOutput();
-		ExistingFileHelper helper = event.getExistingFileHelper();
 		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-		if (event.includeServer()) {
-			generator.addProvider(event.includeServer(), new SpelledLootProvider(packOutput, lookupProvider));
-			generator.addProvider(event.includeServer(), new SpelledRecipes(packOutput, lookupProvider));
-			generator.addProvider(event.includeServer(), new SpelledAdvancements(packOutput, lookupProvider, helper));
-			generator.addProvider(event.includeServer(), new SpelledPatchouliProvider(packOutput, lookupProvider));
+		generator.addProvider(true, new SpelledLootProvider(packOutput, lookupProvider));
+		generator.addProvider(true, new SpelledRecipes.Runner(packOutput, lookupProvider));
+		generator.addProvider(true, new SpelledAdvancements(packOutput, lookupProvider));
+		generator.addProvider(true, new SpelledDamageTypeTags(packOutput, lookupProvider));
+		generator.addProvider(true, new SpelledPatchouliProvider(packOutput, lookupProvider));
 
-			generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
-					packOutput, CompletableFuture.supplyAsync(SpelledDataGen::getProvider), Set.of(Reference.MOD_ID)));
-		}
-		if (event.includeClient()) {
-			generator.addProvider(event.includeServer(), new SpelledLanguageProvider(packOutput));
-		}
-	}
-
-	private static RegistrySetBuilder.PatchedRegistries getProvider() {
-		final RegistrySetBuilder registryBuilder = new RegistrySetBuilder();
-		registryBuilder.add(Registries.DAMAGE_TYPE, SpelledDamageTypeProvider::bootstrap);
-		RegistryAccess.Frozen regAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
-		Cloner.Factory cloner$factory = new Cloner.Factory();
-		net.neoforged.neoforge.registries.DataPackRegistriesHooks.getDataPackRegistriesWithDimensions().forEach(data -> data.runWithArguments(cloner$factory::addCodec));
-		return registryBuilder.buildPatch(regAccess, VanillaRegistries.createLookup(), cloner$factory);
+		generator.addProvider(true, new SpelledLanguageProvider(packOutput));
 	}
 }

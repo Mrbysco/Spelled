@@ -6,15 +6,18 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class CreativeTomeItem extends Item {
 	public CreativeTomeItem(Properties builder) {
@@ -22,19 +25,23 @@ public class CreativeTomeItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player playerIn, InteractionHand handIn) {
-		if (!level.isClientSide) {
-			ItemStack itemstack = playerIn.getItemInHand(handIn);
-			playerIn.startUsingItem(handIn);
+	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+		Level level = context.getLevel();
+		Player player = context.getPlayer();
+		if (player == null) return InteractionResult.PASS;
+		InteractionHand handIn = context.getHand();
+		if (!level.isClientSide()) {
+			ItemStack itemstack = player.getItemInHand(handIn);
+			player.startUsingItem(handIn);
 			List<String> adjectives = KeywordRegistry.instance().getAdjectives();
 			for (String adjective : adjectives) {
-				SpelledAPI.unlockKeyword(playerIn, adjective);
+				SpelledAPI.unlockKeyword(player, adjective);
 			}
-			SpelledAPI.syncCap((ServerPlayer) playerIn);
-			playerIn.displayClientMessage(Component.translatable("spelled.tome.success"), true);
-			return InteractionResultHolder.consume(itemstack);
+			SpelledAPI.syncCap((ServerPlayer) player);
+			player.sendOverlayMessage(Component.translatable("spelled.tome.success"));
+			return InteractionResult.SUCCESS;
 		}
-		return super.use(level, playerIn, handIn);
+		return super.onItemUseFirst(stack, context);
 	}
 
 	@Override
@@ -43,8 +50,8 @@ public class CreativeTomeItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
-		tooltip.add(Component.translatable("spelled.creative_tome.description").withStyle(ChatFormatting.DARK_PURPLE));
-		super.appendHoverText(stack, context, tooltip, tooltipFlag);
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
+		builder.accept(Component.translatable("spelled.creative_tome.description").withStyle(ChatFormatting.DARK_PURPLE));
+		super.appendHoverText(stack, context, display, builder, tooltipFlag);
 	}
 }

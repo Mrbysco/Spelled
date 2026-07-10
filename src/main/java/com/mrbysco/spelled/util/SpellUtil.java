@@ -13,7 +13,6 @@ import com.mrbysco.spelled.registry.keyword.TypeKeyword.Type;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.HoverEvent.Action;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,7 +55,7 @@ public class SpellUtil {
 
 					//Do our stuff
 					IKeyword lastKeyword = registry.getKeywordFromName(words.get(words.size() - 1));
-					ServerLevel level = player.serverLevel();
+					ServerLevel level = player.level();
 
 					if (lastKeyword instanceof TypeKeyword typeKeyword) {
 						SpellEntity spell = constructEntity(player, typeKeyword.getType());
@@ -83,7 +82,7 @@ public class SpellUtil {
 						descriptionComponent.append(typeKeyword.getDescription());
 						descriptionComponent.withStyle(ChatFormatting.GOLD);
 						castComponent.setStyle(event.getMessage().getStyle().withHoverEvent(
-								new HoverEvent(Action.SHOW_TEXT, descriptionComponent))).withStyle(ChatFormatting.GOLD);
+								new HoverEvent.ShowText(descriptionComponent))).withStyle(ChatFormatting.GOLD);
 
 						MutableComponent finalMessage = Component.translatable("spelled.spell.cast", player.getDisplayName(), castComponent);
 						if (spell != null) {
@@ -205,6 +204,7 @@ public class SpellUtil {
 		} else { //Ball (Self is handled elsewhere)
 			spell.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.0F, 0.0F);
 		}
-		player.level().playSound((Player) null, player.blockPosition(), SpelledRegistry.SHOOT_SPELL.get(), SoundSource.PLAYERS, 1.0F, 1.0F / (player.level().random.nextFloat() * 0.4F + 1.2F) + 0.5F);
+		player.level().playSound((Player) null, player.blockPosition(), SpelledRegistry.SHOOT_SPELL.get(), SoundSource.PLAYERS,
+				1.0F, 1.0F / (player.level().getRandom().nextFloat() * 0.4F + 1.2F) + 0.5F);
 	}
 }

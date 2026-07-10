@@ -13,7 +13,7 @@ public class CapabilityHandler {
 	@SubscribeEvent
 	public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event) {
 		Player player = event.getEntity();
-		if (!player.level().isClientSide) {
+		if (!player.level().isClientSide()) {
 			SpelledAPI.syncCap((ServerPlayer) player);
 		}
 	}
@@ -21,13 +21,13 @@ public class CapabilityHandler {
 	@SubscribeEvent
 	public void onDeath(PlayerEvent.Clone event) {
 		Player newPlayer = event.getEntity();
-		if (event.isWasDeath() && !newPlayer.level().isClientSide) {
+		if (event.isWasDeath() && !newPlayer.level().isClientSide()) {
 			Player original = event.getOriginal();
 
 			SpellData data = original.getData(SpelledRegistry.SPELL_DATA_ATTACHMENT);
 			newPlayer.setData(SpelledRegistry.SPELL_DATA_ATTACHMENT, data);
 		}
-		if (!newPlayer.level().isClientSide) {
+		if (!newPlayer.level().isClientSide()) {
 			SpelledAPI.syncCap((ServerPlayer) newPlayer);
 		}
 	}

@@ -1,0 +1,5 @@
+// 26.1.2	2026-07-10T20:47:07.3054199	Tags for minecraft:damage_type mod id spelled
+8b3a18f668755657b6516f368b5a944c0894612a data/minecraft/tags/damage_type/always_triggers_silverfish.json
+8b3a18f668755657b6516f368b5a944c0894612a data/minecraft/tags/damage_type/avoids_guardian_thorns.json
+8b3a18f668755657b6516f368b5a944c0894612a data/minecraft/tags/damage_type/bypasses_armor.json
+8b3a18f668755657b6516f368b5a944c0894612a data/minecraft/tags/damage_type/is_projectile.json

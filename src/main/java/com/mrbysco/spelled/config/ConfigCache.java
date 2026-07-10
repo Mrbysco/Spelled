@@ -2,7 +2,7 @@ package com.mrbysco.spelled.config;
 
 import com.mrbysco.spelled.Spelled;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -28,7 +28,7 @@ public class ConfigCache {
 			Spelled.LOGGER.error("'requiredItem' is empty, using default");
 			requiredItem = Items.LAPIS_LAZULI;
 		} else {
-			Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(value));
+			Item item = BuiltInRegistries.ITEM.getValue(Identifier.tryParse(value));
 			if (item != null) {
 				requiredItem = item;
 			} else {
@@ -59,7 +59,7 @@ public class ConfigCache {
 						int dummyLevel = i + 1;
 						int dummyItemCost = 5;
 						int level = NumberUtils.isParsable(values[0]) ? Integer.parseInt(values[0]) : -1;
-						Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(values[1]));
+						Item item = BuiltInRegistries.ITEM.getValue(Identifier.tryParse(values[1]));
 						int itemCost = NumberUtils.isParsable(values[2]) ? Integer.parseInt(values[2]) : -1;
 
 						if (level == -1) {

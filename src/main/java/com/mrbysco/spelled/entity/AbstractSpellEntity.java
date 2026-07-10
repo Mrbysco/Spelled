@@ -1,11 +1,12 @@
 package com.mrbysco.spelled.entity;
 
+import com.mojang.serialization.Codec;
 import com.mrbysco.spelled.registry.SpelledRegistry;
+import com.mrbysco.spelled.registry.SpelledSerializers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -14,16 +15,19 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.entity.projectile.hurtingprojectile.AbstractHurtingProjectile;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.ClipContext.Fluid;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.OptionalInt;
@@ -31,7 +35,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
-	private static final EntityDataAccessor<CompoundTag> SPELL_ORDER = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.COMPOUND_TAG);
+	private static final EntityDataAccessor<List<String>> SPELL_ORDER = SynchedEntityData.defineId(AbstractSpellEntity.class, SpelledSerializers.STRING_LIST.get());
 	private static final EntityDataAccessor<Integer> SPELL_TYPE = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<OptionalInt> COLOR = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.OPTIONAL_UNSIGNED_INT);
 	private static final EntityDataAccessor<Boolean> FIERY = SynchedEntityData.defineId(AbstractSpellEntity.class, EntityDataSerializers.BOOLEAN);
@@ -58,7 +62,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 		super.defineSynchedData(builder);
-		builder.define(SPELL_ORDER, new CompoundTag());
+		builder.define(SPELL_ORDER, new ArrayList<>());
 		builder.define(SPELL_TYPE, 0);
 		builder.define(COLOR, OptionalInt.empty());
 		builder.define(FIERY, false);
@@ -73,17 +77,17 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 		builder.define(POWER, 0);
 	}
 
-	public void setSpellOrder(CompoundTag order) {
+	public void setSpellOrder(List<String> order) {
 		this.getEntityData().set(SPELL_ORDER, order);
 	}
 
 	public void insertAction(String action) {
-		CompoundTag order = this.getSpellOrder();
-		order.putString(order.isEmpty() ? String.valueOf(0) : String.valueOf(order.size()), action);
+		List<String> order = this.getSpellOrder();
+		order.add(action);
 		this.setSpellOrder(order);
 	}
 
-	public CompoundTag getSpellOrder() {
+	public List<String> getSpellOrder() {
 		return this.getEntityData().get(SPELL_ORDER);
 	}
 
@@ -216,50 +220,50 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag compound) {
-		super.readAdditionalSaveData(compound);
+	protected void readAdditionalSaveData(ValueInput input) {
+		super.readAdditionalSaveData(input);
 
-		if (compound.contains("SpellOrder", 10))
-			this.setSpellOrder(compound.getCompound("SpellOrder"));
+		if (input.keySet().contains("SpellOrder"))
+			this.setSpellOrder(input.read("SpellOrder", Codec.STRING.listOf()).orElse(List.of()));
 
-		if (compound.contains("colorPresent"))
-			setColor(compound.getInt("Color"));
+		if (input.keySet().contains("colorPresent"))
+			setColor(input.getIntOr("Color", 0));
 
-		setFiery(compound.getBoolean("Fiery"));
-		setLava(compound.getBoolean("Lava"));
-		setWater(compound.getBoolean("Water"));
-		setCold(compound.getBoolean("Cold"));
-		setSnow(compound.getBoolean("Snow"));
-		setSmoky(compound.getBoolean("Smoky"));
-		setInky(compound.getBoolean("Inky"));
-		setSilky(compound.getBoolean("Silky"));
+		setFiery(input.getBooleanOr("Fiery", false));
+		setLava(input.getBooleanOr("Lava", false));
+		setWater(input.getBooleanOr("Water", false));
+		setCold(input.getBooleanOr("Cold", false));
+		setSnow(input.getBooleanOr("Snow", false));
+		setSmoky(input.getBooleanOr("Smoky", false));
+		setInky(input.getBooleanOr("Inky", false));
+		setSilky(input.getBooleanOr("Silky", false));
 
-		setSizeMultiplier(compound.getFloat("SizeMultiplier"));
-		setPower(compound.getInt("PowerAdditive"));
+		setSizeMultiplier(input.getFloatOr("SizeMultiplier", 0.0F));
+		setPower(input.getIntOr("PowerAdditive", 0));
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag compound) {
-		super.addAdditionalSaveData(compound);
+	protected void addAdditionalSaveData(ValueOutput output) {
+		super.addAdditionalSaveData(output);
 
 		if (!this.getSpellOrder().isEmpty())
-			compound.put("SpellOrder", this.getSpellOrder());
+			output.store("SpellOrder", Codec.STRING.listOf(), this.getSpellOrder());
 
-		compound.putBoolean("colorPresent", hasColor());
+		output.putBoolean("colorPresent", hasColor());
 		if (hasColor())
-			compound.putInt("Color", getColor().getAsInt());
+			output.putInt("Color", getColor().getAsInt());
 
-		compound.putBoolean("Fiery", isFiery());
-		compound.putBoolean("Lava", isLava());
-		compound.putBoolean("Water", isWater());
-		compound.putBoolean("Cold", isCold());
-		compound.putBoolean("Snow", isSnow());
-		compound.putBoolean("Smoky", isSmoky());
-		compound.putBoolean("Inky", isInky());
-		compound.putBoolean("Silky", isSilky());
+		output.putBoolean("Fiery", isFiery());
+		output.putBoolean("Lava", isLava());
+		output.putBoolean("Water", isWater());
+		output.putBoolean("Cold", isCold());
+		output.putBoolean("Snow", isSnow());
+		output.putBoolean("Smoky", isSmoky());
+		output.putBoolean("Inky", isInky());
+		output.putBoolean("Silky", isSilky());
 
-		compound.putFloat("SizeMultiplier", getSizeMultiplier());
-		compound.putInt("PowerAdditive", getPower());
+		output.putFloat("SizeMultiplier", getSizeMultiplier());
+		output.putInt("PowerAdditive", getPower());
 	}
 
 	@Override
@@ -300,7 +304,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 
 		if (isCold() || isWater()) {
 			Entity entity = this.getOwner();
-			if (this.level().isClientSide || (entity == null || entity.isAlive()) && this.level().hasChunkAt(this.blockPosition())) {
+			if (this.level().isClientSide() || (entity == null || entity.isAlive()) && this.level().hasChunkAt(this.blockPosition())) {
 				HitResult result = rayTraceWater(this::canHitEntity);
 				if (result.getType() != HitResult.Type.MISS) {
 					this.onHit(result);

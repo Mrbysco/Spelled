@@ -15,6 +15,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -32,7 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -42,8 +43,6 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -51,7 +50,7 @@ import java.util.stream.Stream;
 
 public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
 	public static final MapCodec<LevelingAltarBlock> CODEC = simpleCodec(LevelingAltarBlock::new);
-	public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
+	public static final EnumProperty<Direction> HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
 	protected static final VoxelShape FALLBACK = Block.box(0.0D, 0.0D, 0.0D, 12.0D, 12.0D, 12.0D);
@@ -106,7 +105,6 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 		return FALLBACK;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public void animateTick(BlockState stateIn, Level level, BlockPos pos, RandomSource rand) {
 		super.animateTick(stateIn, level, pos, rand);
 
@@ -141,7 +139,7 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 
 	@Override
 	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		} else {
 			player.openMenu(state.getMenuProvider(level, pos));
@@ -155,7 +153,7 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 		if (blockEntity instanceof LevelingAltarBlockEntity) {
 			Component itextcomponent = ((Nameable) blockEntity).getDisplayName();
 			return new SimpleMenuProvider((id, inventory, player) -> {
-				int playerLevel = level.isClientSide ? 0 : SpelledAPI.getLevel((ServerPlayer) player);
+				int playerLevel = level.isClientSide() ? 0 : SpelledAPI.getLevel((ServerPlayer) player);
 				return new AltarMenu(id, inventory, ContainerLevelAccess.create(level, pos), playerLevel);
 			}, itextcomponent);
 		} else {
@@ -201,7 +199,7 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 	}
 
 	@Override
-	public boolean canPlaceLiquid(@Nullable Player player, BlockGetter p_54766_, BlockPos p_54767_, BlockState p_54768_, Fluid p_54769_) {
+	public boolean canPlaceLiquid(@org.jspecify.annotations.Nullable LivingEntity user, BlockGetter level, BlockPos pos, BlockState state, Fluid type) {
 		return false;
 	}
 

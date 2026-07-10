@@ -48,7 +48,8 @@ public class WaterBehavior extends BaseBehavior {
 	@Override
 	public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
 		Level level = entity.level();
-		level.playSound((Player) null, entity.blockPosition(), SoundEvents.GENERIC_EXTINGUISH_FIRE, entity.getSoundSource(), 0.7F, 1.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.4F);
+		level.playSound((Player) null, entity.blockPosition(), SoundEvents.GENERIC_EXTINGUISH_FIRE, entity.getSoundSource(), 0.7F,
+				1.6F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.4F);
 		entity.clearFire();
 	}
 }

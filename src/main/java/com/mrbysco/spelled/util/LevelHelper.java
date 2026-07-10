@@ -26,10 +26,10 @@ public class LevelHelper {
 	}
 
 	public static void levelUpFailItems(Player player) {
-		player.displayClientMessage(Component.translatable("spelled.level_up.fail_item").withStyle(ChatFormatting.GOLD), true);
+		player.sendOverlayMessage(Component.translatable("spelled.level_up.fail_item").withStyle(ChatFormatting.GOLD));
 	}
 
 	public static void levelUpFailXP(Player player) {
-		player.displayClientMessage(Component.translatable("spelled.level_up.fail_xp").withStyle(ChatFormatting.GOLD), true);
+		player.sendOverlayMessage(Component.translatable("spelled.level_up.fail_xp").withStyle(ChatFormatting.GOLD));
 	}
 }

@@ -27,7 +27,7 @@ public class SpelledCommands {
 		ArrayList<String> adjectives = KeywordRegistry.instance().getAdjectives();
 		adjectives.add("all");
 
-		root.requires((source) -> source.hasPermission(2))
+		root.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
 				.then(Commands.literal("level")
 						.then(Commands.argument("player", EntityArgument.players())
 								.then(Commands.literal("get").executes(SpelledCommands::getLevel))

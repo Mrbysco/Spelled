@@ -134,7 +134,7 @@ public class AltarMenu extends AbstractContainerMenu {
 					LevelHelper.levelUpFailItems(playerIn);
 					return false;
 				} else {
-					this.worldPosCallable.execute((p_217003_6_, p_217003_7_) -> {
+					this.worldPosCallable.execute((level1, p_217003_7_) -> {
 						this.useLevels(playerIn, XPCost);
 
 						if (!playerIn.getAbilities().instabuild) {
@@ -146,7 +146,8 @@ public class AltarMenu extends AbstractContainerMenu {
 
 						this.tableInventory.setChanged();
 						this.slotsChanged(this.tableInventory);
-						p_217003_6_.playSound((Player) null, p_217003_7_, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, p_217003_6_.random.nextFloat() * 0.1F + 0.9F);
+						level1.playSound((Player) null, p_217003_7_, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F,
+								level1.getRandom().nextFloat() * 0.1F + 0.9F);
 
 						SpelledAPI.forceSetLevel((ServerPlayer) playerIn, newLevel);
 						SpelledAPI.syncCap((ServerPlayer) playerIn);
