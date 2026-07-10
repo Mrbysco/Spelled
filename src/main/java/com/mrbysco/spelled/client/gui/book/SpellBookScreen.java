@@ -21,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -113,7 +114,7 @@ public class SpellBookScreen extends Screen {
 			String currentSpell = stack.getOrDefault(SpelledComponents.SPELL, "");
 			String[] words = currentSpell.split(" ");
 			List<String> wordList = Arrays.asList(words);
-			String type = wordList.get(wordList.size() - 1);
+			String type = wordList.getLast();
 			wordList = wordList.subList(0, wordList.size() - 1);
 			selectedAdjectives.addAll(wordList);
 			typeWord = type;
@@ -136,7 +137,7 @@ public class SpellBookScreen extends Screen {
 		for (AdjectiveEntry adjectiveEntry : adjectives) {
 			listWidth = Math.max(listWidth, getFont().width(adjectiveEntry.getAdjectiveName()) + 10);
 		}
-		listWidth = Math.max(Math.min(listWidth, width / 3), 200);
+		listWidth = Math.clamp(listWidth, 200, width / 3);
 		listWidth += listWidth % numButtons != 0 ? (numButtons - listWidth % numButtons) : 0;
 		int structureWidth = this.width - listWidth - (PADDING * 3);
 		int closeButtonWidth = Math.min(structureWidth, 200);
@@ -168,7 +169,7 @@ public class SpellBookScreen extends Screen {
 				selectedAdjectives.clear();
 			} else {
 				if (!selectedAdjectives.isEmpty()) {
-					selectedAdjectives.remove(selectedAdjectives.size() - 1);
+					selectedAdjectives.removeLast();
 				}
 			}
 		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, y, closeButtonWidth, 20).build());
@@ -243,15 +244,29 @@ public class SpellBookScreen extends Screen {
 		SortType.Z_TO_A.button.visible = !this.isSigning;
 	}
 
+	public void setFocused(AdjectiveListWidget.ListEntry previousEntry, AdjectiveListWidget.ListEntry entry) {
+		if (this.focused == previousEntry) {
+			this.focused = entry;
+		} else {
+			if (this.focused == null || entry != null) {
+				this.focused = entry;
+			}
+		}
+		updateCache();
+	}
+
+
 	@Override
 	public void tick() {
 		this.signButton.setTooltip(Tooltip.create(getFinalizeTooltip()));
 
-		super.tick();
 		++this.frameTick;
 		if (!isSigning) {
 			this.signButton.active = !selectedAdjectives.isEmpty() && !typeWord.isEmpty();
-			adjectiveWidget.setSelected(focused);
+
+			if (adjectiveWidget.getSelected() != focused) {
+				adjectiveWidget.setSelected(focused);
+			}
 
 			if (!search.getValue().equals(lastFilterText)) {
 				reloadAdjectives();
@@ -285,26 +300,22 @@ public class SpellBookScreen extends Screen {
 			boolean flag = this.frameTick / 6 % 2 == 0;
 			FormattedCharSequence formattedCharSequence = FormattedCharSequence.composite(FormattedCharSequence.forward(this.title, Style.EMPTY), flag ? GRAY_CURSOR : WHITE_CURSOR);
 			int k = this.font.width(EDIT_TITLE_LABEL);
-			graphics.text(font, EDIT_TITLE_LABEL, i + 36 + (114 - k) / 2, (int) (34.0F + j), 16777215, false);
+			graphics.text(font, EDIT_TITLE_LABEL, i + 36 + (114 - k) / 2, (int) (34.0F + j), ARGB.opaque(16777215), false);
 			int l = this.font.width(formattedCharSequence);
-			graphics.text(font, formattedCharSequence, i + 36 + (114 - l) / 2, (int) (50.0F + j), 16777215, false);
+			graphics.text(font, formattedCharSequence, i + 36 + (114 - l) / 2, (int) (50.0F + j), ARGB.opaque(16777215), false);
 			int i1 = this.font.width(this.ownerText);
-			graphics.text(font, this.ownerText, i + 36 + (114 - i1) / 2, (int) (60.0F + j), 16777215, false);
-			graphics.textWithWordWrap(font, FINALIZE_WARNING_LABEL, i + 36, 82 + j, 114, 16777215);
+			graphics.text(font, this.ownerText, i + 36 + (114 - i1) / 2, (int) (60.0F + j), ARGB.opaque(16777215), false);
+			graphics.textWithWordWrap(font, FINALIZE_WARNING_LABEL, i + 36, 82 + j, 114, ARGB.opaque(16777215));
 		} else {
 			this.adjectiveWidget.extractRenderState(graphics, mouseX, mouseY, partialTick);
 
 			Component text = Component.translatable("spelled.screen.search");
 			graphics.centeredText(font, text, this.width / 2 + PADDING,
-					search.getY() - font.lineHeight - 2, 16777215);
+					search.getY() - font.lineHeight - 2, ARGB.opaque(16777215));
 
 			this.search.extractRenderState(graphics, mouseX, mouseY, partialTick);
 
-			graphics.text(font, this.getTitle(), 5, 5, 16777215, false);
-
-//			PoseStack poseStack = graphics.pose();
-//			poseStack.pushPose();
-//			poseStack.translate(0.0F, 0.0F, 100.0F);
+			graphics.text(font, this.getTitle(), 5, 5, ARGB.opaque(16777215), false);
 
 			int itemX = width / 2 - 2;
 			int itemY = height - 130;
@@ -313,7 +324,6 @@ public class SpellBookScreen extends Screen {
 
 			graphics.item(stack, itemX, itemY);
 			graphics.itemDecorations(this.font, stack, itemX, itemY, null);
-//			poseStack.popPose();
 
 			if (isHovering(itemX - 16, itemY, itemX + 16, itemY + 24, mouseX, mouseY)) {
 				boolean flag = selectedAdjectives.isEmpty();
@@ -375,11 +385,6 @@ public class SpellBookScreen extends Screen {
 		sorted = false;
 	}
 
-	public void setFocused(AdjectiveListWidget.ListEntry entry) {
-		this.focused = entry == this.focused ? null : entry;
-		updateCache();
-	}
-
 	private void updateCache() {
 		this.insertButton.active = focused != null;
 	}
@@ -408,7 +413,9 @@ public class SpellBookScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(KeyEvent event) {
-		if (event.key() == 256) {
+		if (this.adjectiveWidget.keyPressed(event)) {
+			return true;
+		} else if (event.key() == 256) {
 			this.minecraft.setScreen((Screen) null);
 			return true;
 		} else if (this.isSigning) {

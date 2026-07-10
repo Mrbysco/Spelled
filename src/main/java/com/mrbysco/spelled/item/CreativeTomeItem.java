@@ -13,7 +13,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -25,14 +24,10 @@ public class CreativeTomeItem extends Item {
 	}
 
 	@Override
-	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-		Level level = context.getLevel();
-		Player player = context.getPlayer();
+	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		if (player == null) return InteractionResult.PASS;
-		InteractionHand handIn = context.getHand();
 		if (!level.isClientSide()) {
-			ItemStack itemstack = player.getItemInHand(handIn);
-			player.startUsingItem(handIn);
+			player.startUsingItem(hand);
 			List<String> adjectives = KeywordRegistry.instance().getAdjectives();
 			for (String adjective : adjectives) {
 				SpelledAPI.unlockKeyword(player, adjective);
@@ -41,7 +36,7 @@ public class CreativeTomeItem extends Item {
 			player.sendOverlayMessage(Component.translatable("spelled.tome.success"));
 			return InteractionResult.SUCCESS;
 		}
-		return super.onItemUseFirst(stack, context);
+		return super.use(level, player, hand);
 	}
 
 	@Override

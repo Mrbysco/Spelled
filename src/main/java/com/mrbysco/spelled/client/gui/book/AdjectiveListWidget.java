@@ -9,6 +9,8 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.util.ARGB;
+import org.jetbrains.annotations.Nullable;
 
 public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 	private final int listWidth;
@@ -37,6 +39,12 @@ public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 		parent.buildAdjectiveList(this::addEntry, mod -> new ListEntry(mod, this.parent));
 	}
 
+	@Override
+	public void setSelected(@Nullable AdjectiveListWidget.ListEntry selected) {
+		this.parent.setFocused(getSelected(), selected);
+		super.setSelected(selected);
+	}
+
 	public class ListEntry extends ObjectSelectionList.Entry<ListEntry> {
 		private final AdjectiveEntry adjective;
 		private final SpellBookScreen parent;
@@ -53,7 +61,7 @@ public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 			Font font = this.parent.getFont();
 			int color = isType() ? 16351261 : 0xFFFFFF;
 			graphics.text(font, Language.getInstance().getVisualOrder(FormattedText.composite(font.substrByWidth(name, listWidth))),
-					(this.parent.width / 2) - (font.width(name) / 2) + 3, top + 6, color, false);
+					(this.parent.width / 2) - (font.width(name) / 2) + 3, top + 6, ARGB.opaque(color), false);
 
 			if (hovered) {
 				graphics.setTooltipForNextFrame(font, getDescription(), mouseX, mouseY);
@@ -62,8 +70,10 @@ public class AdjectiveListWidget extends ObjectSelectionList<ListEntry> {
 
 		@Override
 		public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-			parent.setFocused(this);
-			AdjectiveListWidget.this.setSelected(this);
+			if (event.button() == 0) {
+				AdjectiveListWidget.this.setSelected(this);
+				return true;
+			}
 			return false;
 		}
 

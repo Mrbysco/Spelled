@@ -15,7 +15,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 import java.util.Optional;
@@ -27,10 +26,7 @@ public class TomeItem extends Item {
 	}
 
 	@Override
-	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-		Level level = context.getLevel();
-		Player player = context.getPlayer();
-		InteractionHand hand = context.getHand();
+	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		if (player == null) return InteractionResult.PASS;
 		if (!level.isClientSide()) {
 			ItemStack itemstack = player.getItemInHand(hand);
@@ -59,7 +55,7 @@ public class TomeItem extends Item {
 			}
 		}
 
-		return super.onItemUseFirst(stack, context);
+		return super.use(level, player, hand);
 	}
 
 	@Override

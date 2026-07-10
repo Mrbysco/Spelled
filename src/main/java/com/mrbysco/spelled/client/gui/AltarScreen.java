@@ -2,6 +2,7 @@ package com.mrbysco.spelled.client.gui;
 
 import com.google.common.collect.Lists;
 import com.mrbysco.spelled.Reference;
+import com.mrbysco.spelled.client.gui.state.AltarBookRenderState;
 import com.mrbysco.spelled.config.SpelledConfig;
 import com.mrbysco.spelled.menu.AltarMenu;
 import net.minecraft.ChatFormatting;
@@ -11,9 +12,11 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.object.book.BookModel;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -88,7 +91,7 @@ public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
 		int i = (this.width - this.imageWidth) / 2;
 		int j = (this.height - this.imageHeight) / 2;
 		Identifier texture = SpelledConfig.COMMON.requireItems.get() ? ALTAR_GUI_TEXTURE : ALTAR_GUI_SLOTLESS_TEXTURE;
-		graphics.blit(texture, i, j, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, texture, i, j, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
 
 		this.extractBook(graphics, i, j, mouseX, mouseY, levelCost, itemFlag);
 
@@ -118,41 +121,42 @@ public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
 		float a = this.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 		float open = Mth.lerp(a, this.oOpen, this.open);
 		float flip = Mth.lerp(a, this.oFlip, this.flip);
-		int x0 = left + 14;
-		int y0 = top + 14;
+		int x0 = left + 68;
+		int y0 = top + 12;
 		int x1 = x0 + 38;
 		int y1 = y0 + 31;
 
-		//TODO: Figure out if I can still color the book model
-//		Player player = this.minecraft != null ? this.minecraft.player : null;
-//		boolean flag = true;
-//		if (player != null) {
-//			flag = levelCost > 0 && ((itemFlag || player.experienceLevel < levelCost) && !player.getAbilities().instabuild);
-//		}
-//
-//		float red = 1.0F;
-//		float green = 1.0F;
-//		float blue = 1.0F;
-//
-//		boolean bookHovered = bookHovered(mouseX, mouseY);
-//		if (bookHovered) {
-//			if (flag) {
-//				red = 0.6F;
-//				green = 0.4F;
-//			} else {
-//				red = 0.4F;
-//				green = 0.6F;
-//			}
-//			blue = 0.4F;
-//		} else {
-//			if (flag) {
-//				red = 0.6F;
-//				green = 0.6F;
-//				blue = 0.6F;
-//			}
-//		}
+		Player player = this.minecraft != null ? this.minecraft.player : null;
+		boolean flag = true;
+		if (player != null) {
+			flag = levelCost > 0 && ((itemFlag || player.experienceLevel < levelCost) && !player.getAbilities().instabuild);
+		}
 
-		graphics.book(this.bookModel, ALTAR_BOOK_TEXTURE, 40.0F, open, flip, x0, y0, x1, y1);
+		float red = 1.0F;
+		float green = 1.0F;
+		float blue = 1.0F;
+
+		boolean bookHovered = bookHovered(mouseX, mouseY);
+		if (bookHovered) {
+			if (flag) {
+				red = 0.6F;
+				green = 0.4F;
+			} else {
+				red = 0.4F;
+				green = 0.6F;
+			}
+			blue = 0.4F;
+		} else {
+			if (flag) {
+				red = 0.6F;
+				green = 0.6F;
+				blue = 0.6F;
+			}
+		}
+
+		int color = ARGB.colorFromFloat(1.0F, red, green, blue);
+		graphics.submitPictureInPictureRenderState(
+				new AltarBookRenderState(bookModel, ALTAR_BOOK_TEXTURE, open, flip, x0, y0, x1, y1, 40.0F, color, graphics.peekScissorStack()));
 	}
 
 	@Override

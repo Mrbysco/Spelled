@@ -33,11 +33,9 @@ public class SpellbookItem extends Item {
 	}
 
 	@Override
-	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-		Level level = context.getLevel();
-		Player player = context.getPlayer();
-		InteractionHand hand = context.getHand();
+	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		if (player == null) return InteractionResult.PASS;
+		ItemStack stack = player.getItemInHand(hand);
 		if (stack.has(SpelledComponents.SEALED)) {
 			if (!level.isClientSide()) {
 				ServerPlayer serverPlayer = (ServerPlayer) player;
@@ -77,7 +75,7 @@ public class SpellbookItem extends Item {
 				}
 			}
 		}
-		return super.onItemUseFirst(stack, context);
+		return super.use(level, player, hand);
 	}
 
 	@Override
