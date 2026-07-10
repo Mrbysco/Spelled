@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public class SpelledAdvancements extends AdvancementProvider {
+public class SpelledAdvancementsProvider extends AdvancementProvider {
 	private static final List<AdvancementSubProvider> subproviders = List.of(new SpelledAdvancementGenerator());
 
-	public SpelledAdvancements(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
+	public SpelledAdvancementsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
 		super(packOutput, registries, subproviders);
 	}
 

@@ -81,7 +81,7 @@ public class SpelledConfig {
 			individualLevelCosts = builder
 					.comment("Determines how much xp you need to pay per individual level when enabled (XP Levels) [Syntax: level,xp_cost]",
 							"If you have changed the maxLevel and enabled individualLevels you'll need supply the new individual level costs")
-					.defineList("individualLevelCosts", Arrays.asList(levelCost), o -> (o instanceof String));
+					.defineList("individualLevelCosts", Arrays.asList(levelCost), String::new, o -> (o instanceof String));
 
 			String[] itemCost = new String[]
 					{
@@ -110,7 +110,7 @@ public class SpelledConfig {
 			individualItemCosts = builder
 					.comment("Determines how which item each level costs when 'requireItems' is enabled (XP Levels) [Syntax: level,modid:item_name,amount]",
 							"If you have changed the maxLevel and enabled requireItems you'll need supply the new individual item costs")
-					.defineList("individualItemCosts", Arrays.asList(itemCost), o -> (o instanceof String));
+					.defineList("individualItemCosts", Arrays.asList(itemCost), String::new, o -> (o instanceof String));
 
 			maxLevel = builder
 					.comment("Decides the highest level a player can become (Default: 20)")

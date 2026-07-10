@@ -5,6 +5,7 @@ import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.data.PackOutput;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.common.data.LanguageProvider;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -282,9 +283,35 @@ public class SpelledLanguageProvider extends LanguageProvider {
 		add("info.spelled.book.descriptive.maturis.name", "Maturis");
 		add("info.spelled.book.descriptive.maturis.text", "Everybody wants to grow up right? Adults seem to be able to have all the fun, and with this word now you can too! Sadly it doesn't work on people, but it can still give those annoying wheat plants the push they need to finally feed you. As a bonus it works on animals too! Note side effects of aging can include cramps, joint pain,");
 		add("info.spelled.book.descriptive.maturis.text2", "yelling at kids to get off your lawn, and an obligation to pay taxes. Failure to use this word responsibly can result in a man dressed in green tights showed up in your window and promising to take you to a land where you'll never grow old, with a grumpy old pirate and a ticking crocodile, so adult supervision is highly recommended!");
+
+		addConfig("general", "General", "General Settings");
+		addConfig("startWithBook", "Start With Book", "Decides are given the Tome of Knowledge when starting a world");
+		addConfig("proximity", "Proximity", "Decides the range in which players around you can hear the spells cast (-1 for server spam) [Default: 16]");
+		addConfig("individualLevels", "Individual Levels", "Decides whether you use the individual level cost (Cost to level up can be different per level) or use a scaling level cost");
+		addConfig("individualItems", "Individual Items", "Decides whether you use the individual item cost (Cost to level up can be different per level) or use a scaling item cost");
+		addConfig("requireItems", "Require Items", "Decides whether you need specific items to level up (Default: true)");
+		addConfig("requiredItem", "Required Item", "Decides whether you need specific items to level up (Default: minecraft:lapis_lazuli)");
+		addConfig("individualLevelCosts", "Individual Level Costs", "Determines how much xp you need to pay per individual level when enabled (XP Levels) [Syntax: level,xp_cost] If you have changed the maxLevel and enabled individualLevels you'll need supply the new individual level costs");
+		addConfig("individualItemCosts", "Individual Item Costs", "Determines how many items you need to pay per individual level when enabled (Items) [Syntax: level,item_cost] If you have changed the maxLevel and enabled individualItems you'll need supply the new individual item costs");
+		addConfig("maxLevel", "Max Level", "Determines the max level you can reach (Default: 10)");
+		addConfig("xpMultiplier", "XP Multiplier", "Decides how much xp you need to pay per level (cost is multiplied * level)");
+		addConfig("hideKnowledgeTomeInfo", "Hide Knowledge Tome Info", "Decides whether the tooltip of the Tome of Knowledge tells you what's inside (Default: true)");
 	}
 
 	public void addSoundEvent(Supplier<? extends SoundEvent> key, String subtitle) {
 		add(Reference.MOD_ID + ".subtitles." + key.get().location().getPath(), subtitle);
+	}
+
+	/**
+	 * Add the translation for a config entry
+	 *
+	 * @param path        The path of the config entry
+	 * @param name        The name of the config entry
+	 * @param description The description of the config entry (optional in case of targeting "title" or similar entries that have no tooltip)
+	 */
+	private void addConfig(String path, String name, @Nullable String description) {
+		this.add(Reference.MOD_ID + ".configuration." + path, name);
+		if (description != null && !description.isEmpty())
+			this.add(Reference.MOD_ID + ".configuration." + path + ".tooltip", description);
 	}
 }

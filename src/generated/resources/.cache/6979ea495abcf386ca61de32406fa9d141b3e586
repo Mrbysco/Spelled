@@ -1,0 +1,10 @@
+// 26.1.2	2026-07-10T22:12:32.895249	Model Definitions - spelled
+3850796036823e81176d9d19438de39da960e908 assets/spelled/blockstates/leveling_altar.json
+6cc81cc760527d649dc995750996a65a03170c89 assets/spelled/items/ancient_knowledge_tome.json
+ea733725e856b75d5a285d9e1f850dd265c08f21 assets/spelled/items/creative_tome.json
+cd66458afeff4627997233bcb7d0bbed06489bec assets/spelled/items/leveling_altar.json
+addac6bea80be49173eebb1479b653ca4b6dbb53 assets/spelled/items/spell_book.json
+1082315572a3dec528e1d8e6b97110022b6c810e assets/spelled/models/ancient_knowledge_tome.json
+1082315572a3dec528e1d8e6b97110022b6c810e assets/spelled/models/item/ancient_knowledge_tome.json
+765c6773601dcad2e36c71437df6f427f67a0df1 assets/spelled/models/item/creative_tome.json
+6e9215cf7bb86c9ec83064cf076f833b500accc2 assets/spelled/models/item/spell_book.json

@@ -1,7 +1,6 @@
 package com.mrbysco.spelled.generator.data;
 
 import com.mrbysco.spelled.Reference;
-import com.mrbysco.spelled.registry.SpelledComponents;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
@@ -9,7 +8,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
@@ -18,9 +16,9 @@ import vazkii.patchouli.common.item.PatchouliDataComponents;
 
 import java.util.concurrent.CompletableFuture;
 
-public class SpelledRecipes extends RecipeProvider {
+public class SpelledRecipeProvider extends RecipeProvider {
 
-	public SpelledRecipes(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
+	public SpelledRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
 		super(provider, recipeOutput);
 	}
 
@@ -62,7 +60,7 @@ public class SpelledRecipes extends RecipeProvider {
 
 		@Override
 		protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
-			return new SpelledRecipes(provider, recipeOutput);
+			return new SpelledRecipeProvider(provider, recipeOutput);
 		}
 
 		@Override

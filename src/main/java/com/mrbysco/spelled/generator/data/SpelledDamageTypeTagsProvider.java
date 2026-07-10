@@ -9,8 +9,8 @@ import net.minecraft.tags.DamageTypeTags;
 
 import java.util.concurrent.CompletableFuture;
 
-public class SpelledDamageTypeTags extends DamageTypeTagsProvider {
-	public SpelledDamageTypeTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+public class SpelledDamageTypeTagsProvider extends DamageTypeTagsProvider {
+	public SpelledDamageTypeTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
 		super(output, lookupProvider, Reference.MOD_ID);
 	}
 

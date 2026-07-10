@@ -1,11 +1,13 @@
 package com.mrbysco.spelled.generator;
 
 import com.mrbysco.spelled.generator.assets.SpelledLanguageProvider;
-import com.mrbysco.spelled.generator.data.SpelledAdvancements;
-import com.mrbysco.spelled.generator.data.SpelledDamageTypeTags;
+import com.mrbysco.spelled.generator.assets.SpelledModelProvider;
+import com.mrbysco.spelled.generator.assets.SpelledSoundProvider;
+import com.mrbysco.spelled.generator.data.SpelledAdvancementsProvider;
+import com.mrbysco.spelled.generator.data.SpelledDamageTypeTagsProvider;
 import com.mrbysco.spelled.generator.data.SpelledLootProvider;
 import com.mrbysco.spelled.generator.data.SpelledPatchouliProvider;
-import com.mrbysco.spelled.generator.data.SpelledRecipes;
+import com.mrbysco.spelled.generator.data.SpelledRecipeProvider;
 import com.mrbysco.spelled.handler.LootHandler;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
@@ -33,11 +35,13 @@ public class SpelledDataGen {
 		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
 		generator.addProvider(true, new SpelledLootProvider(packOutput, lookupProvider));
-		generator.addProvider(true, new SpelledRecipes.Runner(packOutput, lookupProvider));
-		generator.addProvider(true, new SpelledAdvancements(packOutput, lookupProvider));
-		generator.addProvider(true, new SpelledDamageTypeTags(packOutput, lookupProvider));
+		generator.addProvider(true, new SpelledRecipeProvider.Runner(packOutput, lookupProvider));
+		generator.addProvider(true, new SpelledAdvancementsProvider(packOutput, lookupProvider));
+		generator.addProvider(true, new SpelledDamageTypeTagsProvider(packOutput, lookupProvider));
 		generator.addProvider(true, new SpelledPatchouliProvider(packOutput, lookupProvider));
 
 		generator.addProvider(true, new SpelledLanguageProvider(packOutput));
+		generator.addProvider(true, new SpelledModelProvider(packOutput));
+		generator.addProvider(true, new SpelledSoundProvider(packOutput));
 	}
 }
