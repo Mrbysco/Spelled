@@ -75,7 +75,7 @@ public class SpelledPatchouliProvider extends PatchouliBookProvider {
 				.setSecret(true);
 
 
-		colorCategory.addEntry("colors/lore", "info.spelled.book.colors.lore.name", "spelled:ancient_knowledge_tome")
+		colorCategory = colorCategory.addEntry("colors/lore", "info.spelled.book.colors.lore.name", "spelled:ancient_knowledge_tome")
 				.setSecret(true)
 				.setAdvancement("spelled:color_lore")
 				.addTextPage("info.spelled.book.colors.lore.text").build()
@@ -83,7 +83,7 @@ public class SpelledPatchouliProvider extends PatchouliBookProvider {
 				.build();
 
 		for (String color : KeywordRegistry.instance().getColors()) {
-			colorCategory.addEntry("colors/" + color, String.format("info.spelled.book.colors.%s.name", color), "spelled:ancient_knowledge_tome")
+			colorCategory = colorCategory.addEntry("colors/" + color, String.format("info.spelled.book.colors.%s.name", color), "spelled:ancient_knowledge_tome")
 					.setSecret(true)
 					.setAdvancement("spelled:adjective_" + color)
 					.addTextPage(String.format("info.spelled.book.colors.%s.text", color)).build().build();
@@ -109,7 +109,7 @@ public class SpelledPatchouliProvider extends PatchouliBookProvider {
 					.addTextPage(String.format("info.spelled.book.size.%s.text", size)).build();
 
 			if (!size.equals("magnum")) {
-				sizeEntry.addTextPage(String.format("info.spelled.book.size.%s.text2", size)).build().build();
+				sizeEntry = sizeEntry.addTextPage(String.format("info.spelled.book.size.%s.text2", size)).build();
 			}
 
 			sizeCategory = sizeEntry.build();
@@ -144,7 +144,7 @@ public class SpelledPatchouliProvider extends PatchouliBookProvider {
 					.addTextPage(String.format("info.spelled.book.descriptive.%s.text", descriptive)).build();
 
 			if (!descriptive.equals("frigus")) {
-				descriptiveEntry.addTextPage(String.format("info.spelled.book.descriptive.%s.text2", descriptive)).build();
+				descriptiveEntry = descriptiveEntry.addTextPage(String.format("info.spelled.book.descriptive.%s.text2", descriptive)).build();
 			}
 			descriptionCategory = descriptiveEntry.build();
 		}
