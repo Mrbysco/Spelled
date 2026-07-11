@@ -2,7 +2,6 @@ package com.mrbysco.spelled.packets.handler;
 
 import com.mrbysco.spelled.api.SpelledAPI;
 import com.mrbysco.spelled.packets.message.SpellDataSyncPayload;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.Player;
@@ -18,7 +17,7 @@ public class ClientPayloadHandler {
 
 	public void handleSync(final SpellDataSyncPayload data, final IPayloadContext context) {
 		context.enqueueWork(() -> {
-					Player player = Minecraft.getInstance().level.getPlayerByUUID(data.playerUUID());
+					Player player = context.player().level().getPlayerByUUID(data.playerUUID());
 					if (player != null) {
 						SpelledAPI.getSpellDataCap(player).ifPresent(sanityCap -> {
 							sanityCap.deserialize(TagValueInput.create(ProblemReporter.DISCARDING, player.registryAccess(), data.data()));
