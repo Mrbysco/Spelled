@@ -77,7 +77,7 @@ public class AltarScreen extends AbstractContainerScreen<AltarMenu> {
 
 	public boolean bookHovered(double mouseX, double mouseY) {
 		int levelCost = (this.menu).getCurrentLevelCost();
-		return this.isHovering(74, 20, 28, 22, (double) mouseX, (double) mouseY) && levelCost > 0;
+		return this.isHovering(74, 20, 28, 22, mouseX, mouseY) && levelCost > 0;
 	}
 
 	@Override

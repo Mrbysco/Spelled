@@ -122,7 +122,7 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 								break;
 							}
 
-							level.addParticle(ParticleTypes.ENCHANT, (double) pos.getX() + 0.5D, (double) pos.getY() + 2.0D, (double) pos.getZ() + 0.5D, (double) ((float) i + rand.nextFloat()) - 0.5D, (double) ((float) k - rand.nextFloat() - 1.0F), (double) ((float) j + rand.nextFloat()) - 0.5D);
+							level.addParticle(ParticleTypes.ENCHANT, (double) pos.getX() + 0.5D, (double) pos.getY() + 2.0D, (double) pos.getZ() + 0.5D, (double) ((float) i + rand.nextFloat()) - 0.5D, (float) k - rand.nextFloat() - 1.0F, (double) ((float) j + rand.nextFloat()) - 0.5D);
 						}
 					}
 				}
@@ -153,7 +153,7 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 		if (blockEntity instanceof LevelingAltarBlockEntity) {
 			Component itextcomponent = ((Nameable) blockEntity).getDisplayName();
 			return new SimpleMenuProvider((id, inventory, player) -> {
-				int playerLevel = level.isClientSide() ? 0 : SpelledAPI.getLevel((ServerPlayer) player);
+				int playerLevel = level.isClientSide() ? 0 : SpelledAPI.getLevel(player);
 				return new AltarMenu(id, inventory, ContainerLevelAccess.create(level, pos), playerLevel);
 			}, itextcomponent);
 		} else {
@@ -175,10 +175,13 @@ public class LevelingAltarBlock extends BaseEntityBlock implements SimpleWaterlo
 		return this.defaultBlockState().setValue(HORIZONTAL_FACING, context.getHorizontalDirection().getOpposite());
 	}
 
+	@Override
 	public BlockState rotate(BlockState state, Rotation rot) {
 		return state.setValue(HORIZONTAL_FACING, rot.rotate(state.getValue(HORIZONTAL_FACING)));
 	}
 
+	@SuppressWarnings("deprecation")
+	@Override
 	public BlockState mirror(BlockState state, Mirror mirrorIn) {
 		return state.rotate(mirrorIn.getRotation(state.getValue(HORIZONTAL_FACING)));
 	}

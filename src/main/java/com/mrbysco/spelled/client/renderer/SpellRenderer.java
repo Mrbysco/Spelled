@@ -90,7 +90,7 @@ public class SpellRenderer extends EntityRenderer<SpellEntity, SpellRenderState>
 		if (sizeMultiplier > 8F)
 			sizeMultiplier = 8F;
 		poseStack.scale(1.0F, 1.0F, 1.0F);
-		poseStack.translate(0.0D, (double) 0.001F, 0.0D);
+		poseStack.translate(0.0D, 0.001F, 0.0D);
 		float f3 = 1.0F;
 		poseStack.scale(f3 * sizeMultiplier, f3 * sizeMultiplier, f3 * sizeMultiplier);
 	}

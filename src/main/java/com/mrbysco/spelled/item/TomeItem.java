@@ -38,7 +38,7 @@ public class TomeItem extends Item {
 					String word = itemstack.getOrDefault(SpelledComponents.UNLOCK, "");
 					if (!data.knowsKeyword(word)) {
 						player.startUsingItem(hand);
-						SpelledAPI.unlockKeyword((ServerPlayer) player, word);
+						SpelledAPI.unlockKeyword(player, word);
 						SpelledAPI.syncCap((ServerPlayer) player);
 						player.sendOverlayMessage(Component.translatable("spelled.tome.success"));
 						return InteractionResult.CONSUME;
@@ -58,6 +58,7 @@ public class TomeItem extends Item {
 		return super.use(level, player, hand);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
 		if (!SpelledConfig.COMMON.hideKnowledgeTomeInfo.get()) {
@@ -69,6 +70,5 @@ public class TomeItem extends Item {
 				builder.accept(Component.translatable("spelled.tome.description.invalid").withStyle(ChatFormatting.RED));
 			}
 		}
-		super.appendHoverText(stack, context, display, builder, tooltipFlag);
 	}
 }

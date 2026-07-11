@@ -27,7 +27,7 @@ public class HarvestBehavior extends BaseBehavior {
 		BlockState hitState = level.getBlockState(pos);
 		float hardness = hitState.getDestroySpeed(level, pos);
 		float power = 1.0F + spell.getPower();
-		boolean canBreak = spell.getOwner() instanceof Player player ? hitState.canHarvestBlock(level, pos, player) : false;
+		boolean canBreak = spell.getOwner() instanceof Player player && hitState.canHarvestBlock(level, pos, player);
 		if (!level.isClientSide() && canBreak && hardness <= power && hitState.getBlock().getExplosionResistance() <= 1200.0F) {
 			if (spell.isSilky()) {
 				level.getBlockState(pos).getDrops(LootHelper.silkContextBuilder((ServerLevel) level, pos, spell))

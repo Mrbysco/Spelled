@@ -28,10 +28,10 @@ public class ExtinguishBehavior extends BaseBehavior {
 	private void extinguishFires(Level level, BlockPos pos) {
 		BlockState blockstate = level.getBlockState(pos);
 		if (blockstate.is(BlockTags.FIRE)) {
-			level.levelEvent((Player) null, 1009, pos, 0);
+			level.levelEvent(null, 1009, pos, 0);
 			level.removeBlock(pos, false);
 		} else if (CampfireBlock.isLitCampfire(blockstate)) {
-			level.levelEvent((Player) null, 1009, pos, 0);
+			level.levelEvent(null, 1009, pos, 0);
 			CampfireBlock.dowse(null, level, pos, blockstate);
 			level.setBlockAndUpdate(pos, blockstate.setValue(CampfireBlock.LIT, Boolean.FALSE));
 		}
@@ -40,7 +40,7 @@ public class ExtinguishBehavior extends BaseBehavior {
 	@Override
 	public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
 		Level level = entity.level();
-		level.playSound((Player) null, entity.blockPosition(), SoundEvents.GENERIC_EXTINGUISH_FIRE, entity.getSoundSource(), 0.7F,
+		level.playSound(null, entity.blockPosition(), SoundEvents.GENERIC_EXTINGUISH_FIRE, entity.getSoundSource(), 0.7F,
 				1.6F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.4F);
 		entity.clearFire();
 	}

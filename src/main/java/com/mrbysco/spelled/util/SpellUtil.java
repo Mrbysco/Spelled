@@ -54,7 +54,7 @@ public class SpellUtil {
 					}
 
 					//Do our stuff
-					IKeyword lastKeyword = registry.getKeywordFromName(words.get(words.size() - 1));
+					IKeyword lastKeyword = registry.getKeywordFromName(words.getLast());
 					ServerLevel level = player.level();
 
 					if (lastKeyword instanceof TypeKeyword typeKeyword) {
@@ -204,7 +204,7 @@ public class SpellUtil {
 		} else { //Ball (Self is handled elsewhere)
 			spell.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.0F, 0.0F);
 		}
-		player.level().playSound((Player) null, player.blockPosition(), SpelledRegistry.SHOOT_SPELL.get(), SoundSource.PLAYERS,
+		player.level().playSound(null, player.blockPosition(), SpelledRegistry.SHOOT_SPELL.get(), SoundSource.PLAYERS,
 				1.0F, 1.0F / (player.level().getRandom().nextFloat() * 0.4F + 1.2F) + 0.5F);
 	}
 }

@@ -79,7 +79,6 @@ public class SpellBookScreen extends Screen {
 					(message) -> this.title = message, this::getClipboard, this::setClipboard,
 					(message) -> message.length() < 32);
 
-	private final int buttonMargin = 1;
 	private final int numButtons = SortType.values().length;
 	private String lastFilterText = "";
 
@@ -186,6 +185,7 @@ public class SpellBookScreen extends Screen {
 
 		final int width = listWidth / numButtons;
 		int x = centerWidth + PADDING - width;
+		int buttonMargin = 1;
 		SortType.A_TO_Z.button = this.addRenderableWidget(Button.builder(SortType.A_TO_Z.getButtonText(), (button) -> {
 			resortAdjectives(SortType.A_TO_Z);
 		}).bounds(x, PADDING, width - buttonMargin, 20).build());
@@ -203,7 +203,7 @@ public class SpellBookScreen extends Screen {
 		this.addRenderableWidget(this.finalizeButton = Button.builder(Component.translatable("book.signButton"), (button) -> {
 			if (this.isSigning) {
 				this.saveChanges(true);
-				this.minecraft.setScreen((Screen) null);
+				this.minecraft.setScreen(null);
 			}
 		}).bounds(centerWidth - (closeButtonWidth / 2) + PADDING, this.height - 50 - PADDING, closeButtonWidth, 20).build());
 
@@ -412,7 +412,7 @@ public class SpellBookScreen extends Screen {
 		if (this.adjectiveWidget.keyPressed(event)) {
 			return true;
 		} else if (event.key() == 256) {
-			this.minecraft.setScreen((Screen) null);
+			this.minecraft.setScreen(null);
 			return true;
 		} else if (this.isSigning) {
 			return this.titleKeyPressed(event);
@@ -445,7 +445,7 @@ public class SpellBookScreen extends Screen {
 			case 335:
 				if (!this.title.isEmpty()) {
 					this.saveChanges(true);
-					this.minecraft.setScreen((Screen) null);
+					this.minecraft.setScreen(null);
 				}
 
 				return true;

@@ -44,9 +44,9 @@ public class CreativeTomeItem extends Item {
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
 		builder.accept(Component.translatable("spelled.creative_tome.description").withStyle(ChatFormatting.DARK_PURPLE));
-		super.appendHoverText(stack, context, display, builder, tooltipFlag);
 	}
 }

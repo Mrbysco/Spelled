@@ -146,10 +146,10 @@ public class AltarMenu extends AbstractContainerMenu {
 
 						this.tableInventory.setChanged();
 						this.slotsChanged(this.tableInventory);
-						level1.playSound((Player) null, p_217003_7_, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F,
+						level1.playSound(null, p_217003_7_, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F,
 								level1.getRandom().nextFloat() * 0.1F + 0.9F);
 
-						SpelledAPI.forceSetLevel((ServerPlayer) playerIn, newLevel);
+						SpelledAPI.forceSetLevel(playerIn, newLevel);
 						SpelledAPI.syncCap((ServerPlayer) playerIn);
 						this.currentLevel[0] = newLevel;
 					});
@@ -157,7 +157,7 @@ public class AltarMenu extends AbstractContainerMenu {
 				}
 			} else {
 				this.useLevels(playerIn, XPCost);
-				SpelledAPI.forceSetLevel((ServerPlayer) playerIn, newLevel);
+				SpelledAPI.forceSetLevel(playerIn, newLevel);
 				SpelledAPI.syncCap((ServerPlayer) playerIn);
 				this.currentLevel[0] = newLevel;
 				return true;

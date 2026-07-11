@@ -187,7 +187,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 
 	public float getSizeMultiplier(float max) {
 		float sizeMultiplier = getSizeMultiplier();
-		return sizeMultiplier <= max ? sizeMultiplier : max;
+		return Math.min(sizeMultiplier, max);
 	}
 
 	public void setPower(int power) {
@@ -296,6 +296,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 		return (isFiery() || isLava()) ? 1.0F : 0.5F;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void tick() {
 		if (tickCount > 200) {
@@ -313,7 +314,7 @@ public abstract class AbstractSpellEntity extends AbstractHurtingProjectile {
 		}
 		Vec3 vector3d = this.getDeltaMovement();
 		this.updateRotation();
-		this.setDeltaMovement(vector3d.scale((double) 0.99F));
+		this.setDeltaMovement(vector3d.scale(0.99F));
 		if (!this.isNoGravity()) {
 			Vec3 vector3d1 = this.getDeltaMovement();
 			this.setDeltaMovement(vector3d1.x, vector3d1.y - (double) 0.02F, vector3d1.z);

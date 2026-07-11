@@ -70,6 +70,7 @@ public class LevelingAltarBlockEntity extends BlockEntity implements Nameable {
 		components.set(DataComponents.CUSTOM_NAME, this.customName);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void removeComponentsFromTag(ValueOutput output) {
 		output.discard("CustomName");

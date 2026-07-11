@@ -33,7 +33,7 @@ public class SpelledLootProvider extends LootTableProvider {
 
 		@Override
 		protected Iterable<Block> getKnownBlocks() {
-			return (Iterable<Block>) SpelledRegistry.BLOCKS.getEntries().stream().map(holder -> (Block) holder.value())::iterator;
+			return SpelledRegistry.BLOCKS.getEntries().stream().map(holder -> (Block) holder.value())::iterator;
 		}
 	}
 }

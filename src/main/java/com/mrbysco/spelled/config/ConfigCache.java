@@ -52,7 +52,7 @@ public class ConfigCache {
 			for (int i = 0; i < configValues.size(); i++) {
 				String configValue = configValues.get(i);
 				if (!configValue.contains(",")) {
-					Spelled.LOGGER.error(String.format("Invalid syntax '%s' found in 'individualLevelCosts' config values", configValue));
+					Spelled.LOGGER.error("Invalid syntax '{}' found in 'individualLevelCosts' config values", configValue);
 				} else {
 					String[] values = configValue.split(",");
 					if (values.length == 3) {
@@ -63,21 +63,21 @@ public class ConfigCache {
 						int itemCost = NumberUtils.isParsable(values[2]) ? Integer.parseInt(values[2]) : -1;
 
 						if (level == -1) {
-							Spelled.LOGGER.error(String.format("Couldn't parse level value for %s, using dummy value: %s", configValue, dummyLevel));
+							Spelled.LOGGER.error("Couldn't parse level value for {}, using dummy value: {}", configValue, dummyLevel);
 							level = dummyLevel;
 						}
 						if (item == null) {
-							Spelled.LOGGER.error(String.format("Couldn't parse specified item %s, using dummy value: %s", values[1], BuiltInRegistries.ITEM.getKey(defaultItem)));
+							Spelled.LOGGER.error("Couldn't parse specified item {}, using dummy value: {}", values[1], BuiltInRegistries.ITEM.getKey(defaultItem));
 							item = defaultItem;
 						}
 						if (itemCost == -1) {
-							Spelled.LOGGER.error(String.format("Couldn't parse item cost value for %s, using dummy value: %s", configValue, dummyItemCost));
+							Spelled.LOGGER.error("Couldn't parse item cost value for {}, using dummy value: {}", configValue, dummyItemCost);
 							itemCost = dummyItemCost;
 						}
 						itemCostMap.put(level, new ItemCost(item, itemCost));
 					} else {
-						Spelled.LOGGER.error(String.format("Not enough data specified. Couldn't locate Level, XP cost and item cost inside of specified %s. " +
-								"Are you sure you used ,'s ?", configValue));
+						Spelled.LOGGER.error("Not enough data specified. Couldn't locate Level, XP cost and item cost inside of specified {}. " +
+								"Are you sure you used ,'s ?", configValue);
 					}
 				}
 			}
@@ -86,7 +86,7 @@ public class ConfigCache {
 		int maxLevel = SpelledConfig.COMMON.maxLevel.get();
 		if (SpelledConfig.COMMON.individualItems.get() && itemCostMap.size() < maxLevel) {
 			Spelled.LOGGER.error("Individual items is enabled but there aren't enough items supplied in 'individualItemCosts'.");
-			Spelled.LOGGER.error(String.format("Currently 'individualItemCosts' only has %s out of %s items supplied.", itemCostMap.size(), maxLevel));
+			Spelled.LOGGER.error("Currently 'individualItemCosts' only has {} out of {} items supplied.", itemCostMap.size(), maxLevel);
 
 			int currentAmount = itemCostMap.size();
 			int amountMissing = maxLevel - itemCostMap.size();
@@ -110,7 +110,7 @@ public class ConfigCache {
 			for (int i = 0; i < configValues.size(); i++) {
 				String configValue = configValues.get(i);
 				if (!configValue.contains(",")) {
-					Spelled.LOGGER.error(String.format("Invalid syntax '%s' found in 'individualLevelCosts' config values", configValue));
+					Spelled.LOGGER.error("Invalid syntax '{}' found in 'individualLevelCosts' config values", configValue);
 				} else {
 					String[] values = configValue.split(",");
 					if (values.length == 2) {
@@ -119,17 +119,17 @@ public class ConfigCache {
 						int level = NumberUtils.isParsable(values[0]) ? Integer.parseInt(values[0]) : -1;
 						int cost = NumberUtils.isParsable(values[1]) ? Integer.parseInt(values[1]) : -1;
 						if (level == -1) {
-							Spelled.LOGGER.error(String.format("Couldn't parse level value for %s, using dummy value: %s", configValue, dummyLevel));
+							Spelled.LOGGER.error("Couldn't parse level value for {}, using dummy value: {}", configValue, dummyLevel);
 							level = dummyLevel;
 						}
 						if (cost == -1) {
-							Spelled.LOGGER.error(String.format("Couldn't parse cost value for %s, using dummy value: %s", configValue, dummyCost));
+							Spelled.LOGGER.error("Couldn't parse cost value for {}, using dummy value: {}", configValue, dummyCost);
 							cost = dummyCost;
 						}
 						xpCostMap.put(level, cost);
 					} else {
-						Spelled.LOGGER.error(String.format("Not enough data specified. Couldn't locate Level and XP cost in specified %s. " +
-								"Are you sure you separated with a , ?", configValue));
+						Spelled.LOGGER.error("Not enough data specified. Couldn't locate Level and XP cost in specified {}. " +
+								"Are you sure you separated with a , ?", configValue);
 					}
 				}
 			}
@@ -138,7 +138,7 @@ public class ConfigCache {
 		int maxLevel = SpelledConfig.COMMON.maxLevel.get();
 		if (SpelledConfig.COMMON.individualLevels.get() && xpCostMap.size() < maxLevel) {
 			Spelled.LOGGER.error("Individual levels is enabled but there aren't enough costs supplied in 'individualLevelCosts'.");
-			Spelled.LOGGER.error(String.format("Currently 'individualLevelCosts' only has %s out of %s levels supplied.", xpCostMap.size(), maxLevel));
+			Spelled.LOGGER.error("Currently 'individualLevelCosts' only has {} out of {} levels supplied.", xpCostMap.size(), maxLevel);
 
 			int currentAmount = xpCostMap.size();
 			int amountMissing = maxLevel - xpCostMap.size();

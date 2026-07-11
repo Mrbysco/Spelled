@@ -16,7 +16,6 @@ import com.mrbysco.spelled.registry.SpelledComponents;
 import com.mrbysco.spelled.registry.SpelledRegistry;
 import com.mrbysco.spelled.registry.SpelledSerializers;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;

@@ -6,7 +6,6 @@ import com.mrbysco.spelled.api.keywords.KeywordRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
 import java.util.Locale;
 
