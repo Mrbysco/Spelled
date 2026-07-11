@@ -34,7 +34,7 @@ public class MatureBehavior extends BaseBehavior {
 	public void onEntityHit(@Nonnull SpellEntity spell, Entity entity) {
 		if (entity instanceof AgeableMob ageableMob && ageableMob.isBaby()) {
 			int age = ageableMob.getAge();
-			ageableMob.ageUp(ageableMob.getSpeedUpSecondsWhenFeeding(-age), true);
+			ageableMob.ageUp(AgeableMob.getSpeedUpSecondsWhenFeeding(-age), true);
 		}
 	}
 }
