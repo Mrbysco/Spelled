@@ -1,1 +1,2 @@
-* Update to 26.1.2
+* Fix resizing bug with the Spell Book GUI
+* Add missing translation keys for networking errors
