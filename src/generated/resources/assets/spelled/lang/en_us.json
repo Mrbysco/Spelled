@@ -228,6 +228,7 @@
   "spelled.keyword.vis.description": "Power",
   "spelled.level_up.fail_item": "You lack the required items to level up!",
   "spelled.level_up.fail_xp": "You lack the required xp to level up!",
+  "spelled.networking.spell_data_sync.failed": "Failed to sync spell data: %s",
   "spelled.screen.missing_adjectives": "<Missing Adjective(s)>",
   "spelled.screen.missing_type": "<Missing Type>",
   "spelled.screen.search": "Search",
@@ -252,5 +253,6 @@
   "spelled:container.altar.item.requirement": "Item requirement: %s %s",
   "spelled:container.altar.level.many": "%s Experience Levels",
   "spelled:container.altar.level.one": "1 Experience Level",
-  "spelled:container.altar.level.requirement": "Level requirement: %s"
+  "spelled:container.altar.level.requirement": "Level requirement: %s",
+  "statues.networking.player_statue_sync.failed": "Failed to sync player statue data: %s"
 }

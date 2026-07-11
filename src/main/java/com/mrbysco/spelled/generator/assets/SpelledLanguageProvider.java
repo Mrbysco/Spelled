@@ -296,6 +296,9 @@ public class SpelledLanguageProvider extends LanguageProvider {
 		addConfig("maxLevel", "Max Level", "Determines the max level you can reach (Default: 10)");
 		addConfig("xpMultiplier", "XP Multiplier", "Decides how much xp you need to pay per level (cost is multiplied * level)");
 		addConfig("hideKnowledgeTomeInfo", "Hide Knowledge Tome Info", "Decides whether the tooltip of the Tome of Knowledge tells you what's inside (Default: true)");
+
+		add("spelled.networking.spell_data_sync.failed", "Failed to sync spell data: %s");
+		add("statues.networking.player_statue_sync.failed", "Failed to sync player statue data: %s");
 	}
 
 	public void addSoundEvent(Supplier<? extends SoundEvent> key, String subtitle) {
