@@ -121,10 +121,6 @@ public class SpellBookScreen extends Screen {
 		}
 	}
 
-	public Font getFont() {
-		return font;
-	}
-
 	@Override
 	public boolean isPauseScreen() {
 		return false;
@@ -391,7 +387,7 @@ public class SpellBookScreen extends Screen {
 
 	@Override
 	public void resize(int newWidth, int newHeight) {
-		super.resize(newHeight, newHeight);
+		super.resize(newWidth, newHeight);
 		String s = this.search.getValue();
 		SortType sort = this.sortType;
 		AdjectiveListWidget.ListEntry focused = this.focused;
