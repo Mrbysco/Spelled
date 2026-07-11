@@ -4,7 +4,6 @@ import com.mrbysco.spelled.Reference;
 import com.mrbysco.spelled.packets.message.SignSpellPayload;
 import com.mrbysco.spelled.registry.SpelledComponents;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
