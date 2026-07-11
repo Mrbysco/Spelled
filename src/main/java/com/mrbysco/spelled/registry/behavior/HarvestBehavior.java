@@ -21,6 +21,7 @@ public class HarvestBehavior extends BaseBehavior {
 		super("harvest");
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onBlockHit(@Nonnull SpellEntity spell, BlockPos pos, BlockPos offPos) {
 		Level level = spell.level();
